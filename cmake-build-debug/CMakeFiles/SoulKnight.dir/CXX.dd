@@ -1,0 +1,15 @@
+ninja_dyndep_version = 1.0
+build CMakeFiles\SoulKnight.dir\main.cpp.obj: dyndep
+
+build CMakeFiles\SoulKnight.dir\src\Core\AssetManager.cpp.obj: dyndep
+
+build CMakeFiles\SoulKnight.dir\src\Core\Game.cpp.obj: dyndep
+
+build CMakeFiles\SoulKnight.dir\src\Core\SceneManager.cpp.obj: dyndep
+
+build CMakeFiles\SoulKnight.dir\src\Entities\Player.cpp.obj: dyndep
+
+build CMakeFiles\SoulKnight.dir\src\Scenes\GameScene.cpp.obj: dyndep
+
+build CMakeFiles\SoulKnight.dir\src\Scenes\MainMenuScene.cpp.obj: dyndep
+
