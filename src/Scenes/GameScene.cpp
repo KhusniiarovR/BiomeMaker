@@ -1,7 +1,8 @@
 #include "GameScene.h"
+#include <Constants/GraphicsConst.h>
 #include "raylib.h"
 
-GameScene::GameScene() : player ({GetScreenWidth()/2.0f, GetScreenHeight()/2.0f}) {}
+GameScene::GameScene() : player ({screenSizeX/2.0f, screenSizeY/2.0f}) {}
 
 void GameScene::update(float dt) {
     player.update(dt);

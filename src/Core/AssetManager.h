@@ -1,11 +1,7 @@
-//
-// Created by ramir on 31.05.2025.
-//
-
 #ifndef ASSETMANAGER_H
 #define ASSETMANAGER_H
 
-
+// todo asset lazy loading
 
 class AssetManager {
 
