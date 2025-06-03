@@ -2,14 +2,16 @@
 #define MAINMENUSCENE_H
 
 #include "Scene.h"
+#include <Core/Renderer.h>
 
 class MainMenuScene : public Scene {
 private:
     bool changeScene = false;
 
 public:
+    MainMenuScene(Renderer& renderer);
     void update(float dt) override;
-    void draw() const override;
+    void render() const override;
     [[nodiscard]] bool shouldTransition() const override;
     [[nodiscard]] SceneType getNextScene() const override;
 };

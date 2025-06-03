@@ -2,7 +2,8 @@
 #include "raylib.h"
 #include "Constants/GraphicsConst.h"
 
-Game::Game() {
+Game::Game() : renderer(assetManager),
+          sceneManager(renderer) {
     init();
 }
 
@@ -10,7 +11,7 @@ void Game::run() {
     while (!WindowShouldClose()) {
         float dt = GetFrameTime();
         sceneManager.update(dt);
-        sceneManager.draw();
+        sceneManager.render();
     }
     stop();
 }

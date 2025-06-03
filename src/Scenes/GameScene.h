@@ -10,9 +10,9 @@ private:
     Player player;
 
 public:
-    GameScene();
+    GameScene(Renderer& renderer);
     void update(float dt) override;
-    void draw() const override;
+    void render() const override;
     [[nodiscard]] bool shouldTransition() const override;
     [[nodiscard]] SceneType getNextScene() const override;
 };

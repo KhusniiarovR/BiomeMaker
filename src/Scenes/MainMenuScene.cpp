@@ -1,7 +1,8 @@
 #include "MainMenuScene.h"
 #include <Constants/GraphicsConst.h>
-#include <Utilities/graphics/Text.h>
 #include "raylib.h"
+
+MainMenuScene::MainMenuScene(Renderer& renderer) : Scene(renderer) {}
 
 void MainMenuScene::update(float dt) {
     if (IsKeyPressed(KEY_ENTER)) {
@@ -9,14 +10,9 @@ void MainMenuScene::update(float dt) {
     }
 }
 
-Text menu = {
-    "Press ENTER to Start", {0.5f, 0.5f}, 100, RED
-};
-
-void MainMenuScene::draw() const {
-    drawText(menu);
+void MainMenuScene::render() const {
+    renderer.drawText("Press enter to continue");
 }
-// todo drawText my implementation function
 
 bool MainMenuScene::shouldTransition() const {
     return changeScene;

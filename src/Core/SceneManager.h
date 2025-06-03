@@ -3,16 +3,18 @@
 
 #include <memory>
 #include "Scenes/Scene.h"
+#include "Core/Renderer.h"
 
 class SceneManager {
 private:
     std::unique_ptr<Scene> currentScene;
+    Renderer& renderer;
 
 public:
-    SceneManager();
+    SceneManager(Renderer& renderer);
     void loadScene(SceneType sceneType);
     void update(float dt);
-    void draw();
+    void render();
 };
 
 #endif //SCENEMANAGER_H

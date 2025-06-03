@@ -3,17 +3,17 @@
 #include "Scenes/MainMenuScene.h"
 #include "Scenes/GameScene.h"
 
-SceneManager::SceneManager() {
+SceneManager::SceneManager(Renderer& renderer) : renderer(renderer) {
     loadScene(SceneType::MainMenu);
 }
 
 void SceneManager::loadScene(SceneType sceneType) {
     switch (sceneType) {
         case SceneType::MainMenu:
-            currentScene = std::make_unique<MainMenuScene>();
+            currentScene = std::make_unique<MainMenuScene>(renderer);
         break;
         case SceneType::Game:
-            currentScene = std::make_unique<GameScene>();
+            currentScene = std::make_unique<GameScene>(renderer);
         break;
         default:
             std::cerr << "SceneManager/LoadScene unknown scene\n";
@@ -33,11 +33,11 @@ void SceneManager::update(float dt) {
     }
 }
 
-void SceneManager::draw() {
+void SceneManager::render() {
     if (currentScene) {
         BeginDrawing();
         ClearBackground(BLACK);
-        currentScene->draw();
+        currentScene->render();
         EndDrawing();
     }
     else {
