@@ -2,7 +2,7 @@
 #define SCENE_H
 
 #include "Scenes/SceneType.h"
-#include "Core/Renderer.h"
+#include "Core/Render/Renderer.h"
 
 class Scene {
 protected:

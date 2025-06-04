@@ -2,7 +2,6 @@
 #define MAINMENUSCENE_H
 
 #include "Scene.h"
-#include <Core/Renderer.h>
 
 class MainMenuScene : public Scene {
 private:

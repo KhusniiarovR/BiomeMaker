@@ -3,7 +3,7 @@
 
 #include <memory>
 #include "Scenes/Scene.h"
-#include "Core/Renderer.h"
+#include "Core/Render/Renderer.h"
 
 class SceneManager {
 private:

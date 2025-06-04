@@ -109,8 +109,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-rurxna"
-      binary: "C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-rurxna"
+      source: "C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-qgeuys"
+      binary: "C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-qgeuys"
     cmakeVariables:
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
       CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
@@ -123,11 +123,11 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-rurxna'
+        Change Dir: 'C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-qgeuys'
         
-        Run Build Command(s): "C:/Program Files/JetBrains/CLion 2024.2.0.1/bin/ninja/win/x64/ninja.exe" -v cmTC_8abf1
-        [1/2] C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1441~1.341\\bin\\Hostx64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\\cmTC_8abf1.dir\\CMakeCCompilerABI.c.obj /FdCMakeFiles\\cmTC_8abf1.dir\\ /FS -c "C:\\Program Files\\JetBrains\\CLion 2024.2.0.1\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCCompilerABI.c"
-        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\JetBrains\\CLion 2024.2.0.1\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_8abf1.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1441~1.341\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_8abf1.dir\\CMakeCCompilerABI.c.obj  /out:cmTC_8abf1.exe /implib:cmTC_8abf1.lib /pdb:cmTC_8abf1.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        Run Build Command(s): "C:/Program Files/JetBrains/CLion 2024.2.0.1/bin/ninja/win/x64/ninja.exe" -v cmTC_ebf3c
+        [1/2] C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1441~1.341\\bin\\Hostx64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\\cmTC_ebf3c.dir\\CMakeCCompilerABI.c.obj /FdCMakeFiles\\cmTC_ebf3c.dir\\ /FS -c "C:\\Program Files\\JetBrains\\CLion 2024.2.0.1\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCCompilerABI.c"
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\JetBrains\\CLion 2024.2.0.1\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_ebf3c.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1441~1.341\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_ebf3c.dir\\CMakeCCompilerABI.c.obj  /out:cmTC_ebf3c.exe /implib:cmTC_ebf3c.lib /pdb:cmTC_ebf3c.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
         
       exitCode: 0
   -
@@ -167,8 +167,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-0l7orm"
-      binary: "C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-0l7orm"
+      source: "C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-6taixs"
+      binary: "C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-6taixs"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
@@ -182,11 +182,11 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-0l7orm'
+        Change Dir: 'C:/Users/ramir/Desktop/Programming/raylib_games/SoulKnight/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-6taixs'
         
-        Run Build Command(s): "C:/Program Files/JetBrains/CLion 2024.2.0.1/bin/ninja/win/x64/ninja.exe" -v cmTC_e529b
-        [1/2] C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1441~1.341\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP   /DWIN32 /D_WINDOWS /EHsc  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\\cmTC_e529b.dir\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_e529b.dir\\ /FS -c "C:\\Program Files\\JetBrains\\CLion 2024.2.0.1\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
-        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\JetBrains\\CLion 2024.2.0.1\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_e529b.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1441~1.341\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_e529b.dir\\CMakeCXXCompilerABI.cpp.obj  /out:cmTC_e529b.exe /implib:cmTC_e529b.lib /pdb:cmTC_e529b.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        Run Build Command(s): "C:/Program Files/JetBrains/CLion 2024.2.0.1/bin/ninja/win/x64/ninja.exe" -v cmTC_c7281
+        [1/2] C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1441~1.341\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP   /DWIN32 /D_WINDOWS /EHsc  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\\cmTC_c7281.dir\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_c7281.dir\\ /FS -c "C:\\Program Files\\JetBrains\\CLion 2024.2.0.1\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
+        [2/2] C:\\WINDOWS\\system32\\cmd.exe /C "cd . && "C:\\Program Files\\JetBrains\\CLion 2024.2.0.1\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_c7281.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MIB055~1\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1441~1.341\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_c7281.dir\\CMakeCXXCompilerABI.cpp.obj  /out:cmTC_c7281.exe /implib:cmTC_c7281.lib /pdb:cmTC_c7281.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
         
       exitCode: 0
   -

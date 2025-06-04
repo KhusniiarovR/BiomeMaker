@@ -1,9 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "Core/SceneManager.h"
-#include "Core/AssetManager.h"
-#include "Core/Renderer.h"
+#include "SceneManager.h"
+#include "Core/Render/AssetManager.h"
+#include "Core/Render/Renderer.h"
 
 class Game {
 private:

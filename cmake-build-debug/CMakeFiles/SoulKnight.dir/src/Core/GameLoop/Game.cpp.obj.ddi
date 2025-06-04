@@ -3,10 +3,10 @@
     "revision": 0,
     "rules": [
         {
-            "primary-output": "CMakeFiles\\SoulKnight.dir\\src\\Core\\Game.cpp.obj",
+            "primary-output": "CMakeFiles\\SoulKnight.dir\\src\\Core\\GameLoop\\Game.cpp.obj",
             "outputs": [
                 "C:\\Users\\ramir\\Desktop\\Programming\\raylib_games\\SoulKnight\\cmake-build-debug\\vc140.pdb",
-                "CMakeFiles\\SoulKnight.dir\\src\\Core\\Game.cpp.obj.ddi"
+                "CMakeFiles\\SoulKnight.dir\\src\\Core\\GameLoop\\Game.cpp.obj.ddi"
             ],
             "requires": []
         }
