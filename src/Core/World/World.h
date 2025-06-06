@@ -1,7 +1,6 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "Constants/WorldConst.h"
 #include "Chunk.h"
 #include "Utilities/World/PairHash.h"
 #include <unordered_map>

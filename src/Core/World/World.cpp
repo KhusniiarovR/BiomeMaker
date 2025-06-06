@@ -1,6 +1,7 @@
 #include "World.h"
 #include "Constants/GraphicsConst.h"
 #include <ranges>
+#include "Constants/WorldConst.h"
 
 void World::update(Vector2 playerPos) {
     int chunkPixelSize = CHUNK_SIZE * TILE_SIZE;

@@ -9,6 +9,8 @@ build CMakeFiles\SoulKnight.dir\src\Core\Render\AssetManager.cpp.obj: dyndep
 
 build CMakeFiles\SoulKnight.dir\src\Core\Render\Renderer.cpp.obj: dyndep
 
+build CMakeFiles\SoulKnight.dir\src\Core\World\World.cpp.obj: dyndep
+
 build CMakeFiles\SoulKnight.dir\src\Entities\Player.cpp.obj: dyndep
 
 build CMakeFiles\SoulKnight.dir\src\Scenes\GameScene.cpp.obj: dyndep

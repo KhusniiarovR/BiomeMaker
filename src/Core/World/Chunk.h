@@ -3,6 +3,7 @@
 
 #include "Constants/WorldConst.h"
 #include "Biome.h"
+#include "Utilities/World/PerlinNoise.h"
 
 class Chunk {
 public:
@@ -11,11 +12,6 @@ public:
 
     Chunk(int cx, int cy) : x(cx), y(cy) {
         Generate();
-    }
-
-    // todo perlin noise
-    float PerlinNoise(float x, float y) {
-        return (float)((int)(x + y) % 100) / 100.0f;
     }
 
     void Generate() {
