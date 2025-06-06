@@ -7,12 +7,14 @@
 class Player : public Entity {
 private:
     float speed;
-    float radius;
 
 public:
     Player(Vector2 init_pos);
     void update(float dt) override;
-    void draw() const override;
+
+    [[nodiscard]] float getPositionX() const;
+    [[nodiscard]] float getPositionY() const;
+    [[nodiscard]] Vector2 getPosition() const;
 };
 
 #endif //PLAYER_H

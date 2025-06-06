@@ -36,6 +36,7 @@ void SceneManager::update(float dt) {
 void SceneManager::render() {
     if (currentScene) {
         BeginDrawing();
+        BeginMode2D(renderer.GetCamera());
         ClearBackground(BLACK);
         currentScene->render();
         EndDrawing();

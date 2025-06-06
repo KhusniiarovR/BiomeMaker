@@ -23,6 +23,8 @@ void Game::init() {
     screenSizeY = GetScreenHeight();
     SetTargetFPS(60);
     //ToggleFullscreen();
+
+
 }
 
 void Game::stop() {

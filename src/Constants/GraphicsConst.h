@@ -3,5 +3,4 @@
 
 inline int screenSizeX, screenSizeY;
 
-
-#endif //GRAPHICS_CONST_H
+#endif //GRAPHICS_СONST_H
