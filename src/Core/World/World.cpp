@@ -4,15 +4,24 @@
 #include "Constants/WorldConst.h"
 
 void World::update(Vector2 playerPos) {
-    int chunkPixelSize = CHUNK_SIZE * TILE_SIZE;
+    const int chunkPixelSize = CHUNK_SIZE * TILE_SIZE;
 
-    int loadStartX = static_cast<int>((playerPos.x - screenSizeX / 2.0f) / chunkPixelSize) - 1;
-    int loadStartY = static_cast<int>((playerPos.y - screenSizeY / 2.0f) / chunkPixelSize) - 1;
-    int loadEndX = loadStartX + RENDER_DISTANCE;
-    int loadEndY = loadStartY + RENDER_DISTANCE;
+    int playerChunkX = static_cast<int>(playerPos.x / chunkPixelSize);
+    int playerChunkY = static_cast<int>(playerPos.y / chunkPixelSize);
 
-    for (int y = loadStartY; y < loadEndY; y++) {
-        for (int x = loadStartX; x < loadEndX; x++) {
+    const int preloadAhead = RENDER_DISTANCE / 2;
+    const int preloadBehind = RENDER_DISTANCE - preloadAhead;
+
+    int loadStartX = playerChunkX - preloadBehind;
+    int loadEndX   = playerChunkX + preloadAhead + 1;
+
+    int loadStartY = playerChunkY - preloadBehind;
+    int loadEndY   = playerChunkY + preloadAhead + 1;
+
+    for (int y = loadStartY; y < loadEndY; ++y) {
+        for (int x = loadStartX; x < loadEndX; ++x) {
+            //if (x < 0 || y < 0 || x >= WORLD_CHUNKS || y >= WORLD_CHUNKS) continue;
+
             auto key = std::make_pair(x, y);
             if (chunks.find(key) == chunks.end()) {
                 chunks.emplace(key, Chunk(x, y));
@@ -20,10 +29,10 @@ void World::update(Vector2 playerPos) {
         }
     }
 
-    int unloadStartX = loadStartX - 1;
-    int unloadEndX = loadEndX + 1;
-    int unloadStartY = loadStartY - 1;
-    int unloadEndY = loadEndY + 1;
+    int unloadStartX = loadStartX - unloadMargin;
+    int unloadEndX   = loadEndX + unloadMargin;
+    int unloadStartY = loadStartY - unloadMargin;
+    int unloadEndY   = loadEndY + unloadMargin;
 
     auto it = chunks.begin();
     while (it != chunks.end()) {

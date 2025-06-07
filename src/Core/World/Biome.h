@@ -9,9 +9,12 @@ struct Biome {
 };
 
 const std::vector<Biome> BIOMES = {
-    { Color{ 34, 139, 34, 255 } },      // Forest
-    { Color{ 194, 178, 128, 255 } },    // Desert
-    { Color{ 100, 100, 100, 255 } }     // Mountain
+    { Color{ 255, 0, 255, 255 } },      // unknown
+    { Color{ 34, 170, 34, 255 } },      // Forest
+    { Color{ 50, 50, 175, 255 } },      // Ocean
+    { Color{ 210, 210, 210, 255 } },    // Winter
+    { Color{ 220, 220, 120, 255 } },    // Sand
+    { Color{ 110, 20, 20, 255 } }       // Volcano
 };
 
 #endif //BIOME_H
