@@ -4,7 +4,7 @@
 
 Renderer::Renderer(AssetManager& assets) : assetManager(assets) {
     camera.offset = {0, 0};
-    camera.zoom = 1.0f;
+    camera.zoom = 0.2f; // debug
     camera.rotation = 0.0f;
     camera.target = {0, 0};
 }

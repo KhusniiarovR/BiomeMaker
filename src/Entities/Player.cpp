@@ -3,7 +3,7 @@
 
 Player::Player(Vector2 init_pos) {
     position = init_pos;
-    speed = 200.0f;
+    speed = 2000.0f; // debug
 }
 
 void Player::update(float dt) {
