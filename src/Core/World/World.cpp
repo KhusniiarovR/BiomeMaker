@@ -3,6 +3,23 @@
 #include <ranges>
 #include "Constants/WorldConst.h"
 
+World::World() {
+    LoadHeaders();
+}
+
+void World::LoadHeaders() {
+    std::string filename = "saves/world/world.dat";
+    worldFile.open(filename, std::ios::binary);
+    if (!worldFile.is_open()) {
+        std::cerr << "Error: can't open world.dat\n";
+        return;
+    }
+
+    int totalChunks = WORLD_SIZE;
+    headers.resize(totalChunks);
+    worldFile.read(reinterpret_cast<char*>(headers.data()), totalChunks * sizeof(ChunkHeader));
+}
+
 void World::update(Vector2 playerPos) {
     const int chunkPixelSize = CHUNK_SIZE * TILE_SIZE;
 
@@ -20,11 +37,9 @@ void World::update(Vector2 playerPos) {
 
     for (int y = loadStartY; y < loadEndY; ++y) {
         for (int x = loadStartX; x < loadEndX; ++x) {
-            //if (x < 0 || y < 0 || x >= WORLD_CHUNKS || y >= WORLD_CHUNKS) continue;
-
             auto key = std::make_pair(x, y);
             if (chunks.find(key) == chunks.end()) {
-                chunks.emplace(key, Chunk(x, y));
+                chunks.emplace(key, Chunk(x, y, headers, worldFile));
             }
         }
     }

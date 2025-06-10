@@ -7,8 +7,14 @@
 
 class World {
     std::unordered_map<std::pair<int, int>, Chunk, PairHash> chunks;
+    std::vector<ChunkHeader> headers;
+    std::ifstream worldFile;
 
 public:
+    World();
+
+    void LoadHeaders();
+
     void update(Vector2 playerPos);
     void render() const;
     [[nodiscard]] int getChunkCount() const;

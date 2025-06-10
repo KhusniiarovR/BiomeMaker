@@ -8,41 +8,42 @@
 #include <filesystem>
 #include <iostream>
 
+struct ChunkHeader {
+    uint32_t offset;
+    uint32_t size;
+};
+
 class Chunk {
 public:
     int x, y;
     const Biome* tiles[CHUNK_SIZE][CHUNK_SIZE];
 
-    Chunk(int cx, int cy) : x(cx), y(cy) {
-        Generate();
+    Chunk(int cx, int cy, const std::vector<ChunkHeader>& headers, std::ifstream& file) : x(cx), y(cy) {
+        Generate(headers, file);
     }
 
     // todo add world creating menu
-    
     // todo saves directory for worlds
-    void Generate() {
-        std::string filename = "world/chunk_" + std::to_string(x) + "_" + std::to_string(y) + ".chunk";
-        std::ifstream in(filename, std::ios::binary);
 
-        if (!in.is_open()) {
-            for (int y = 0; y < CHUNK_SIZE; y++) {
-                for (int x = 0; x < CHUNK_SIZE; x++) {
-                    tiles[y][x] = &BIOMES[0];
-                }
-            }
+    void Generate(const std::vector<ChunkHeader>& headers, std::ifstream& file) {
+        if (x < 0 || x >= NUM_CHUNKS || y < 0 || y >= NUM_CHUNKS) {
+            for (int ty = 0; ty < CHUNK_SIZE; ++ty)
+                for (int tx = 0; tx < CHUNK_SIZE; ++tx)
+                    tiles[ty][tx] = &BIOMES[0];
             return;
         }
+        int index = y * NUM_CHUNKS + x;
 
+        const ChunkHeader& header = headers[index];
+
+        file.seekg(header.offset, std::ios::beg);
         int tx = 0, ty = 0;
 
-        while (!in.eof()) {
+        while (file.tellg() < static_cast<std::streampos>(header.offset + header.size)) {
             unsigned char count;
             char symbol;
-
-            in.read(reinterpret_cast<char*>(&count), 1);
-            in.read(&symbol, 1);
-
-            if (in.eof()) break;
+            file.read(reinterpret_cast<char*>(&count), 1);
+            file.read(&symbol, 1);
 
             const Biome* biomePtr = SymbolToBiome(symbol);
 
@@ -51,14 +52,12 @@ public:
 
                 tiles[ty][tx] = biomePtr;
                 tx++;
-
                 if (tx >= CHUNK_SIZE) {
                     tx = 0;
                     ty++;
                 }
             }
         }
-        in.close();
     }
 
     void Draw() const {
