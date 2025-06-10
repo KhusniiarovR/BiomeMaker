@@ -8,11 +8,6 @@
 #include <filesystem>
 #include <iostream>
 
-struct ChunkHeader {
-    uint32_t offset;
-    uint32_t size;
-};
-
 class Chunk {
 public:
     int x, y;

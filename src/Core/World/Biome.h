@@ -10,6 +10,8 @@ struct Biome {
 
 // todo merge biome color and symbol
 
+const char BIOME_SYMBOLS[] = { 'F', 'O', 'W', 'S', 'V', 'G', 'B', 'C', 'M', 'E' };
+
 const std::vector<Biome> BIOMES = {
     { Color{ 255, 0, 255, 255 } },      // Unknown
     { Color{ 34, 170, 34, 255 } },      // Forest
@@ -17,11 +19,11 @@ const std::vector<Biome> BIOMES = {
     { Color{ 210, 210, 210, 255 } },    // Winter
     { Color{ 220, 220, 120, 255 } },    // Sand
     { Color{ 110, 20, 20, 255 } },      // Volcano
-    { Color{RED}},                                // Glass
-    { Color{SKYBLUE}},                            // Beach
-    { Color{PURPLE}},                             // Crystal
-    { Color{GRAY}},                               // Mountain
-    { Color{BLACK}}                               // Exit Block
+    { Color{RED}},                      // Glass
+    { Color{SKYBLUE}},                  // Beach
+    { Color{PURPLE}},                   // Crystal
+    { Color{GRAY}},                     // Mountain
+    { Color{BLACK}}                     // Exit Block
 };
 
 #endif //BIOME_H
