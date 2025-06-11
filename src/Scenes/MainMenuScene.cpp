@@ -3,15 +3,14 @@
 #include "raylib.h"
 
 MainMenuScene::MainMenuScene(Renderer& renderer) : Scene(renderer) {
-    worldCreator.Generate(12345, "world");
+    renderer.GetCamera().offset = {0, 0};
 }
 // todo create separate scene for world creation/selection
 
-
 void MainMenuScene::update(float dt) {
     if (IsKeyPressed(KEY_ENTER)) {
-
         changeScene = true;
+        nextScene = SceneType::WorldSelection;
     }
 }
 
@@ -24,5 +23,5 @@ bool MainMenuScene::shouldTransition() const {
 }
 
 SceneType MainMenuScene::getNextScene() const {
-    return SceneType::Game;
+    return nextScene;
 }

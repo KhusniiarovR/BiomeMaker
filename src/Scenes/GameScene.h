@@ -8,12 +8,11 @@
 
 class GameScene : public Scene {
 private:
-    bool changeScene = false;
     Player player;
     World world;
 
 public:
-    GameScene(Renderer& renderer);
+    GameScene(Renderer& renderer, const std::string& worldName);
     void update(float dt) override;
     void render() const override;
     [[nodiscard]] bool shouldTransition() const override;

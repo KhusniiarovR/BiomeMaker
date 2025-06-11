@@ -11,9 +11,13 @@ build CMakeFiles\SoulKnight.dir\src\Core\Render\Renderer.cpp.obj: dyndep
 
 build CMakeFiles\SoulKnight.dir\src\Core\World\World.cpp.obj: dyndep
 
+build CMakeFiles\SoulKnight.dir\src\Core\World\WorldSelector.cpp.obj: dyndep
+
 build CMakeFiles\SoulKnight.dir\src\Entities\Player.cpp.obj: dyndep
 
 build CMakeFiles\SoulKnight.dir\src\Scenes\GameScene.cpp.obj: dyndep
 
 build CMakeFiles\SoulKnight.dir\src\Scenes\MainMenuScene.cpp.obj: dyndep
+
+build CMakeFiles\SoulKnight.dir\src\Scenes\WorldSelectionScene.cpp.obj: dyndep
 

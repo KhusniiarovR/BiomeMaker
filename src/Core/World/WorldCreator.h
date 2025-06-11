@@ -15,8 +15,8 @@
 
 class WorldCreator {
 private:
-    static constexpr int extraCentersInner = 2;
-    static constexpr int extraCentersOuter = 5;
+    static constexpr int extraCentersInner = 4;
+    static constexpr int extraCentersOuter = 10;
 
     static constexpr int innerRadius = 200;
     static constexpr int ringWidth = 30;

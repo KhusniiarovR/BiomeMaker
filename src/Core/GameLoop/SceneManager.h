@@ -12,7 +12,7 @@ private:
 
 public:
     SceneManager(Renderer& renderer);
-    void loadScene(SceneType sceneType);
+    void loadScene(SceneType sceneType, const std::string& worldName = "\0");
     void update(float dt);
     void render();
 };

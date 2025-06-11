@@ -3,13 +3,12 @@
 #include <ranges>
 #include "Constants/WorldConst.h"
 
-World::World() {
+World::World(const std::string &filename) : filename(filename) {
     LoadHeaders();
 }
 
 void World::LoadHeaders() {
-    std::string filename = "saves/world/world.dat";
-    worldFile.open(filename, std::ios::binary);
+    worldFile.open(filename + "/world.dat", std::ios::binary);
     if (!worldFile.is_open()) {
         std::cerr << "Error: can't open world.dat\n";
         return;

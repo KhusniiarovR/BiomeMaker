@@ -4,7 +4,7 @@
 
 Renderer::Renderer(AssetManager& assets) : assetManager(assets) {
     camera.offset = {0, 0};
-    camera.zoom = 0.2f; // debug
+    camera.zoom = 1.0f;
     camera.rotation = 0.0f;
     camera.target = {0, 0};
 }
@@ -35,7 +35,6 @@ void Renderer::drawText(const std::string& text, Vector2 position,
 
     DrawTextEx(font, text.c_str(), pos, dimensions.y, spacing, color);
 }
-
 
 void Renderer::drawPlayer(Vector2 playerPos) {
     DrawCircleV(playerPos, 50, RED);

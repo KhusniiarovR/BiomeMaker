@@ -4,7 +4,8 @@
 enum class SceneType {
     None,
     MainMenu,
-    Game
+    Game,
+    WorldSelection
 };
 
 #endif //SCENETYPE_H

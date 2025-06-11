@@ -9,9 +9,10 @@ class World {
     std::unordered_map<std::pair<int, int>, Chunk, PairHash> chunks;
     std::vector<ChunkHeader> headers;
     std::ifstream worldFile;
+    std::string filename;
 
 public:
-    World();
+    World(const std::string &filename);
 
     void LoadHeaders();
 
