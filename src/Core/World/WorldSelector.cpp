@@ -5,19 +5,20 @@
 #include "Constants/GraphicsConst.h"
 
 WorldSelector::WorldSelector(const std::string& path)
-    : basePath(path),
-      listAreaHeight(screenSizeY * 0.70f),
-      worldSpacing(10.0f)
 {
+    basePath = path;
+    listAreaHeight = screenSizeY * 0.70f;
     worldHeight = listAreaHeight * 0.25f;
     listStartY = screenSizeY * 0.2f;
     listStartX = screenSizeX * 0.1f;
-    worldBox = { listStartX, listStartY, 600, worldHeight };
+    worldBox = {listStartX, listStartY, 600, worldHeight };
     textX = (listStartX + worldBox.width / 2.0f) / screenSizeX;
+    scrollSpeed = 10.0f;
+    worldSpacing = 15.0f;
     loadFolders();
     totalContentHeight = folders.size() * (worldHeight + worldSpacing);
-    scrollSpeed = 10.0f;
 }
+// todo fix buttons incorrect hitbox
 
 void WorldSelector::loadFolders() {
     folders.clear();
@@ -38,11 +39,12 @@ void WorldSelector::update() {
     scrollOffset = Clamp(scrollOffset, 0.0f, std::max(0.0f, totalContentHeight - listAreaHeight));
 
     for (size_t i = 0; i < folders.size(); ++i) {
-        float y = listStartY + i * (worldHeight + worldSpacing) - scrollOffset;
-        Rectangle worldBox = { 100, y, 600, worldHeight };
+        Rectangle worldBox = this->worldBox;
+        worldBox.y = listStartY + i * (worldHeight + worldSpacing) - scrollOffset;
 
-        if (y + worldHeight < listStartY || y > listStartY + listAreaHeight)
+        if (worldBox.y + worldHeight < listStartY || worldBox.y > listStartY + listAreaHeight) {
             continue;
+        }
 
         if (CheckCollisionPointRec(GetMousePosition(), worldBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             selectedIndex = static_cast<int>(i);
@@ -54,7 +56,7 @@ void WorldSelector::draw(Renderer& renderer) const {
     renderer.drawText("Choose world: ", {0.5, 0.1}, 100, DARKGRAY);
     // todo dynamic text size everywhere
 
-    BeginScissorMode(listStartX, listStartY, 600, listAreaHeight);
+    BeginScissorMode(listStartX, listStartY, worldBox.width, listAreaHeight);
     for (int i = 0; i < folders.size(); ++i) {
         Rectangle worldBox = this->worldBox;
         worldBox.y = listStartY + i * (worldHeight + worldSpacing) - scrollOffset;
@@ -64,7 +66,8 @@ void WorldSelector::draw(Renderer& renderer) const {
         }
 
         bool hovered = CheckCollisionPointRec(GetMousePosition(), worldBox);
-        Color bgColor = hovered ? LIGHTGRAY : GRAY;
+        Color bgColor = GRAY;
+        if (hovered) bgColor = LIGHTGRAY;
         if (i == selectedIndex) bgColor = DARKGRAY;
 
         DrawRectangleRounded(worldBox, 0.15f, 12, bgColor);
@@ -81,8 +84,15 @@ std::string WorldSelector::getSelectedFolder() const {
 }
 
 void WorldSelector::deleteCurrent() {
+    if (selectedIndex < 0 || selectedIndex >= static_cast<int>(folders.size())) {
+        return;
+    }
     std::string path = getSelectedFolder();
-    std::filesystem::remove_all(path);
-    loadFolders();
-    selectedIndex = -1;
+    if (!path.empty()) {
+        std::filesystem::remove_all(path);
+        loadFolders();
+        totalContentHeight = folders.size() * (worldHeight + worldSpacing);
+        scrollOffset = Clamp(scrollOffset, 0.0f, std::max(0.0f, totalContentHeight - listAreaHeight));
+        selectedIndex = -1;
+    }
 }
