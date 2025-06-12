@@ -20,24 +20,24 @@ void WorldCreator::generate(int seed, std::string worldName) {
         std::mt19937 rng(seed);
         this->worldName = std::move(worldName);
 
-        std::uniform_int_distribution<int> dist(0, WORLD_SIZE - 1);
+        std::uniform_int_distribution<int> dist(0, worldSize - 1);
         std::vector<BiomeCenter> centers;
 
-        centers.push_back({ WORLD_SIZE / 2, WORLD_SIZE / 2, centerBiome });
+        centers.push_back({ worldSize / 2, worldSize / 2, centerBiome });
 
         for (char b : innerBiomes) {
             int angle = dist(rng) % 360;
             int r = innerRadius * 2 / 3 + (dist(rng) % (innerRadius / 3));
-            int cx = WORLD_SIZE / 2 + static_cast<int>(r * std::cos(angle));
-            int cy = WORLD_SIZE / 2 + static_cast<int>(r * std::sin(angle));
+            int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
+            int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
             centers.push_back({ cx, cy, b });
         }
 
         for (char b : outerBiomes) {
             int angle = dist(rng) % 360;
             int r = outerRadius + 30 + (dist(rng) % 50);
-            int cx = WORLD_SIZE / 2 + static_cast<int>(r * std::cos(angle));
-            int cy = WORLD_SIZE / 2 + static_cast<int>(r * std::sin(angle));
+            int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
+            int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
             centers.push_back({ cx, cy, b });
         }
 
@@ -45,8 +45,8 @@ void WorldCreator::generate(int seed, std::string worldName) {
             char b = innerBiomes[dist(rng) % innerBiomes.size()];
             int r = innerRadius / 2 + (dist(rng) % (innerRadius / 2));
             int angle = dist(rng) % 360;
-            int cx = WORLD_SIZE / 2 + static_cast<int>(r * std::cos(angle));
-            int cy = WORLD_SIZE / 2 + static_cast<int>(r * std::sin(angle));
+            int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
+            int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
             centers.push_back({ cx, cy, b });
         }
 
@@ -54,17 +54,17 @@ void WorldCreator::generate(int seed, std::string worldName) {
             char b = outerBiomes[dist(rng) % outerBiomes.size()];
             int r = outerRadius + 40 + (dist(rng) % 50);
             int angle = dist(rng) % 360;
-            int cx = WORLD_SIZE / 2 + static_cast<int>(r * std::cos(angle));
-            int cy = WORLD_SIZE / 2 + static_cast<int>(r * std::sin(angle));
+            int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
+            int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
             centers.push_back({ cx, cy, b });
         }
 
-        std::vector<std::vector<char>> map(WORLD_SIZE, std::vector<char>(WORLD_SIZE, errorBiome));
+        std::vector<std::vector<char>> map(worldSize, std::vector<char>(worldSize, errorBiome));
 
-        for (int y = 0; y < WORLD_SIZE; ++y) {
-            for (int x = 0; x < WORLD_SIZE; ++x) {
-                int dx = x - WORLD_SIZE / 2;
-                int dy = y - WORLD_SIZE / 2;
+        for (int y = 0; y < worldSize; ++y) {
+            for (int x = 0; x < worldSize; ++x) {
+                int dx = x - worldSize / 2;
+                int dy = y - worldSize / 2;
                 int r = static_cast<int>(std::sqrt(dx * dx + dy * dy));
 
                 char biome = errorBiome;
@@ -76,8 +76,8 @@ void WorldCreator::generate(int seed, std::string worldName) {
                     int minDist = std::numeric_limits<int>::max();
 
                     for (const auto& center : centers) {
-                        int cx = center.x - WORLD_SIZE / 2;
-                        int cy = center.y - WORLD_SIZE / 2;
+                        int cx = center.x - worldSize / 2;
+                        int cy = center.y - worldSize / 2;
                         int centerR = static_cast<int>(std::sqrt(cx * cx + cy * cy));
 
                         bool sameZone =
@@ -121,21 +121,21 @@ void WorldCreator::save_world_rle(const std::vector<std::vector<char>> &world) {
         return;
     }
 
-    int total_chunks = NUM_CHUNKS * NUM_CHUNKS;
+    int total_chunks = numberOfChunks * numberOfChunks;
     std::vector<ChunkHeader> headers(total_chunks);
     out.seekp(total_chunks * sizeof(ChunkHeader), std::ios::beg);
 
-    for (int cy = 0; cy < NUM_CHUNKS; ++cy) {
-        for (int cx = 0; cx < NUM_CHUNKS; ++cx) {
-            int startX = cx * CHUNK_SIZE;
-            int startY = cy * CHUNK_SIZE;
+    for (int cy = 0; cy < numberOfChunks; ++cy) {
+        for (int cx = 0; cx < numberOfChunks; ++cx) {
+            int startX = cx * chunkSize;
+            int startY = cy * chunkSize;
 
             std::streampos chunk_start = out.tellp();
             char current = world[startY][startX];
             unsigned char count = 1;
 
-            for (int y = 0; y < CHUNK_SIZE; ++y) {
-                for (int x = 0; x < CHUNK_SIZE; ++x) {
+            for (int y = 0; y < chunkSize; ++y) {
+                for (int x = 0; x < chunkSize; ++x) {
                     if (x == 0 && y == 0) continue;
                     char next = world[startY + y][startX + x];
                     if (next == current && count < 255) {
@@ -155,7 +155,7 @@ void WorldCreator::save_world_rle(const std::vector<std::vector<char>> &world) {
             std::streampos chunk_end = out.tellp();
             uint32_t offset = static_cast<uint32_t>(chunk_start);
             uint32_t size = static_cast<uint32_t>(chunk_end - chunk_start);
-            headers[cy * NUM_CHUNKS + cx] = { offset, size };
+            headers[cy * numberOfChunks + cx] = { offset, size };
         }
     }
 

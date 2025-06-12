@@ -11,7 +11,7 @@
 class Chunk {
 public:
     int x, y;
-    const Biome* tiles[CHUNK_SIZE][CHUNK_SIZE];
+    const Biome* tiles[chunkSize][chunkSize];
 
     Chunk(int cx, int cy, const std::vector<ChunkHeader>& headers, std::ifstream& file) : x(cx), y(cy) {
         Generate(headers, file);
@@ -21,13 +21,13 @@ public:
     // todo saves directory for worlds
 
     void Generate(const std::vector<ChunkHeader>& headers, std::ifstream& file) {
-        if (x < 0 || x >= NUM_CHUNKS || y < 0 || y >= NUM_CHUNKS) {
-            for (int ty = 0; ty < CHUNK_SIZE; ++ty)
-                for (int tx = 0; tx < CHUNK_SIZE; ++tx)
+        if (x < 0 || x >= numberOfChunks || y < 0 || y >= numberOfChunks) {
+            for (int ty = 0; ty < chunkSize; ++ty)
+                for (int tx = 0; tx < chunkSize; ++tx)
                     tiles[ty][tx] = &BIOMES[0];
             return;
         }
-        int index = y * NUM_CHUNKS + x;
+        int index = y * numberOfChunks + x;
 
         const ChunkHeader& header = headers[index];
 
@@ -43,11 +43,11 @@ public:
             const Biome* biomePtr = SymbolToBiome(symbol);
 
             for (int i = 0; i < count; ++i) {
-                if (ty >= CHUNK_SIZE) break;
+                if (ty >= chunkSize) break;
 
                 tiles[ty][tx] = biomePtr;
                 tx++;
-                if (tx >= CHUNK_SIZE) {
+                if (tx >= chunkSize) {
                     tx = 0;
                     ty++;
                 }
@@ -56,11 +56,11 @@ public:
     }
 
     void Draw() const {
-        for (int y = 0; y < CHUNK_SIZE; y++) {
-            for (int x = 0; x < CHUNK_SIZE; x++) {
-                float worldX = (this->x * CHUNK_SIZE + x) * TILE_SIZE;
-                float worldY = (this->y * CHUNK_SIZE + y) * TILE_SIZE;
-                DrawRectangle(worldX, worldY, TILE_SIZE, TILE_SIZE, tiles[y][x]->color);
+        for (int y = 0; y < chunkSize; y++) {
+            for (int x = 0; x < chunkSize; x++) {
+                float worldX = (this->x * chunkSize + x) * tileSize;
+                float worldY = (this->y * chunkSize + y) * tileSize;
+                DrawRectangle(worldX, worldY, tileSize, tileSize, tiles[y][x]->color);
             }
         }
     }

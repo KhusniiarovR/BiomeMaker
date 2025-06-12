@@ -14,13 +14,13 @@ void World::LoadHeaders() {
         return;
     }
 
-    int totalChunks = WORLD_SIZE;
+    int totalChunks = worldSize;
     headers.resize(totalChunks);
     worldFile.read(reinterpret_cast<char*>(headers.data()), totalChunks * sizeof(ChunkHeader));
 }
 
 void World::update(Vector2 playerPos) {
-    const int chunkPixelSize = CHUNK_SIZE * TILE_SIZE;
+    const int chunkPixelSize = chunkSize * tileSize;
 
     int playerChunkX = static_cast<int>(playerPos.x / chunkPixelSize);
     int playerChunkY = static_cast<int>(playerPos.y / chunkPixelSize);

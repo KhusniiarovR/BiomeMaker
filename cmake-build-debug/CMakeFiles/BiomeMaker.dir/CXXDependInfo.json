@@ -1,0 +1,22 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "MSVC",
+	"compiler-id" : "MSVC",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"dir-cur-bld" : "C:/Users/ramir/Desktop/Programming/raylib_games/BiomeMaker/cmake-build-debug",
+	"dir-cur-src" : "C:/Users/ramir/Desktop/Programming/raylib_games/BiomeMaker",
+	"dir-top-bld" : "C:/Users/ramir/Desktop/Programming/raylib_games/BiomeMaker/cmake-build-debug",
+	"dir-top-src" : "C:/Users/ramir/Desktop/Programming/raylib_games/BiomeMaker",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"C:\\Users\\ramir\\Desktop\\Programming\\raylib_games\\BiomeMaker\\src",
+		"C:\\Users\\ramir\\.vcpkg-clion\\vcpkg\\installed\\x64-windows\\include"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "C:/Users/ramir/Desktop/Programming/raylib_games/BiomeMaker/cmake-build-debug/CMakeFiles/BiomeMaker.dir"
+}

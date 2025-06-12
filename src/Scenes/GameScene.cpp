@@ -4,7 +4,7 @@
 
 GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          Scene(renderer),
-         player ({WORLD_SIZE * TILE_SIZE / 2.0f, WORLD_SIZE * TILE_SIZE / 2.0f}),
+         player ({worldSize * tileSize / 2.0f, worldSize * tileSize / 2.0f}),
          world(worldName)
 {
     renderer.GetCamera().offset = {screenSizeX / 2.0f, screenSizeY / 2.0f};

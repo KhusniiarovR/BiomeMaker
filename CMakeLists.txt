@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.29)
-project(SoulKnight)
+project(BiomeMaker)
 
 set(CMAKE_CXX_STANDARD 20)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
-add_executable(SoulKnight main.cpp ${SOURCES})
+add_executable(BiomeMaker ${SOURCES})
 
 find_package(raylib CONFIG REQUIRED)
 
