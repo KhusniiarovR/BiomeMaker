@@ -1,11 +1,31 @@
 #include "WorldSelectionScene.h"
 
-WorldSelectionScene::WorldSelectionScene(Renderer &renderer) : Scene(renderer)  {
-    worldCreator.Generate(123, "Hello World");
+WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
+    : Scene(renderer),
+    playButton  ({0.6f, 0.3f},  {0.2f, 0.1f}, "PLAY",   BLACK, 0.5f),
+    createButton({0.6f, 0.55f}, {0.2f, 0.1f}, "CREATE", BLACK, 0.5f),
+    deleteButton({0.6f, 0.8f},  {0.2f, 0.1f}, "DELETE", BLACK, 0.5f)
+{
+    playButton.setOnClick([this]() {
+        changeScene = true;
+        nextScene = SceneType::Game;
+    });
+
+    createButton.setOnClick([this]() {
+        worldCreator.generate("world");
+        worldSelector.loadFolders();
+    });
+
+    deleteButton.setOnClick([this]() {
+        worldSelector.deleteCurrent();
+    });
 }
 
 void WorldSelectionScene::update(float dt) {
     worldSelector.update();
+    playButton.update();
+    createButton.update();
+    deleteButton.update();
 
     if (IsKeyPressed(KEY_ENTER)) {
         changeScene = true;
@@ -20,6 +40,9 @@ void WorldSelectionScene::update(float dt) {
 
 void WorldSelectionScene::render() const {
     worldSelector.draw(renderer);
+    playButton.render(renderer);
+    createButton.render(renderer);
+    deleteButton.render(renderer);
 }
 
 bool WorldSelectionScene::shouldTransition() const {

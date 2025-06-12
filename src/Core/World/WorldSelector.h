@@ -12,6 +12,8 @@ public:
     void update();
     void draw(Renderer& renderer) const;
     [[nodiscard]] std::string getSelectedFolder() const;
+    void loadFolders();
+    void deleteCurrent();
 
 private:
     std::string basePath;
@@ -28,9 +30,6 @@ private:
     float scrollOffset = 0.0f;
     float scrollSpeed;
     float totalContentHeight;
-
-    void LoadFolders();
-    void calcY(int i);
 };
 
 

@@ -17,14 +17,13 @@ void Game::run() {
 }
 
 void Game::init() {
+    SetTraceLogLevel(LOG_ERROR); // opengl init comments
     SetConfigFlags(FLAG_VSYNC_HINT);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "Soul Knight");
     screenSizeX = GetScreenWidth();
     screenSizeY = GetScreenHeight();
     SetTargetFPS(60);
     //ToggleFullscreen();
-
-
 }
 
 void Game::stop() {

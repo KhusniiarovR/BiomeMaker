@@ -4,14 +4,19 @@
 #include "Scene.h"
 #include <Core/World/WorldSelector.h>
 #include "Core/World/WorldCreator.h"
+#include "Utilities/Graphics/Button.h"
 
 class WorldSelectionScene : public Scene {
 private:
     WorldCreator worldCreator;
     WorldSelector worldSelector;
 
+    Button createButton;
+    Button deleteButton;
+    Button playButton;
+
 public:
-    WorldSelectionScene(Renderer& renderer);
+    explicit WorldSelectionScene(Renderer& renderer);
 
     void update(float dt) override;
     void render() const override;

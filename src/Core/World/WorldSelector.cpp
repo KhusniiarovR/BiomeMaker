@@ -14,13 +14,13 @@ WorldSelector::WorldSelector(const std::string& path)
     listStartX = screenSizeX * 0.1f;
     worldBox = { listStartX, 0, 600, worldHeight };
     textX = (listStartX + worldBox.width / 2) / screenSizeX;
-    LoadFolders();
+    loadFolders();
     totalContentHeight = folders.size() * (worldHeight + worldSpacing);
     scrollSpeed = 10.0f;
 
 }
 
-void WorldSelector::LoadFolders() {
+void WorldSelector::loadFolders() {
     folders.clear();
     if (!std::filesystem::exists(basePath) || !std::filesystem::is_directory(basePath)) return;
 
@@ -79,4 +79,12 @@ std::string WorldSelector::getSelectedFolder() const {
         return basePath + folders[selectedIndex];
     }
     return "";
+}
+
+#include <iostream>
+void WorldSelector::deleteCurrent() {
+    std::string path = getSelectedFolder();
+    std::filesystem::remove_all(path);
+    loadFolders();
+    selectedIndex = -1;
 }
