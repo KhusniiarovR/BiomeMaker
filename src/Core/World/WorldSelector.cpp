@@ -12,12 +12,11 @@ WorldSelector::WorldSelector(const std::string& path)
     worldHeight = listAreaHeight * 0.25f;
     listStartY = screenSizeY * 0.2f;
     listStartX = screenSizeX * 0.1f;
-    worldBox = { listStartX, 0, 600, worldHeight };
-    textX = (listStartX + worldBox.width / 2) / screenSizeX;
+    worldBox = { listStartX, listStartY, 600, worldHeight };
+    textX = (listStartX + worldBox.width / 2.0f) / screenSizeX;
     loadFolders();
     totalContentHeight = folders.size() * (worldHeight + worldSpacing);
     scrollSpeed = 10.0f;
-
 }
 
 void WorldSelector::loadFolders() {
@@ -81,7 +80,6 @@ std::string WorldSelector::getSelectedFolder() const {
     return "";
 }
 
-#include <iostream>
 void WorldSelector::deleteCurrent() {
     std::string path = getSelectedFolder();
     std::filesystem::remove_all(path);

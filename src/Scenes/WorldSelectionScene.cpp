@@ -7,8 +7,10 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
     deleteButton({0.6f, 0.8f},  {0.2f, 0.1f}, "DELETE", BLACK, 0.5f)
 {
     playButton.setOnClick([this]() {
-        changeScene = true;
-        nextScene = SceneType::Game;
+        if (!worldSelector.getSelectedFolder().empty()) {
+            changeScene = true;
+            nextScene = SceneType::Game;
+        }
     });
 
     createButton.setOnClick([this]() {
@@ -28,8 +30,10 @@ void WorldSelectionScene::update(float dt) {
     deleteButton.update();
 
     if (IsKeyPressed(KEY_ENTER)) {
-        changeScene = true;
-        nextScene = SceneType::Game;
+        if (!worldSelector.getSelectedFolder().empty()) {
+            changeScene = true;
+            nextScene = SceneType::Game;
+        }
     }
 
     if (IsKeyPressed(KEY_SPACE)) {

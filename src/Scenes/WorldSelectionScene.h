@@ -11,9 +11,9 @@ private:
     WorldCreator worldCreator;
     WorldSelector worldSelector;
 
+    Button playButton;
     Button createButton;
     Button deleteButton;
-    Button playButton;
 
 public:
     explicit WorldSelectionScene(Renderer& renderer);
