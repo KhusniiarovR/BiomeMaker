@@ -25,8 +25,8 @@ void World::update(Vector2 playerPos) {
     int playerChunkX = static_cast<int>(playerPos.x / chunkPixelSize);
     int playerChunkY = static_cast<int>(playerPos.y / chunkPixelSize);
 
-    const int preloadAhead = RENDER_DISTANCE / 2;
-    const int preloadBehind = RENDER_DISTANCE - preloadAhead;
+    const int preloadAhead = renderDistance / 2;
+    const int preloadBehind = renderDistance - preloadAhead;
 
     int loadStartX = playerChunkX - preloadBehind;
     int loadEndX   = playerChunkX + preloadAhead + 1;

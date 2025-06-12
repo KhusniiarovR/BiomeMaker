@@ -4,6 +4,7 @@
 
 MainMenuScene::MainMenuScene(Renderer& renderer) : Scene(renderer) {
     renderer.GetCamera().offset = {0, 0};
+    renderer.GetCamera().target = {0, 0};
 }
 // todo create separate scene for world creation/selection
 

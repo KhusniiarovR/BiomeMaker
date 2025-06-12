@@ -1,7 +1,7 @@
 #ifndef GAMESCENE_H
 #define GAMESCENE_H
 
-#include <Constants/GraphicsConst.h>
+
 #include "Scene.h"
 #include <Entities/Player.h>
 #include "Core/World/World.h"

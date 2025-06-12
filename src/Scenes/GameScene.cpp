@@ -1,13 +1,14 @@
 #include "GameScene.h"
 #include "raylib.h"
+#include <Constants/GraphicsConst.h>
 
 GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          Scene(renderer),
-         player ({screenSizeX/2.0f, screenSizeY/2.0f}),
+         player ({WORLD_SIZE * TILE_SIZE / 2.0f, WORLD_SIZE * TILE_SIZE / 2.0f}),
          world(worldName)
 {
-    renderer.GetCamera().offset = {screenSizeX/2.0f, screenSizeY/2.0f};
-    // todo delete offset maybe
+    renderer.GetCamera().offset = {screenSizeX / 2.0f, screenSizeY / 2.0f};
+    // todo delete offset
 }
 
 void GameScene::update(float dt) {
