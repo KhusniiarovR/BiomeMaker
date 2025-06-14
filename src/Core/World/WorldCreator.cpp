@@ -6,13 +6,20 @@
 #include <fstream>
 #include <random>
 #include "Constants/WorldConst.h"
+#include "Biome.h"
 
 WorldCreator::WorldCreator() = default;
 
 WorldCreator::~WorldCreator() = default;
 
+void WorldCreator::generate() {
+    generate(getName());
+}
+
 void WorldCreator::generate(std::string worldName) {
-    generate(time(0), std::move(worldName));
+    std::random_device rd;
+    int seed = static_cast<int>(rd());
+    generate(seed, std::move(worldName));
 }
 
 void WorldCreator::generate(int seed, std::string worldName) {
@@ -165,4 +172,46 @@ void WorldCreator::save_world_rle(const std::vector<std::vector<char>> &world) {
     }
 
     out.close();
+}
+
+std::string WorldCreator::getName() {
+    std::vector<std::string> prefixes;
+    std::vector<std::string> suffixes;
+
+    if (prefixes.empty() || suffixes.empty()) {
+        std::ifstream file("data/worldNames/names.txt");
+        if (!file.is_open()) {
+            std::cerr << "worldcreator:getName:can't open file names.txt\n";
+        }
+
+        std::string line;
+        enum Section { NONE, PREFIX, SUFFIX } section = NONE;
+
+        while (std::getline(file, line)) {
+            line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
+            if (line.empty()) continue;
+
+            if (line[0] == '#') {
+                if (line.find("PREFIX") != std::string::npos)
+                    section = PREFIX;
+                else if (line.find("SUFFIX") != std::string::npos)
+                    section = SUFFIX;
+                else
+                    section = NONE;
+                continue;
+            }
+
+            if (section == PREFIX)
+                prefixes.push_back(line);
+            else if (section == SUFFIX)
+                suffixes.push_back(line);
+        }
+    }
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> pDist(0, static_cast<int>(prefixes.size() - 1));
+    std::uniform_int_distribution<> sDist(0, static_cast<int>(suffixes.size() - 1));
+
+    return prefixes[pDist(gen)] + " " + suffixes[sDist(gen)];
 }

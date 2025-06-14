@@ -1,1 +1,1 @@
-da ezhe
+ti cho durak

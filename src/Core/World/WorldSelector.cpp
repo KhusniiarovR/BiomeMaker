@@ -9,10 +9,8 @@ WorldSelector::WorldSelector(const std::string& path)
     basePath = path;
     listAreaHeight = screenSizeY * 0.70f;
     worldHeight = listAreaHeight * 0.25f;
-    listStartY = screenSizeY * 0.2f;
-    listStartX = screenSizeX * 0.1f;
-    worldBox = {listStartX, listStartY, 600, worldHeight };
-    textX = (listStartX + worldBox.width / 2.0f) / screenSizeX;
+    worldBox = {screenSizeX * 0.05f, screenSizeY * 0.2f, screenSizeX * 0.5f, worldHeight };
+    textX = (worldBox.x + worldBox.width / 2.0f) / screenSizeX;
     scrollSpeed = 10.0f;
     worldSpacing = 15.0f;
     loadFolders();
@@ -40,9 +38,9 @@ void WorldSelector::update() {
 
     for (size_t i = 0; i < folders.size(); ++i) {
         Rectangle worldBox = this->worldBox;
-        worldBox.y = listStartY + i * (worldHeight + worldSpacing) - scrollOffset;
+        worldBox.y = worldBox.y + i * (worldHeight + worldSpacing) - scrollOffset;
 
-        if (worldBox.y + worldHeight < listStartY || worldBox.y > listStartY + listAreaHeight) {
+        if (worldBox.y + worldHeight < worldBox.y || worldBox.y > worldBox.y + listAreaHeight) {
             continue;
         }
 
@@ -56,12 +54,12 @@ void WorldSelector::draw(Renderer& renderer) const {
     renderer.drawText("Choose world: ", {0.5, 0.1}, 100, DARKGRAY);
     // todo dynamic text size everywhere
 
-    BeginScissorMode(listStartX, listStartY, worldBox.width, listAreaHeight);
+    BeginScissorMode(worldBox.x, worldBox.y, worldBox.width, listAreaHeight);
     for (int i = 0; i < folders.size(); ++i) {
         Rectangle worldBox = this->worldBox;
-        worldBox.y = listStartY + i * (worldHeight + worldSpacing) - scrollOffset;
+        worldBox.y = worldBox.y + i * (worldHeight + worldSpacing) - scrollOffset;
 
-        if (worldBox.y + worldHeight < listStartY || worldBox.y > listStartY + listAreaHeight) {
+        if (worldBox.y + worldHeight < worldBox.y || worldBox.y > worldBox.y + listAreaHeight) {
             continue;
         }
 

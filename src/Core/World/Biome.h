@@ -10,6 +10,12 @@ struct Biome {
 
 // todo merge biome color and symbol
 
+const char errorBiome = 'U';
+const char centerBiome = 'F';
+const std::vector<char> innerBiomes = { 'O', 'W', 'S', 'V' };
+const std::vector<char> outerBiomes = { 'G', 'B', 'C', 'M' };
+const char ringBiome = 'E';
+
 const char BIOME_SYMBOLS[] = { 'F', 'O', 'W', 'S', 'V', 'G', 'B', 'C', 'M', 'E' };
 
 const std::vector<Biome> BIOMES = {
@@ -25,5 +31,7 @@ const std::vector<Biome> BIOMES = {
     { Color{GRAY}},                     // Mountain
     { Color{BLACK}}                     // Exit Block
 };
+
+
 
 #endif //BIOME_H

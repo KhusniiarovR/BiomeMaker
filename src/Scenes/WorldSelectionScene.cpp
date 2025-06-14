@@ -14,7 +14,7 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
     });
 
     createButton.setOnClick([this]() {
-        worldCreator.generate("world");
+        worldCreator.generate();
         worldSelector.loadFolders();
     });
 

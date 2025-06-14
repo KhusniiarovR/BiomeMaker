@@ -19,12 +19,6 @@ private:
 
     std::string worldName;
 
-    const char errorBiome = 'U';
-    const char centerBiome = 'F';
-    const std::vector<char> innerBiomes = { 'O', 'W', 'S', 'V' };
-    const std::vector<char> outerBiomes = { 'G', 'B', 'C', 'M' };
-    const char ringBiome = 'E';
-
     struct BiomeCenter {
         int x, y;
         char type;
@@ -34,11 +28,14 @@ public:
     WorldCreator();
     ~WorldCreator();
 
+    void generate(); // random name and seed
     void generate(std::string worldName); // random seed
     void generate(int seed, std::string worldName);
 
 private:
     static int dist2(int x1, int y1, int x2, int y2);
+
+    std::string getName();
 
     void save_world_rle(const std::vector<std::vector<char>>& world);
 };
