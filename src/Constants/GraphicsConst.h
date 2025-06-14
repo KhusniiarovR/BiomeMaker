@@ -1,4 +1,4 @@
-#ifndef GRAPHICS_СONST_H
+#ifndef GRAPHICS_CONST_H
 #define GRAPHICS_CONST_H
 
 inline int screenSizeX, screenSizeY;

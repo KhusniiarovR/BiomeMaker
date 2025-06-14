@@ -2,5 +2,8 @@
   "cmake.useCMakePresets": "always",
   "cmake.configurePreset": "debug",
   "cmake.buildPreset": "debug",
-  "terminal.integrated.cwd": "${workspaceFolder}"
+  "terminal.integrated.cwd": "${workspaceFolder}",
+  "files.associations": {
+    "filesystem": "cpp"
+  }
 }

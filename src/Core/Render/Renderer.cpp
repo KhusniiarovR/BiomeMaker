@@ -18,8 +18,8 @@ void Renderer::updateCamera(Vector2 playerPos) {
 }
 
 void Renderer::drawText(const std::string& text, Vector2 position,
-                           float size, Color color,
-                           const std::string& fontKey, float spacing) {
+                        float size, Color color,
+                        const std::string& fontKey, float spacing) {
 
     const Font& font = assetManager.getFont(fontKey, size);
 

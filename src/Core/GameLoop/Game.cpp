@@ -19,10 +19,11 @@ void Game::run() {
 void Game::init() {
     SetTraceLogLevel(LOG_ERROR); // opengl init comments
     SetConfigFlags(FLAG_VSYNC_HINT);
-    InitWindow(GetScreenWidth(), GetScreenHeight(), "Soul Knight");
+    InitWindow(GetScreenWidth(), GetScreenHeight(), "Biome Maker");
     screenSizeX = GetScreenWidth();
     screenSizeY = GetScreenHeight();
     SetTargetFPS(60);
+    SetMouseOffset(0, 28);
     //ToggleFullscreen();
 }
 

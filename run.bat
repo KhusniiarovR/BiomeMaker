@@ -19,7 +19,9 @@ set "SRC_DIR=%cd%"
 set "BUILD_DIR=%SRC_DIR%\build\debug"
 if not exist "%BUILD_DIR%" mkdir "%BUILD_DIR%"
 
-cmake -G Ninja -S "%SRC_DIR%" -B "%BUILD_DIR%" -DCMAKE_BUILD_TYPE=Debug
+cmake -G "Visual Studio 17 2022" -A x64 -S "%SRC_DIR%" -B "%BUILD_DIR%" -DCMAKE_BUILD_TYPE=Debug
+cmake --build "%BUILD_DIR%" --config Debug
+
 if errorlevel 1 exit /b 1
 
 cmake --build "%BUILD_DIR%" --config Debug
@@ -27,6 +29,6 @@ if errorlevel 1 exit /b 1
 
 echo Build complete
 
-"%BUILD_DIR%\BiomeMaker.exe"
+"%BUILD_DIR%\Debug\BiomeMaker.exe"
 
 exit
