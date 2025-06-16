@@ -1,1 +1,1 @@
-ti cho durak
+sam
