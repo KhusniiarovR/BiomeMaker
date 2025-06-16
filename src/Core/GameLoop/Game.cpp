@@ -2,8 +2,7 @@
 #include "raylib.h"
 #include "Constants/GraphicsConst.h"
 
-Game::Game() : renderer(assetManager),
-          sceneManager(renderer) {
+Game::Game() : renderer(assetManager), sceneManager(renderer) {
     init();
 }
 
@@ -18,12 +17,11 @@ void Game::run() {
 
 void Game::init() {
     SetTraceLogLevel(LOG_ERROR); // opengl init comments
-    SetConfigFlags(FLAG_VSYNC_HINT);
+    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_UNDECORATED);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "Biome Maker");
     screenSizeX = GetScreenWidth();
     screenSizeY = GetScreenHeight();
     SetTargetFPS(60);
-    SetMouseOffset(0, 28);
     //ToggleFullscreen();
 }
 

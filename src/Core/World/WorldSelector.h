@@ -23,8 +23,6 @@ private:
     float listAreaHeight;
     float worldHeight;
     float worldSpacing;
-    float listStartX;
-    float listStartY;
     Rectangle worldBox;
     float textX;
     float scrollOffset = 0.0f;

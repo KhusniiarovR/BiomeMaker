@@ -36,6 +36,46 @@ void Renderer::drawText(const std::string& text, Vector2 position,
     DrawTextEx(font, text.c_str(), pos, dimensions.y, spacing, color);
 }
 
+void Renderer::drawTextGradient(const std::string& text, Vector2 position,
+                                float size, float speed,
+                                Color colorA, Color colorB,
+                                float bounceSpeed, float bounceHeight,
+                                const std::string& fontKey, float spacing) {
+    const Font& font = assetManager.getFont(fontKey, size);
+
+    if (font.texture.id == 0) {
+        std::cout << "Renderer/drawTextGradient: font " << fontKey << " is invalid!\n";
+        return;
+    }
+
+    Vector2 totalDim = MeasureTextEx(font, text.c_str(), size, spacing);
+    Vector2 basePos = {
+        (screenSizeX * position.x) - (0.5f * totalDim.x),
+        (screenSizeY * position.y) - (0.5f * totalDim.y)
+    };
+
+    Vector2 pos = basePos;
+    float time = GetTime() * speed;
+
+    for (int i = 0; i < (int)text.length(); ++i) {
+        char ch[2] = { text[i], 0 };
+        Vector2 charDim = MeasureTextEx(font, ch, size, spacing);
+
+        float t = 0.5f + 0.5f * sinf(time + i * 0.3f);
+        Color blended = {
+            (unsigned char)(colorA.r + t * (colorB.r - colorA.r)),
+            (unsigned char)(colorA.g + t * (colorB.g - colorA.g)),
+            (unsigned char)(colorA.b + t * (colorB.b - colorA.b)),
+            (unsigned char)(colorA.a + t * (colorB.a - colorA.a))
+        };
+
+        Vector2 charPos = pos;
+        charPos.y += fabsf(sinf(time * bounceSpeed + i * 0.1f)) * bounceHeight;
+        DrawTextEx(font, ch, charPos, size, spacing, blended);
+        pos.x += charDim.x + spacing;
+    }
+}
+
 void Renderer::drawPlayer(Vector2 playerPos) {
     DrawCircleV(playerPos, 50, RED);
 }

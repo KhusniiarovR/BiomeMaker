@@ -6,7 +6,6 @@ MainMenuScene::MainMenuScene(Renderer& renderer) : Scene(renderer) {
     renderer.GetCamera().offset = {0, 0};
     renderer.GetCamera().target = {0, 0};
 }
-// todo create separate scene for world creation/selection
 
 void MainMenuScene::update(float dt) {
     if (IsKeyPressed(KEY_ENTER)) {
@@ -16,7 +15,7 @@ void MainMenuScene::update(float dt) {
 }
 
 void MainMenuScene::render() const {
-    renderer.drawText("Press enter to continue");
+    renderer.drawTextGradient("Press enter to continue", {0.5f, 0.5f}, 100.0f, 4.0f, PURPLE, RED);
 }
 
 bool MainMenuScene::shouldTransition() const {
