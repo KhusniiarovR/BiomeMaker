@@ -30,6 +30,8 @@ public:
                 const std::string& fontKey = "Inter", float spacing = 4.0f);            
                 
     void drawPlayer(Vector2 playerPos);
+
+    Texture2D& getTexture(const std::string& key);
 };
 
 #endif //RENDERER_H

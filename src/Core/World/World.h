@@ -4,6 +4,7 @@
 #include "Chunk.h"
 #include "Utilities/World/PairHash.h"
 #include <unordered_map>
+#include "Core/Render/Renderer.h"
 
 class World {
     std::unordered_map<std::pair<int, int>, Chunk, PairHash> chunks;
@@ -17,7 +18,7 @@ public:
     void LoadHeaders();
 
     void update(Vector2 playerPos);
-    void render() const;
+    void render(Renderer& renderer) const;
     [[nodiscard]] int getChunkCount() const;
 };
 

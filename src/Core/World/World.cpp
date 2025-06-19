@@ -60,9 +60,10 @@ void World::update(Vector2 playerPos) {
     }
 }
 
-void World::render() const {
+void World::render(Renderer& renderer) const {
+    Texture2D& tilemap = renderer.getTexture("tilemap");
     for (const auto& chunk : chunks | std::views::values) {
-        chunk.Draw();
+        chunk.Draw(tilemap);
     }
 }
 

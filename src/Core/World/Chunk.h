@@ -55,12 +55,20 @@ public:
         }
     }
 
-    void Draw() const {
+    void Draw(Texture2D& tilemap) const {
         for (int y = 0; y < chunkSize; y++) {
             for (int x = 0; x < chunkSize; x++) {
                 float worldX = (this->x * chunkSize + x) * tileSize;
                 float worldY = (this->y * chunkSize + y) * tileSize;
-                DrawRectangle(worldX, worldY, tileSize, tileSize, tiles[y][x]->color);
+
+                int tileIndex = 1;
+                int tileX = (tileIndex % tilesPerRow) * sourceTileSize;
+                int tileY = (tileIndex / tilesPerRow) * sourceTileSize;
+
+                Rectangle sourceRec = { (float)tileX, (float)tileY, (float)sourceTileSize, (float)sourceTileSize };
+                Rectangle destRec = { worldX, worldY, (float)tileSize, (float)tileSize };
+
+                DrawTexturePro(tilemap, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
             }
         }
     }

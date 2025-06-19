@@ -82,3 +82,7 @@ void Renderer::drawPlayer(Vector2 playerPos) {
     DrawCircleV(playerPos, 50, RED);
 }
 
+
+Texture2D& Renderer::getTexture(const std::string& key) {
+    return assetManager.getTexture(key);
+}
