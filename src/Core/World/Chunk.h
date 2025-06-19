@@ -11,24 +11,23 @@
 class Chunk {
 public:
     int x, y;
-    const Biome* tiles[chunkSize][chunkSize];
+    std::vector<std::vector<uint8_t>> tiles{chunkSize, std::vector<uint8_t>(chunkSize)};
 
     Chunk(int cx, int cy, const std::vector<ChunkHeader>& headers, std::ifstream& file) : x(cx), y(cy) {
         Generate(headers, file);
     }
 
     // todo add world creating menu
-    // todo saves directory for worlds
 
     void Generate(const std::vector<ChunkHeader>& headers, std::ifstream& file) {
         if (x < 0 || x >= numberOfChunks || y < 0 || y >= numberOfChunks) {
             for (int ty = 0; ty < chunkSize; ++ty)
                 for (int tx = 0; tx < chunkSize; ++tx)
-                    tiles[ty][tx] = &BIOMES[0];
+                    tiles[ty][tx] = 0;
             return;
         }
-        int index = y * numberOfChunks + x;
 
+        int index = y * numberOfChunks + x;
         const ChunkHeader& header = headers[index];
 
         file.seekg(header.offset, std::ios::beg);
@@ -40,12 +39,17 @@ public:
             file.read(reinterpret_cast<char*>(&count), 1);
             file.read(&symbol, 1);
 
-            const Biome* biomePtr = SymbolToBiome(symbol);
+            const Biome* biome = SymbolToBiome(symbol);
 
             for (int i = 0; i < count; ++i) {
                 if (ty >= chunkSize) break;
 
-                tiles[ty][tx] = biomePtr;
+                int worldX = this->x * chunkSize + tx;
+                int worldY = this->y * chunkSize + ty;
+                uint32_t hash = worldX * 73856093u ^ worldY * 19349663u;
+
+                tiles[ty][tx] = ChooseTileIndex(biome, hash);
+
                 tx++;
                 if (tx >= chunkSize) {
                     tx = 0;
@@ -56,12 +60,14 @@ public:
     }
 
     void Draw(Texture2D& tilemap) const {
+        const int chunkX = this->x * chunkSize;
+        const int chunkY = this->y * chunkSize;
         for (int y = 0; y < chunkSize; y++) {
             for (int x = 0; x < chunkSize; x++) {
-                float worldX = (this->x * chunkSize + x) * tileSize;
-                float worldY = (this->y * chunkSize + y) * tileSize;
+                float worldX = (chunkX + x) * tileSize;
+                float worldY = (chunkY + y) * tileSize;
 
-                int tileIndex = 1;
+                int tileIndex = tiles[y][x];
                 int tileX = (tileIndex % tilesPerRow) * sourceTileSize;
                 int tileY = (tileIndex / tilesPerRow) * sourceTileSize;
 
@@ -82,6 +88,19 @@ private:
         std::cerr << "Chunk: unknown symbol " << symbol << "\n";
         return &BIOMES[0];
     }
+
+    uint8_t ChooseTileIndex(const Biome* biome, uint32_t seed) {
+    float roll = (seed % 10000) / 10000.0f;
+    float cumulative = 0.0f;
+    
+    for (const auto& [index, chance] : biome->tileVariants) {
+        cumulative += chance;
+        if (roll < cumulative)
+            return index;
+    }
+
+    return biome->tileVariants.front().first;
+}
 };
 
 #endif //CHUNK_H
