@@ -10,13 +10,17 @@ class TextBox
         Rectangle box;
         string text;
         bool active;    
+        Color BGColor;
+        Color lineColor;
     
     public:
-        TextBox(float x, float y, float width, float height)
+        TextBox(float x, float y, float width, float height,Color BGcolor, Color lineColor)
         {
             box = { x, y, width, height };
             text = "";
             active = false;
+            BGColor = BGcolor;
+            lineColor = lineColor;
         }
         void update();
         void draw(Renderer& renderer) const;

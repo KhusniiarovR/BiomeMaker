@@ -36,7 +36,7 @@ void TextBox::update()
 }
 void TextBox::draw(Renderer& renderer) const
 {
-    DrawRectangleRec(box,LIGHTGRAY);
-    DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, WHITE);
+    DrawRectangleRec(box,BGColor);
+    DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, lineColor);
     DrawText(text.c_str(), box.x + 5, box.y + 8, 20, BLACK);
 }
