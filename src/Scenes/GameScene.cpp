@@ -24,7 +24,7 @@ void GameScene::update(float dt) {
 }
 
 void GameScene::render() const {
-    world.render();
+    world.render(renderer);
     renderer.drawPlayer(player.getPosition());
 }
 

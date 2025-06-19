@@ -3,6 +3,7 @@
 
 AssetManager::AssetManager() {
     registerFont("Inter", "data/text/InterFont.ttf");
+    registerTexture("tilemap", "data/textures/tilemap.png");
 }
 
 AssetManager::~AssetManager() {
