@@ -40,3 +40,7 @@ void TextBox::draw(Renderer& renderer) const
     DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, lineColor);
     DrawText(text.c_str(), box.x + 5, box.y + 8, 20, BLACK);
 }
+string TextBox::returnText()
+{
+    return text;
+}

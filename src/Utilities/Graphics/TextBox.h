@@ -24,4 +24,5 @@ class TextBox
         }
         void update();
         void draw(Renderer& renderer) const;
+        string returnText();
 };

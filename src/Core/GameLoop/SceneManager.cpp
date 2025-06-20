@@ -3,7 +3,7 @@
 #include "Scenes/MainMenuScene.h"
 #include "Scenes/GameScene.h"
 #include "Scenes/WorldSelectionScene.h"
-
+#include "Scenes/WorldCreationScene.h"
 SceneManager::SceneManager(Renderer& renderer) : renderer(renderer) {
     loadScene(SceneType::MainMenu);
 }
@@ -18,6 +18,9 @@ void SceneManager::loadScene(SceneType sceneType, const std::string& worldName) 
         break;
         case SceneType::WorldSelection:
             currentScene = std::make_unique<WorldSelectionScene>(renderer);
+        break;
+        case SceneType::WorldCreation:
+            currentScene = std::make_unique<WorldCreationScene>(renderer);
         break;
         default:
             std::cerr << "SceneManager/LoadScene unknown scene\n";

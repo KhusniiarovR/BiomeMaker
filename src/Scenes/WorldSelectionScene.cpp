@@ -16,8 +16,8 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
 
     createButton.setOnClick([this]() {
     std::thread([this]() {
-        worldCreator.generate();
-        worldSelector.loadFolders();
+        changeScene = true;
+        nextScene = SceneType::WorldCreation;
         }).detach();
         // doesn't work when spamming button create so need to make separate world creation menu
     });

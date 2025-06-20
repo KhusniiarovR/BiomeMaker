@@ -10,9 +10,12 @@ class WorldCreationScene : public Scene
     private:
         WorldCreator worldCreator;
         WorldSelector worldSelector;
+        Button backButton;
+        Button createRandButton;
         Button createButton;
         TextBox enterName;
         std::string worldName;
+
     public:
         explicit WorldCreationScene(Renderer& renderer);
         void update(float dt) override;

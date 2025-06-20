@@ -1,35 +1,68 @@
 #include "WorldCreationScene.h"
 #include <thread>
-WorldCreationScene::WorldCreationScene(Renderer &renderer)
-    : Scene(renderer),
-    createButton({0.6f, 0.55f}, {0.2f, 0.1f}, "CREATE", BLACK, 0.5f),
-    enterName(800,150,400,200,WHITE, RED)
+WorldCreationScene::WorldCreationScene(Renderer &renderer): Scene(renderer),
+    createButton({0.1f, 0.55f}, {0.2f, 0.1f}, "CREATE", BLACK, 0.5f),
+    backButton({0.7f, 0.55f}, {0.2f, 0.1f}, "BACK", BLACK, 0.5f),
+    createRandButton({0.4f, 0.55f}, {0.2f, 0.1f}, "RANDOM", BLACK, 0.5f),
+    enterName(800,150,400,100,WHITE, RED)
     {
-        createButton.setOnClick([this]() {
-        std::thread([this]() {
-        worldCreator.generate();
-        worldSelector.loadFolders();
-        changeScene = true;
-        nextScene = SceneType::WorldSelection;
-        }).detach();
-    });
+        createButton.setOnClick([this]() 
+        {
+            std::thread([this]() 
+            {
+                if(!enterName.returnText().empty())
+                {
+                    worldCreator.generate(enterName.returnText());
+                    worldSelector.loadFolders();
+                    changeScene = true;
+                    nextScene = SceneType::WorldSelection;
+                }
+            }).detach();
+        });
+        backButton.setOnClick([this]()
+        {
+            std::thread([this]()
+            {
+                changeScene = true;
+                nextScene = SceneType::WorldSelection;
+            }).detach();
+        });
+        createRandButton.setOnClick([this]()
+        {
+            std::thread([this]() 
+            {
+                worldCreator.generate();
+                worldSelector.loadFolders();
+                changeScene = true;
+                nextScene = SceneType::WorldSelection;
+            }).detach();
+        });
     }
-void WorldCreationScene::update(float dt) {
+void WorldCreationScene::update(float dt) 
+{
     createButton.update();
+    backButton.update();
+    createRandButton.update();
     enterName.update();
 }
-void WorldCreationScene::render() const {
+void WorldCreationScene::render() const 
+{
+    createRandButton.render(renderer);
+    backButton.render(renderer);
     createButton.render(renderer);
     enterName.draw(renderer);
 }
 
-bool WorldCreationScene::shouldTransition() const {
+bool WorldCreationScene::shouldTransition() const 
+{
     return changeScene;
 }
 
-SceneType WorldCreationScene::getNextScene() const {
+SceneType WorldCreationScene::getNextScene() const 
+{
     return nextScene;
 }
-std::string WorldCreationScene::getWorldName() const {
+std::string WorldCreationScene::getWorldName() const 
+{
     return worldSelector.getSelectedFolder();
 }
