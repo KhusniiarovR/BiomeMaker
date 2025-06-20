@@ -8,6 +8,7 @@ GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          world(worldName)
 {
     renderer.GetCamera().offset = {screenSizeX / 2.0f, screenSizeY / 2.0f};
+    // todo add zoom
     // todo delete offset
 }
 
