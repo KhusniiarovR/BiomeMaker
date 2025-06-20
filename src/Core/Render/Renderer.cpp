@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Constants/GraphicsConst.h"
 #include <iostream>
+#include "Constants/WorldConst.h"
 
 Renderer::Renderer(AssetManager& assets) : assetManager(assets) {
     camera.offset = {0, 0};
@@ -80,6 +81,7 @@ void Renderer::drawTextGradient(const std::string& text, Vector2 position,
 
 void Renderer::drawPlayer(Vector2 playerPos) {
     DrawCircleV(playerPos, 50, RED);
+    DrawCircleLinesV(playerPos, handDistance * tileSize, YELLOW);
 }
 
 

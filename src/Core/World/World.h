@@ -17,9 +17,13 @@ public:
 
     void LoadHeaders();
 
-    void update(Vector2 playerPos);
+    void update(Vector2 playerPos, Camera2D& camera);
     void render(Renderer& renderer) const;
     [[nodiscard]] int getChunkCount() const;
+
+private:
+    void updateChunks(Vector2 playerPos);
+    bool removeObjectAt(int worldX, int worldY);
 };
 
 #endif //WORLD_H

@@ -37,7 +37,8 @@ private:
 
     std::string getName();
 
-    void save_world_rle(const std::vector<std::vector<char>>& world);
+    void write_rle_chunk(std::ofstream& out,const std::vector<std::vector<char>>& data,int startX, int startY);
+    void save_world_rle(const std::vector<std::vector<char>>& world, const std::vector<std::vector<char>>& objects);
 };
 
 

@@ -3,6 +3,7 @@
 
 #include "Constants/WorldConst.h"
 #include "Biome.h"
+#include "Object.h"
 #include <fstream>
 #include <string>
 #include <filesystem>
@@ -12,6 +13,7 @@ class Chunk {
 public:
     int x, y;
     std::vector<std::vector<uint8_t>> tiles{chunkSize, std::vector<uint8_t>(chunkSize)};
+    std::vector<std::vector<Object>> objectTiles{chunkSize, std::vector<Object>(chunkSize)};
 
     Chunk(int cx, int cy, const std::vector<ChunkHeader>& headers, std::ifstream& file) : x(cx), y(cy) {
         Generate(headers, file);
@@ -30,10 +32,10 @@ public:
         int index = y * numberOfChunks + x;
         const ChunkHeader& header = headers[index];
 
-        file.seekg(header.offset, std::ios::beg);
+        file.seekg(header.offsetBiome, std::ios::beg);
         int tx = 0, ty = 0;
 
-        while (file.tellg() < static_cast<std::streampos>(header.offset + header.size)) {
+        while (file.tellg() < static_cast<std::streampos>(header.offsetBiome + header.sizeBiome)) {
             unsigned char count;
             char symbol;
             file.read(reinterpret_cast<char*>(&count), 1);
@@ -57,6 +59,28 @@ public:
                 }
             }
         }
+        file.seekg(header.offsetObject, std::ios::beg);
+        {
+            int tx = 0, ty = 0;
+            while (file.tellg() < static_cast<std::streampos>(header.offsetObject + header.sizeObject)) {
+                unsigned char count;
+                char symbol;
+                file.read(reinterpret_cast<char*>(&count), 1);
+                file.read(&symbol, 1);
+
+                for (int i = 0; i < count; ++i) {
+                    if (ty >= chunkSize) break;
+
+                    objectTiles[ty][tx] = symbolToObject(symbol);
+
+                    tx++;
+                    if (tx >= chunkSize) {
+                        tx = 0;
+                        ty++;
+                    }
+                }
+            }
+        }
     }
 
     void Draw(Texture2D& tilemap) const {
@@ -75,9 +99,21 @@ public:
                 Rectangle destRec = { worldX, worldY, (float)tileSize, (float)tileSize };
 
                 DrawTexturePro(tilemap, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
+
+                const Object& obj = objectTiles[y][x];
+                if (obj.type != ObjectType::None) {
+                    int objectTileIndex = objectTypeToTile(obj.type);
+                    int objTileX = (objectTileIndex % tilesPerRow) * sourceTileSize;
+                    int objTileY = (objectTileIndex / tilesPerRow) * sourceTileSize;
+
+                    Rectangle objSource = { (float)objTileX, (float)objTileY, (float)sourceTileSize, (float)sourceTileSize };
+                    DrawTexturePro(tilemap, objSource, destRec, {0, 0}, 0.0f, WHITE);
+                }
             }
         }
     }
+
+//todo save modified chunk 
 
 private:
     const Biome* SymbolToBiome(char symbol) {
@@ -90,16 +126,34 @@ private:
     }
 
     uint8_t ChooseTileIndex(const Biome* biome, uint32_t seed) {
-    float roll = (seed % 10000) / 10000.0f;
-    float cumulative = 0.0f;
-    
-    for (const auto& [index, chance] : biome->tileVariants) {
-        cumulative += chance;
-        if (roll < cumulative)
-            return index;
+        float roll = (seed % 10000) / 10000.0f;
+        float cumulative = 0.0f;
+        
+        for (const auto& [index, chance] : biome->tileVariants) {
+            cumulative += chance;
+            if (roll < cumulative)
+                return index;
+        }
+
+        return biome->tileVariants.front().first;
     }
 
-    return biome->tileVariants.front().first;
+    int objectTypeToTile(ObjectType objectType) const {
+        auto it = objectTileMap.find(objectType);
+        return (it != objectTileMap.end()) ? it->second : 0;
+    }
+
+    Object symbolToObject(char symbol) {
+    switch (symbol) {
+        case 'T': return { ObjectType::Tree };
+        case 'R': return { ObjectType::Rock };
+        case 'B': return { ObjectType::Bush };
+        case ' ': return { ObjectType::None };
+        default: {
+            std::cerr << "Chunk::unknown object" << symbol << "\n";
+            return {};
+        };
+    }
 }
 };
 

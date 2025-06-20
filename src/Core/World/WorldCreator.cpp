@@ -7,6 +7,7 @@
 #include <random>
 #include "Constants/WorldConst.h"
 #include "Biome.h"
+#include "Object.h"
 
 WorldCreator::WorldCreator() = default;
 
@@ -105,7 +106,25 @@ void WorldCreator::generate(int seed, std::string worldName) {
             }
         }
 
-        save_world_rle(map);
+        std::vector<std::vector<char>> objects(worldSize, std::vector<char>(worldSize, ' '));
+        std::uniform_real_distribution<float> chance(0.0f, 1.0f);
+
+        for (int y = 0; y < worldSize; ++y) {
+            for (int x = 0; x < worldSize; ++x) {
+                char biome = map[y][x];
+                auto it = objectRules.find(biome);
+                if (it != objectRules.end()) {
+                    for (const ObjectRule& rule : it->second) {
+                        if (chance(rng) < rule.probability) {
+                            objects[y][x] = rule.symbol;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        save_world_rle(map, objects);
     }
 }
 
@@ -113,7 +132,33 @@ int WorldCreator::dist2(int x1, int y1, int x2, int y2) {
     return (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2);
 }
 
-void WorldCreator::save_world_rle(const std::vector<std::vector<char>> &world) {
+void WorldCreator::write_rle_chunk(std::ofstream& out,
+    const std::vector<std::vector<char>>& data,
+    int startX, int startY) {
+    char current = data[startY][startX];
+    unsigned char count = 1;
+
+    for (int y = 0; y < chunkSize; ++y) {
+        for (int x = 0; x < chunkSize; ++x) {
+            if (x == 0 && y == 0) continue;
+            char next = data[startY + y][startX + x];
+            if (next == current && count < 255) {
+                count++;
+            } else {
+                out.write(reinterpret_cast<char*>(&count), 1);
+                out.write(&current, 1);
+                current = next;
+                count = 1;
+            }
+        }
+    }
+
+    out.write(reinterpret_cast<char*>(&count), 1);
+    out.write(&current, 1);
+}
+
+void WorldCreator::save_world_rle(const std::vector<std::vector<char>>& biomes, 
+                                  const std::vector<std::vector<char>>& objects) {
     if (!std::filesystem::exists("saves/")) {
         std::cerr << "Recreated saves folder";
         std::filesystem::create_directory("saves");
@@ -134,35 +179,24 @@ void WorldCreator::save_world_rle(const std::vector<std::vector<char>> &world) {
 
     for (int cy = 0; cy < numberOfChunks; ++cy) {
         for (int cx = 0; cx < numberOfChunks; ++cx) {
+            int index = cy * numberOfChunks + cx;
             int startX = cx * chunkSize;
             int startY = cy * chunkSize;
 
-            std::streampos chunk_start = out.tellp();
-            char current = world[startY][startX];
-            unsigned char count = 1;
+            std::streampos biome_start = out.tellp();
+            write_rle_chunk(out, biomes, startX, startY);
+            std::streampos biome_end = out.tellp();
 
-            for (int y = 0; y < chunkSize; ++y) {
-                for (int x = 0; x < chunkSize; ++x) {
-                    if (x == 0 && y == 0) continue;
-                    char next = world[startY + y][startX + x];
-                    if (next == current && count < 255) {
-                        count++;
-                    } else {
-                        out.write(reinterpret_cast<char*>(&count), 1);
-                        out.write(&current, 1);
-                        current = next;
-                        count = 1;
-                    }
-                }
-            }
+            std::streampos obj_start = out.tellp();
+            write_rle_chunk(out, objects, startX, startY);
+            std::streampos obj_end = out.tellp();
 
-            out.write(reinterpret_cast<char*>(&count), 1);
-            out.write(&current, 1);
-
-            std::streampos chunk_end = out.tellp();
-            uint32_t offset = static_cast<uint32_t>(chunk_start);
-            uint32_t size = static_cast<uint32_t>(chunk_end - chunk_start);
-            headers[cy * numberOfChunks + cx] = { offset, size };
+            headers[index] = {
+                static_cast<uint32_t>(biome_start),
+                static_cast<uint32_t>(biome_end - biome_start),
+                static_cast<uint32_t>(obj_start),
+                static_cast<uint32_t>(obj_end - obj_start)
+            };
         }
     }
 

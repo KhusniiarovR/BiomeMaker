@@ -14,9 +14,13 @@ const int tilesPerRow = 10; // connected with sourceTileSizes tilemap.width = 16
 const int renderDistance = 6;
 const int unloadMargin = 0;
 
+const int handDistance = 4;
+
 struct ChunkHeader {
-    uint32_t offset;
-    uint32_t size;
+    uint32_t offsetBiome;
+    uint32_t sizeBiome;
+    uint32_t offsetObject;
+    uint32_t sizeObject;
 };
 
 // todo find perfect chunk/world/tile size

@@ -10,8 +10,6 @@ struct Biome {
     std::vector<std::pair<uint8_t, float>> tileVariants;
 };
 
-
-
 const char errorBiome = 'U';
 const char centerBiome = 'F';
 const std::vector<char> innerBiomes = { 'O', 'W', 'S', 'V' };

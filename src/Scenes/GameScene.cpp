@@ -14,7 +14,7 @@ GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
 void GameScene::update(float dt) {
     player.update(dt);
     renderer.updateCamera(player.getPosition());
-    world.update(player.getPosition());
+    world.update(player.getPosition(), renderer.GetCamera());
 
     // todo function to handle scene manager inputs
     if (IsKeyPressed(KEY_SPACE)) {
