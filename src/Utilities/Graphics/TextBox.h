@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include <string>
 #include <Core/Render/Renderer.h>
+#include <Constants/GraphicsConst.h>
 using namespace std;
 class TextBox
 {
@@ -16,7 +17,7 @@ class TextBox
     public:
         TextBox(float x, float y, float width, float height,Color BGcolor, Color lineColor)
         {
-            box = { x, y, width, height };
+            box = { screenSizeX*x, screenSizeY*y, screenSizeX*width, screenSizeY*height };
             text = "";
             active = false;
             BGColor = BGcolor;

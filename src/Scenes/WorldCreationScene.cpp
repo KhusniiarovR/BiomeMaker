@@ -4,7 +4,7 @@ WorldCreationScene::WorldCreationScene(Renderer &renderer): Scene(renderer),
     createButton({0.1f, 0.55f}, {0.2f, 0.1f}, "CREATE", BLACK, 0.5f),
     backButton({0.7f, 0.55f}, {0.2f, 0.1f}, "BACK", BLACK, 0.5f),
     createRandButton({0.4f, 0.55f}, {0.2f, 0.1f}, "RANDOM", BLACK, 0.5f),
-    enterName(800,150,400,100,WHITE, RED)
+    enterName(0.4167f,0.1389f,0.20833333333f,0.09259259259f,WHITE, RED)
     {
         createButton.setOnClick([this]() 
         {
