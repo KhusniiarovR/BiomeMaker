@@ -23,7 +23,6 @@ void TextBox::update()
         {
             text.pop_back();
         }
-
     }
     if(CheckCollisionPointRec(GetMousePosition(), box))
     {
@@ -38,7 +37,7 @@ void TextBox::draw(Renderer& renderer) const
 {
     DrawRectangleRec(box,BGColor);
     DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, lineColor);
-    DrawText(text.c_str(), box.x + 5, box.y + 8, 20, BLACK);
+    DrawText(text.c_str(), box.x + 0.00260416666f, box.y + 0.00416666666f, 20, BLACK);
 }
 string TextBox::returnText()
 {

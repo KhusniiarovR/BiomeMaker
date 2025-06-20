@@ -31,6 +31,8 @@ public:
                 
     void drawPlayer(Vector2 playerPos);
 
+    void drawEnemy(Vector2 enemyPos);
+
     Texture2D& getTexture(const std::string& key);
 };
 

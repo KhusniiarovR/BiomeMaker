@@ -8,7 +8,7 @@ MainMenuScene::MainMenuScene(Renderer& renderer) : Scene(renderer) {
 }
 
 void MainMenuScene::update(float dt) {
-    if (IsKeyPressed(KEY_ENTER)) {
+    if (IsKeyPressed(KEY_ENTER) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
         changeScene = true;
         nextScene = SceneType::WorldSelection;
     }

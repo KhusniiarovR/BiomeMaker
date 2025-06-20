@@ -5,6 +5,7 @@
 GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          Scene(renderer),
          player ({worldSize * tileSize / 2.0f, worldSize * tileSize / 2.0f}),
+         enemy ({worldSize * tileSize / 2.0f, worldSize * tileSize / 2.0f}),
          world(worldName)
 {
     renderer.GetCamera().offset = {screenSizeX / 2.0f, screenSizeY / 2.0f};
@@ -14,6 +15,7 @@ GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
 
 void GameScene::update(float dt) {
     player.update(dt);
+    enemy.move(player);
     renderer.updateCamera(player.getPosition());
     world.update(player.getPosition(), renderer.GetCamera());
 
@@ -27,6 +29,7 @@ void GameScene::update(float dt) {
 void GameScene::render() const {
     world.render(renderer);
     renderer.drawPlayer(player.getPosition());
+    renderer.drawEnemy(enemy.getPosition());
 }
 
 bool GameScene::shouldTransition() const {

@@ -17,7 +17,7 @@ WorldCreationScene::WorldCreationScene(Renderer &renderer): Scene(renderer),
                     changeScene = true;
                     nextScene = SceneType::WorldSelection;
                 }
-            }).detach();
+            }).join();
         });
         backButton.setOnClick([this]()
         {
@@ -25,7 +25,7 @@ WorldCreationScene::WorldCreationScene(Renderer &renderer): Scene(renderer),
             {
                 changeScene = true;
                 nextScene = SceneType::WorldSelection;
-            }).detach();
+            }).join();
         });
         createRandButton.setOnClick([this]()
         {
@@ -35,7 +35,7 @@ WorldCreationScene::WorldCreationScene(Renderer &renderer): Scene(renderer),
                 worldSelector.loadFolders();
                 changeScene = true;
                 nextScene = SceneType::WorldSelection;
-            }).detach();
+            }).join();
         });
     }
 void WorldCreationScene::update(float dt) 

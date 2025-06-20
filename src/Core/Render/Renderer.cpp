@@ -83,6 +83,10 @@ void Renderer::drawPlayer(Vector2 playerPos) {
     DrawCircleV(playerPos, 50, RED);
     DrawCircleLinesV(playerPos, handDistance * tileSize, YELLOW);
 }
+void Renderer::drawEnemy(Vector2 enemyPos)
+{
+    DrawCircleV(enemyPos, 50, BLUE);
+}
 
 
 Texture2D& Renderer::getTexture(const std::string& key) {
