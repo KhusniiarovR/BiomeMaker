@@ -187,15 +187,26 @@ void WorldCreator::save_world_rle(const std::vector<std::vector<char>>& biomes,
             write_rle_chunk(out, biomes, startX, startY);
             std::streampos biome_end = out.tellp();
 
+            uint32_t biome_used = static_cast<uint32_t>(biome_end - biome_start);
+            uint32_t biome_reserved = biome_used + reserveSizeBiome;
+            out.write(std::string(biome_reserved - biome_used, '~').c_str(), biome_reserved - biome_used);
+
             std::streampos obj_start = out.tellp();
             write_rle_chunk(out, objects, startX, startY);
             std::streampos obj_end = out.tellp();
 
+            uint32_t obj_used = static_cast<uint32_t>(obj_end - obj_start);
+            uint32_t obj_reserved = obj_used + reserveSizeObject;
+            out.write(std::string(obj_reserved - obj_used, '~').c_str(), obj_reserved - obj_used);
+            
             headers[index] = {
                 static_cast<uint32_t>(biome_start),
-                static_cast<uint32_t>(biome_end - biome_start),
+                biome_used,
+                biome_reserved,
+
                 static_cast<uint32_t>(obj_start),
-                static_cast<uint32_t>(obj_end - obj_start)
+                obj_used,
+                obj_reserved
             };
         }
     }

@@ -12,8 +12,9 @@
 class Chunk {
 public:
     int x, y;
-    std::vector<std::vector<uint8_t>> tiles{chunkSize, std::vector<uint8_t>(chunkSize)};
+    std::vector<std::vector<char>> tiles{chunkSize, std::vector<char>(chunkSize)};
     std::vector<std::vector<Object>> objectTiles{chunkSize, std::vector<Object>(chunkSize)};
+    bool isModified = false;
 
     Chunk(int cx, int cy, const std::vector<ChunkHeader>& headers, std::ifstream& file) : x(cx), y(cy) {
         Generate(headers, file);
@@ -33,38 +34,46 @@ public:
         const ChunkHeader& header = headers[index];
 
         file.seekg(header.offsetBiome, std::ios::beg);
-        int tx = 0, ty = 0;
+        {
+            int tx = 0, ty = 0;
+            std::streampos biome_end = header.offsetBiome + header.dataSizeBiome;
 
-        while (file.tellg() < static_cast<std::streampos>(header.offsetBiome + header.sizeBiome)) {
-            unsigned char count;
-            char symbol;
-            file.read(reinterpret_cast<char*>(&count), 1);
-            file.read(&symbol, 1);
+            while (file.tellg() < biome_end) {
+                unsigned char count;
+                char symbol;
 
-            const Biome* biome = SymbolToBiome(symbol);
+                file.read(reinterpret_cast<char*>(&count), 1);
+                file.read(&symbol, 1);
 
-            for (int i = 0; i < count; ++i) {
-                if (ty >= chunkSize) break;
+                const Biome* biome = SymbolToBiome(symbol);
 
-                int worldX = this->x * chunkSize + tx;
-                int worldY = this->y * chunkSize + ty;
-                uint32_t hash = worldX * 73856093u ^ worldY * 19349663u;
+                for (int i = 0; i < count; ++i) {
+                    if (ty >= chunkSize) break;
 
-                tiles[ty][tx] = ChooseTileIndex(biome, hash);
+                    int worldX = this->x * chunkSize + tx;
+                    int worldY = this->y * chunkSize + ty;
+                    uint32_t hash = worldX * 73856093u ^ worldY * 19349663u;
 
-                tx++;
-                if (tx >= chunkSize) {
-                    tx = 0;
-                    ty++;
+                    tiles[ty][tx] = ChooseTileIndex(biome, hash);
+
+                    tx++;
+                    if (tx >= chunkSize) {
+                        tx = 0;
+                        ty++;
+                    }
                 }
             }
         }
+
         file.seekg(header.offsetObject, std::ios::beg);
         {
             int tx = 0, ty = 0;
-            while (file.tellg() < static_cast<std::streampos>(header.offsetObject + header.sizeObject)) {
+            std::streampos object_end = header.offsetObject + header.dataSizeObject;
+
+            while (file.tellg() < object_end) {
                 unsigned char count;
                 char symbol;
+
                 file.read(reinterpret_cast<char*>(&count), 1);
                 file.read(&symbol, 1);
 

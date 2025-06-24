@@ -14,6 +14,7 @@ class World {
 
 public:
     World(const std::string &filename);
+    ~World();
 
     void LoadHeaders();
 
@@ -24,6 +25,11 @@ public:
 private:
     void updateChunks(Vector2 playerPos);
     bool removeObjectAt(int worldX, int worldY);
+    void overwrite_chunk_rle(int cx, int cy, const Chunk& chunk);
+    void write_rle_data(std::ostream& out, const std::vector<std::vector<char>>& data);
+    char objectToSymbol(const Object& obj);
+    char biomeToSymbolFromTileIndex(uint8_t tileIndex);
+    void regenerate_and_save_full_world();
 };
 
 #endif //WORLD_H
