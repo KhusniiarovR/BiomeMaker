@@ -8,10 +8,10 @@ class Enemy : public Entity
 {
     private:
         float speed;
+        Player &player;
     public:
-        Enemy(Vector2 init_pos);
+        Enemy(Vector2 init_pos, Player &player);
         void update(float dt) override;
-        void move(Player &player);
         [[nodiscard]] float getPositionX() const;
         [[nodiscard]] float getPositionY() const;
         [[nodiscard]] Vector2 getPosition() const;
