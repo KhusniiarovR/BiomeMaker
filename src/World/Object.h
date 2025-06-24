@@ -21,7 +21,7 @@ struct Object {
 
 
 const std::unordered_map<char, std::vector<ObjectRule>> objectRules = {
-    { 'F', { {0.9f, 'T'}, {0.005f, 'B'} } },
+    { 'F', { {0.1f, 'T'}, {0.005f, 'B'} } },
     { 'W', { {0.003f, 'R'} } },
     { 'S', { {0.01f, 'T'} } },
 };    

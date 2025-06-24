@@ -5,7 +5,7 @@
 #include "Scene.h"
 #include <Entities/Player.h>
 #include <Entities/Enemy.h>
-#include "Core/World/World.h"
+#include "World/World.h"
 
 class GameScene : public Scene {
 private:

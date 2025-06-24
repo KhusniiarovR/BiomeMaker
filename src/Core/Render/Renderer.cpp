@@ -42,7 +42,7 @@ void Renderer::drawTextGradient(const std::string& text, Vector2 position,
                                 Color colorA, Color colorB,
                                 float bounceSpeed, float bounceHeight,
                                 const std::string& fontKey, float spacing) {
-    // todo not be that lazy and merge drawText functions + option to turn off centralization
+    // TODO not be that lazy and merge drawText functions + option to turn off centralization
 
     const Font& font = assetManager.getFont(fontKey, size);
 

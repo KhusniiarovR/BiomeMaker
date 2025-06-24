@@ -14,7 +14,7 @@ private:
     static constexpr int ringWidth = 30;
     static constexpr int outerRadius = innerRadius + ringWidth;
 
-// todo configure world size
+// TODO configure world size
 // merge biomes here and biome.h
 
     std::string worldName;

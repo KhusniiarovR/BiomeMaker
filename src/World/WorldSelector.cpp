@@ -16,7 +16,7 @@ WorldSelector::WorldSelector(const std::string& path)
     loadFolders();
     totalContentHeight = folders.size() * (worldHeight + worldSpacing);
 }
-// todo fix buttons incorrect hitbox
+// TODO fix buttons incorrect hitbox
 
 void WorldSelector::loadFolders() {
     folders.clear();
@@ -52,7 +52,7 @@ void WorldSelector::update() {
 
 void WorldSelector::draw(Renderer& renderer) const {
     renderer.drawTextGradient("Choose world: ", {0.5, 0.1}, 100, 3.0f, LIGHTGRAY, DARKGRAY, 0.0f, 0.0f);
-    // todo dynamic text size everywhere
+    // TODO dynamic text size everywhere
 
     BeginScissorMode(worldBox.x, worldBox.y, worldBox.width, listAreaHeight);
     for (int i = 0; i < folders.size(); ++i) {

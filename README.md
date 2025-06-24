@@ -1,1 +1,1 @@
-chochoshka pomposhka
+krasota

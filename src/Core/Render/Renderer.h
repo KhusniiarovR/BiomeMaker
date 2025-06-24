@@ -10,7 +10,7 @@ private:
     AssetManager& assetManager;
     Camera2D camera;
 
-// todo make camera better
+// TODO make camera higher than renderer
 
 public:
     Renderer(AssetManager& assetManager);

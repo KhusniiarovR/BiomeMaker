@@ -4,6 +4,7 @@
 #include "Scenes/GameScene.h"
 #include "Scenes/WorldSelectionScene.h"
 #include "Scenes/WorldCreationScene.h"
+
 SceneManager::SceneManager(Renderer& renderer) : renderer(renderer) {
     loadScene(SceneType::MainMenu);
 }
@@ -37,7 +38,7 @@ void SceneManager::update(float dt) {
     }
     else {
         std::cerr << "SceneManager/update no current scene\n";
-        // todo make better logger
+        // TODO make better logger
     }
 }
 

@@ -9,8 +9,7 @@ GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          world(worldName)
 {
     renderer.GetCamera().offset = {screenSizeX / 2.0f, screenSizeY / 2.0f};
-    // todo add zoom
-    // todo delete offset
+    // TODO add zoom and delete offset
 }
 
 void GameScene::update(float dt) {
@@ -19,7 +18,7 @@ void GameScene::update(float dt) {
     renderer.updateCamera(player.getPosition());
     world.update(player.getPosition(), renderer.GetCamera());
 
-    // todo function to handle scene manager inputs
+    // TODO function to handle scene manager inputs
     if (IsKeyPressed(KEY_SPACE)) {
         changeScene = true;
         nextScene = SceneType::MainMenu;
@@ -34,7 +33,7 @@ void GameScene::render() const {
 
 bool GameScene::shouldTransition() const {
     return changeScene;
-    // todo pause
+    // TODO pause
 }
 
 SceneType GameScene::getNextScene() const {

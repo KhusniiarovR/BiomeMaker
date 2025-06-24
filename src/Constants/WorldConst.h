@@ -29,6 +29,6 @@ struct ChunkHeader {
     uint32_t reservedSizeObject;
 };
 
-// todo find perfect chunk/world/tile size
+// TODO find perfect chunk/world/tile size
 
 #endif //WORLDCONST_H
