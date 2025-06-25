@@ -6,8 +6,8 @@
 #include <fstream>
 #include <random>
 #include "Constants/WorldConst.h"
-#include "Biome.h"
-#include "Object.h"
+#include "World/ChunkSystem/Biome.h"
+#include "World/ChunkSystem/Object.h"
 
 WorldCreator::WorldCreator() = default;
 

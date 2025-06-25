@@ -1,11 +1,11 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "Chunk.h"
+#include "ChunkSystem/Chunk.h"
 #include "Utilities/World/PairHash.h"
 #include <unordered_map>
 #include "Core/Render/Renderer.h"
-#include "ChunkSystem.h"
+#include "ChunkSystem/ChunkSystem.h"
 
 class World {
 private:

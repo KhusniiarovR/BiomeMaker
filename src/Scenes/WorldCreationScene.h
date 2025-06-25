@@ -1,8 +1,8 @@
 #pragma once 
 #include <string>
 #include "Scene.h"
-#include "World/WorldSelector.h"
-#include "World/WorldCreator.h"
+#include "World/WorldMenu/WorldSelector.h"
+#include "World/WorldMenu/WorldCreator.h"
 #include "Utilities/Graphics/Button.h"
 #include "Utilities/Graphics/TextBox.h"
 class WorldCreationScene : public Scene
