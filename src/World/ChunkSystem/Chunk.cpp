@@ -1,4 +1,5 @@
 #include "Chunk.h"
+#include "Utilities/Logger/Logger.h"
 
 Chunk::Chunk(int cx, int cy, const std::vector<ChunkHeader>& headers, std::ifstream& file) : x(cx), y(cy) {
     Generate(headers, file);
@@ -109,7 +110,7 @@ const Biome* Chunk::SymbolToBiome(char symbol) {
         if (BIOME_SYMBOLS[i] == symbol)
             return &BIOMES[i+1]; // first is none biome
     }
-    std::cerr << "Chunk: unknown symbol " << symbol << "\n";
+    mycerr << "unknown symbol:" << symbol;
     return &BIOMES[0];
 }
 
@@ -138,7 +139,7 @@ Object Chunk::symbolToObject(char symbol) {
         case 'B': return { ObjectType::Bush };
         case ' ': return { ObjectType::None };
         default: {
-            std::cerr << "Chunk::unknown object" << symbol << "\n";
+            mycerr << "unknown object:" << symbol;
             return {};
         };
     }

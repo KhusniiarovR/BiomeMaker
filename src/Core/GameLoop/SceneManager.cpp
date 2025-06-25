@@ -4,6 +4,7 @@
 #include "Scenes/GameScene.h"
 #include "Scenes/WorldSelectionScene.h"
 #include "Scenes/WorldCreationScene.h"
+#include "Utilities/Logger/Logger.h"
 
 SceneManager::SceneManager(Renderer& renderer) : renderer(renderer) {
     loadScene(SceneType::MainMenu);
@@ -24,7 +25,7 @@ void SceneManager::loadScene(SceneType sceneType, const std::string& worldName) 
             currentScene = std::make_unique<WorldCreationScene>(renderer);
         break;
         default:
-            std::cerr << "SceneManager/LoadScene unknown scene\n";
+            mycerr << "unknown scene";
         break;
     }
 }
@@ -37,8 +38,7 @@ void SceneManager::update(float dt) {
         }
     }
     else {
-        std::cerr << "SceneManager/update no current scene\n";
-        // TODO make better logger
+        mycerr << "no current scene";
     }
 }
 
@@ -51,6 +51,6 @@ void SceneManager::render() {
         EndDrawing();
     }
     else {
-        std::cerr << "SceneManager/draw no current scene\n";
+        mycerr << "no current scene";
     }
 }

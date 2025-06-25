@@ -1,5 +1,6 @@
 #include "ChunkSystem.h"
 #include <sstream>
+#include "Utilities/Logger/Logger.h"
 
 ChunkSystem::ChunkSystem(
     std::unordered_map<std::pair<int, int>, Chunk, PairHash>& chunks,
@@ -21,7 +22,7 @@ ChunkSystem::~ChunkSystem() {
 void ChunkSystem::LoadHeaders() {
     worldFile.open(filename + "/world.dat", std::ios::binary);
     if (!worldFile.is_open()) {
-        std::cerr << "Error: can't open world.dat\n";
+        mycerr << "can't open world.dat";
         return;
     }
 
@@ -88,7 +89,7 @@ void ChunkSystem::updateChunks(Vector2& playerPos) {
 void ChunkSystem::overwriteChunk(int cx, int cy, const Chunk& chunk) {
     std::fstream file(filename + "/world.dat", std::ios::binary | std::ios::in | std::ios::out);
     if (!file.is_open()) {
-        std::cerr << "Failed to open world.dat for overwriting chunk\n";
+        mycerr << "Failed to open world.dat for overwriting chunk";
         return;
     }
 
@@ -99,7 +100,7 @@ void ChunkSystem::overwriteChunk(int cx, int cy, const Chunk& chunk) {
     file.read(reinterpret_cast<char*>(&header), sizeof(ChunkHeader));
 
     if (file.fail()) {
-        std::cerr << "Failed to read ChunkHeader at index " << index << "\n";
+        mycerr << "Failed to read ChunkHeader at index:" << index;
         file.close();
         return;
     }
@@ -123,14 +124,14 @@ void ChunkSystem::overwriteChunk(int cx, int cy, const Chunk& chunk) {
     std::string objectData = objectBuffer.str();
 
     if (biomeData.size() > header.reservedSizeBiome) {
-        std::cerr << "Biome RLE data exceeds reserved space at chunk (" << cx << "," << cy << ")\n";
+        mycerr << "Biome RLE data exceeds reserved space at chunk (" << cx << "," << cy << ")";
         saveFullWorld();
         file.close();
         return;
     }
 
     if (objectData.size() > header.reservedSizeObject) {
-        std::cerr << "Object RLE data exceeds reserved space at chunk (" << cx << "," << cy << ")\n";
+        mycerr << "Object RLE data exceeds reserved space at chunk (" << cx << "," << cy << ")";
         saveFullWorld();
         file.close();
         return;
@@ -190,7 +191,7 @@ char ChunkSystem::objectToSymbol(const Object& obj) {
         case ObjectType::Bush: return 'B';
         case ObjectType::None: return ' ';
         default: {
-            std::cerr << "objectToSymbol: unknown ObjectType\n";
+            mycerr << "unknown ObjectType";
             return '?';
         }
     }
@@ -204,7 +205,7 @@ char ChunkSystem::biomeToSymbolFromTileIndex(uint8_t tileIndex) {
             }
         }
     }
-    std::cerr << "biomeToSymbolFromTileIndex: unknown tile index " << (int)tileIndex << "\n";
+    mycerr << "unknown tile index " << (int)tileIndex;
     return BIOMES[0].symbol;
 }
 
@@ -216,7 +217,7 @@ void ChunkSystem::saveFullWorld() {
     std::ofstream out(newFile, std::ios::binary | std::ios::trunc);
 
     if (!in.is_open() || !out.is_open()) {
-        std::cerr << "Failed to open world file(s)\n";
+        mycerr << "Failed to open world file";
         return;
     }
 
@@ -226,7 +227,7 @@ void ChunkSystem::saveFullWorld() {
 
     in.read(reinterpret_cast<char*>(oldHeaders.data()), total_chunks * sizeof(ChunkHeader));
     if (in.gcount() != total_chunks * sizeof(ChunkHeader)) {
-        std::cerr << "Corrupted or incomplete header section\n";
+        mycerr << "Corrupted or incomplete header section";
         return;
     }
 
@@ -310,11 +311,6 @@ void ChunkSystem::saveFullWorld() {
     in = std::ifstream();
     out = std::ofstream();
 
-    try {
-        std::filesystem::copy_file(newFile, oldFile, std::filesystem::copy_options::overwrite_existing);
-        std::filesystem::remove(newFile);
-    } catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "Filesystem error during file copy+replace: " << e.what() << "\n";
-        return;
-    }
+    std::filesystem::copy_file(newFile, oldFile, std::filesystem::copy_options::overwrite_existing);
+    std::filesystem::remove(newFile);
 }

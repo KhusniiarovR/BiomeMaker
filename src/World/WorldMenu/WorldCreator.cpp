@@ -8,6 +8,7 @@
 #include "Constants/WorldConst.h"
 #include "World/ChunkSystem/Biome.h"
 #include "World/ChunkSystem/Object.h"
+#include "Utilities/Logger/Logger.h"
 
 WorldCreator::WorldCreator() = default;
 
@@ -23,109 +24,108 @@ void WorldCreator::generate(std::string worldName) {
     generate(seed, std::move(worldName));
 }
 
-void WorldCreator::generate(int seed, std::string worldName) {
-    {
-        std::mt19937 rng(seed);
-        this->worldName = std::move(worldName);
+void WorldCreator::generate(int seed, std::string worldName)
+{
+    std::mt19937 rng(seed);
+    this->worldName = std::move(worldName);
 
-        std::uniform_int_distribution<int> dist(0, worldSize - 1);
-        std::vector<BiomeCenter> centers;
+    std::uniform_int_distribution<int> dist(0, worldSize - 1);
+    std::vector<BiomeCenter> centers;
 
-        centers.push_back({ worldSize / 2, worldSize / 2, centerBiome });
+    centers.push_back({ worldSize / 2, worldSize / 2, centerBiome });
 
-        for (char b : innerBiomes) {
-            int angle = dist(rng) % 360;
-            int r = innerRadius * 2 / 3 + (dist(rng) % (innerRadius / 3));
-            int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
-            int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
-            centers.push_back({ cx, cy, b });
-        }
-
-        for (char b : outerBiomes) {
-            int angle = dist(rng) % 360;
-            int r = outerRadius + 30 + (dist(rng) % 50);
-            int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
-            int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
-            centers.push_back({ cx, cy, b });
-        }
-
-        for (int i = 0; i < extraCentersInner; ++i) {
-            char b = innerBiomes[dist(rng) % innerBiomes.size()];
-            int r = innerRadius / 2 + (dist(rng) % (innerRadius / 2));
-            int angle = dist(rng) % 360;
-            int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
-            int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
-            centers.push_back({ cx, cy, b });
-        }
-
-        for (int i = 0; i < extraCentersOuter; ++i) {
-            char b = outerBiomes[dist(rng) % outerBiomes.size()];
-            int r = outerRadius + 40 + (dist(rng) % 50);
-            int angle = dist(rng) % 360;
-            int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
-            int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
-            centers.push_back({ cx, cy, b });
-        }
-
-        std::vector<std::vector<char>> map(worldSize, std::vector<char>(worldSize, errorBiome));
-
-        for (int y = 0; y < worldSize; ++y) {
-            for (int x = 0; x < worldSize; ++x) {
-                int dx = x - worldSize / 2;
-                int dy = y - worldSize / 2;
-                int r = static_cast<int>(std::sqrt(dx * dx + dy * dy));
-
-                char biome = errorBiome;
-
-                if (r >= innerRadius && r <= outerRadius) {
-                    biome = ringBiome;
-                }
-                else {
-                    int minDist = std::numeric_limits<int>::max();
-
-                    for (const auto& center : centers) {
-                        int cx = center.x - worldSize / 2;
-                        int cy = center.y - worldSize / 2;
-                        int centerR = static_cast<int>(std::sqrt(cx * cx + cy * cy));
-
-                        bool sameZone =
-                            (r < innerRadius && centerR < innerRadius) ||
-                            (r > outerRadius && centerR > outerRadius) ||
-                            (r <= innerRadius && center.type == 'F');
-
-                        int d2 = sameZone ? dist2(x, y, center.x, center.y) : std::numeric_limits<int>::max();
-
-                        if (d2 < minDist) {
-                            minDist = d2;
-                            biome = center.type;
-                        }
-                    }
-                }
-
-                map[y][x] = biome;
-            }
-        }
-
-        std::vector<std::vector<char>> objects(worldSize, std::vector<char>(worldSize, ' '));
-        std::uniform_real_distribution<float> chance(0.0f, 1.0f);
-
-        for (int y = 0; y < worldSize; ++y) {
-            for (int x = 0; x < worldSize; ++x) {
-                char biome = map[y][x];
-                auto it = objectRules.find(biome);
-                if (it != objectRules.end()) {
-                    for (const ObjectRule& rule : it->second) {
-                        if (chance(rng) < rule.probability) {
-                            objects[y][x] = rule.symbol;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        save_world_rle(map, objects);
+    for (char b : innerBiomes) {
+        int angle = dist(rng) % 360;
+        int r = innerRadius * 2 / 3 + (dist(rng) % (innerRadius / 3));
+        int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
+        int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
+        centers.push_back({ cx, cy, b });
     }
+
+    for (char b : outerBiomes) {
+        int angle = dist(rng) % 360;
+        int r = outerRadius + 30 + (dist(rng) % 50);
+        int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
+        int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
+        centers.push_back({ cx, cy, b });
+    }
+
+    for (int i = 0; i < extraCentersInner; ++i) {
+        char b = innerBiomes[dist(rng) % innerBiomes.size()];
+        int r = innerRadius / 2 + (dist(rng) % (innerRadius / 2));
+        int angle = dist(rng) % 360;
+        int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
+        int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
+        centers.push_back({ cx, cy, b });
+    }
+
+    for (int i = 0; i < extraCentersOuter; ++i) {
+        char b = outerBiomes[dist(rng) % outerBiomes.size()];
+        int r = outerRadius + 40 + (dist(rng) % 50);
+        int angle = dist(rng) % 360;
+        int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
+        int cy = worldSize / 2 + static_cast<int>(r * std::sin(angle));
+        centers.push_back({ cx, cy, b });
+    }
+
+    std::vector<std::vector<char>> map(worldSize, std::vector<char>(worldSize, errorBiome));
+
+    for (int y = 0; y < worldSize; ++y) {
+        for (int x = 0; x < worldSize; ++x) {
+            int dx = x - worldSize / 2;
+            int dy = y - worldSize / 2;
+            int r = static_cast<int>(std::sqrt(dx * dx + dy * dy));
+
+            char biome = errorBiome;
+
+            if (r >= innerRadius && r <= outerRadius) {
+                biome = ringBiome;
+            }
+            else {
+                int minDist = std::numeric_limits<int>::max();
+
+                for (const auto& center : centers) {
+                    int cx = center.x - worldSize / 2;
+                    int cy = center.y - worldSize / 2;
+                    int centerR = static_cast<int>(std::sqrt(cx * cx + cy * cy));
+
+                    bool sameZone =
+                        (r < innerRadius && centerR < innerRadius) ||
+                        (r > outerRadius && centerR > outerRadius) ||
+                        (r <= innerRadius && center.type == 'F');
+
+                    int d2 = sameZone ? dist2(x, y, center.x, center.y) : std::numeric_limits<int>::max();
+
+                    if (d2 < minDist) {
+                        minDist = d2;
+                        biome = center.type;
+                    }
+                }
+            }
+
+            map[y][x] = biome;
+        }
+    }
+
+    std::vector<std::vector<char>> objects(worldSize, std::vector<char>(worldSize, ' '));
+    std::uniform_real_distribution<float> chance(0.0f, 1.0f);
+
+    for (int y = 0; y < worldSize; ++y) {
+        for (int x = 0; x < worldSize; ++x) {
+            char biome = map[y][x];
+            auto it = objectRules.find(biome);
+            if (it != objectRules.end()) {
+                for (const ObjectRule& rule : it->second) {
+                    if (chance(rng) < rule.probability) {
+                        objects[y][x] = rule.symbol;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    save_world_rle(map, objects);
 }
 
 int WorldCreator::dist2(int x1, int y1, int x2, int y2) {
@@ -160,7 +160,7 @@ void WorldCreator::write_rle_chunk(std::ofstream& out,
 void WorldCreator::save_world_rle(const std::vector<std::vector<char>>& biomes, 
                                   const std::vector<std::vector<char>>& objects) {
     if (!std::filesystem::exists("saves/")) {
-        std::cerr << "Recreated saves folder";
+        mycerr << "Recreated saves folder";
         std::filesystem::create_directory("saves");
     }
 
@@ -169,7 +169,7 @@ void WorldCreator::save_world_rle(const std::vector<std::vector<char>>& biomes,
     std::ofstream out(filename, std::ios::binary);
 
     if (!out.is_open()) {
-        std::cerr << "Error: can't open world.dat\n";
+        mycerr << "can't open world.dat";
         return;
     }
 
@@ -226,7 +226,7 @@ std::string WorldCreator::getName() {
     if (prefixes.empty() || suffixes.empty()) {
         std::ifstream file("data/worldNames/names.txt");
         if (!file.is_open()) {
-            std::cerr << "worldcreator:getName:can't open file names.txt\n";
+            mycerr << "can't open file names.txt";
         }
 
         std::string line;

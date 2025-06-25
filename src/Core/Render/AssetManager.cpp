@@ -1,5 +1,6 @@
 #include "AssetManager.h"
 #include <iostream>
+#include "Utilities/Logger/Logger.h"
 
 AssetManager::AssetManager() {
     registerFont("Inter", "data/text/InterFont.ttf");
@@ -11,16 +12,16 @@ AssetManager::~AssetManager() {
 }
 
 void AssetManager::registerTexture(const std::string& key, const std::string& path) {
-        if (texturePaths.contains(key)) {
-            std::cerr << "AssetManager: Texture key already registered: " << key << "\n";
-            return;
-        }
-        texturePaths[key] = path;
+    if (texturePaths.contains(key)) {
+        mycerr << "Texture key already registered: " << key;
+        return;
     }
+    texturePaths[key] = path;
+}
 
 void AssetManager::registerFont(const std::string& key, const std::string& path) {
     if (fontPaths.contains(key)) {
-        std::cerr << "AssetManager: Font key already registered: " << key << "\n";
+        mycerr << "Font key already registered: " << key;
         return;
     }
     fontPaths[key] = path;
@@ -28,7 +29,7 @@ void AssetManager::registerFont(const std::string& key, const std::string& path)
 
 void AssetManager::registerSound(const std::string& key, const std::string& path) {
     if (soundPaths.contains(key)) {
-        std::cerr << "AssetManager: Sound key already registered: " << key << "\n";
+        mycerr << "Sound key already registered: " << key;
         return;
     }
     soundPaths[key] = path;
@@ -40,7 +41,7 @@ Texture2D& AssetManager::getTexture(const std::string& key) {
 
     auto pathIt = texturePaths.find(key);
     if (pathIt == texturePaths.end()) {
-        std::cerr << "AssetManager: Texture key not found: " << key << "\n";
+        mycerr << "Texture key not found: " << key;
         static Texture2D texture;
         return texture;
     }
@@ -59,7 +60,7 @@ Font& AssetManager::getFont(const std::string& key, int size) {
 
     auto pathIt = fontPaths.find(key);
     if (pathIt == fontPaths.end()) {
-        std::cerr << "AssetManager: Font key not found: " << key << "\n";
+        mycerr << "Font key not found: " << key;
         static Font font;
         return font;
     }
@@ -75,7 +76,7 @@ Sound& AssetManager::getSound(const std::string& key) {
 
     auto pathIt = soundPaths.find(key);
     if (pathIt == soundPaths.end()) {
-        std::cerr << "AssetManager: Sound key not found: " << key << "\n";
+        mycerr << "Sound key not found: " << key;
         static Sound sound;
         return sound;
     }
