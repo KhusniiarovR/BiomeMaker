@@ -4,22 +4,29 @@
 #include <unordered_map>
 #include "Chunk.h"
 #include "Utilities/World/PairHash.h"
+#include "Core/Render/Renderer.h"
 
-
-class WorldChanger {
+class ChunkSystem {
 private:    
     std::unordered_map<std::pair<int, int>, Chunk, PairHash>& chunks;
-    std::vector<ChunkHeader>& headers;
-    std::ifstream& worldFile;
+    std::vector<ChunkHeader> headers;
+    std::ifstream worldFile;
     std::string filename;
+
 public:
-    WorldChanger(std::unordered_map<std::pair<int, int>, Chunk, PairHash>& chunks,
-                 std::vector<ChunkHeader>& headers, 
-                 std::ifstream& worldFile,
+    ChunkSystem(std::unordered_map<std::pair<int, int>, Chunk, PairHash>& chunks,
                  const std::string& filename);
-    void overwriteChunk(int cx, int cy, const Chunk& chunk);
+    ~ChunkSystem();             
+
+    void update(Vector2& playerPos);
+    void render(Renderer& renderer) const;
     
-private:
+    private:
+    void LoadHeaders();
+    
+    void updateChunks(Vector2& playerPos);
+
+    void overwriteChunk(int cx, int cy, const Chunk& chunk);
     void writeData(std::ostream& out, const std::vector<std::vector<char>>& data);
     char objectToSymbol(const Object& obj);
     char biomeToSymbolFromTileIndex(uint8_t tileIndex);

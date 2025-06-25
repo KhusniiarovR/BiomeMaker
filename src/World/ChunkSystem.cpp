@@ -1,16 +1,91 @@
-#include "WorldChanger.h"
+#include "ChunkSystem.h"
 #include <sstream>
 
-WorldChanger::WorldChanger(
+ChunkSystem::ChunkSystem(
     std::unordered_map<std::pair<int, int>, Chunk, PairHash>& chunks,
-    std::vector<ChunkHeader>& headers, 
-    std::ifstream& worldFile,
-    const std::string& filename) : chunks(chunks), headers(headers), worldFile(worldFile), filename(filename) 
+    const std::string& filename) : chunks(chunks), filename(filename) 
 {
-
+    LoadHeaders();
 }
 
-void WorldChanger::overwriteChunk(int cx, int cy, const Chunk& chunk) {
+ChunkSystem::~ChunkSystem() {
+    for (const auto& [coord, chunk] : chunks) {
+        if (chunk.isModified) {
+            int cx = coord.first;
+            int cy = coord.second;
+            overwriteChunk(cx, cy, chunk);
+        }
+    }
+}
+
+void ChunkSystem::LoadHeaders() {
+    worldFile.open(filename + "/world.dat", std::ios::binary);
+    if (!worldFile.is_open()) {
+        std::cerr << "Error: can't open world.dat\n";
+        return;
+    }
+
+    int totalChunks = worldSize;
+    headers.resize(totalChunks);
+    worldFile.read(reinterpret_cast<char*>(headers.data()), totalChunks * sizeof(ChunkHeader));
+}
+
+void ChunkSystem::update(Vector2& playerPos) {
+    updateChunks(playerPos);
+}
+
+void ChunkSystem::render(Renderer& renderer) const {
+    Texture2D& tilemap = renderer.getTexture("tilemap");
+    for (const auto& [pos, chunk] : chunks) {
+        chunk.Draw(tilemap);
+    }
+}
+
+void ChunkSystem::updateChunks(Vector2& playerPos) {
+    int playerChunkX = static_cast<int>(playerPos.x / chunkPixelSize);
+    int playerChunkY = static_cast<int>(playerPos.y / chunkPixelSize);
+
+    const int preloadAhead = renderDistance / 2;
+    const int preloadBehind = renderDistance - preloadAhead;
+
+    int loadStartX = playerChunkX - preloadBehind;
+    int loadEndX   = playerChunkX + preloadAhead + 1;
+
+    int loadStartY = playerChunkY - preloadBehind;
+    int loadEndY   = playerChunkY + preloadAhead + 1;
+
+    for (int y = loadStartY; y < loadEndY; ++y) {
+        for (int x = loadStartX; x < loadEndX; ++x) {
+            auto key = std::make_pair(x, y);
+            if (chunks.find(key) == chunks.end()) {
+                chunks.emplace(key, Chunk(x, y, headers, worldFile));
+            }
+        }
+    }
+
+    int unloadStartX = loadStartX - unloadMargin;
+    int unloadEndX   = loadEndX + unloadMargin;
+    int unloadStartY = loadStartY - unloadMargin;
+    int unloadEndY   = loadEndY + unloadMargin;
+
+    auto it = chunks.begin();
+    while (it != chunks.end()) {
+        auto [chunkX, chunkY] = it->first;
+        if (chunkX < unloadStartX || chunkX >= unloadEndX ||
+            chunkY < unloadStartY || chunkY >= unloadEndY) {
+            if (it->second.isModified) {
+                overwriteChunk(chunkX, chunkY, it->second);
+                // it->second.isModified = false; anyway delete
+            }
+            it = chunks.erase(it);
+        } 
+        else {
+            ++it;
+        }
+    }
+}
+
+void ChunkSystem::overwriteChunk(int cx, int cy, const Chunk& chunk) {
     std::fstream file(filename + "/world.dat", std::ios::binary | std::ios::in | std::ios::out);
     if (!file.is_open()) {
         std::cerr << "Failed to open world.dat for overwriting chunk\n";
@@ -85,7 +160,7 @@ void WorldChanger::overwriteChunk(int cx, int cy, const Chunk& chunk) {
     file.close();
 }
 
-void WorldChanger::writeData(std::ostream& out, const std::vector<std::vector<char>>& data) {
+void ChunkSystem::writeData(std::ostream& out, const std::vector<std::vector<char>>& data) {
     char current = data[0][0];
     uint8_t count = 1;
 
@@ -108,7 +183,7 @@ void WorldChanger::writeData(std::ostream& out, const std::vector<std::vector<ch
     out.write(&current, 1);
 }
 
-char WorldChanger::objectToSymbol(const Object& obj) {
+char ChunkSystem::objectToSymbol(const Object& obj) {
     switch (obj.type) {
         case ObjectType::Tree: return 'T';
         case ObjectType::Rock: return 'R';
@@ -121,7 +196,7 @@ char WorldChanger::objectToSymbol(const Object& obj) {
     }
 }
 
-char WorldChanger::biomeToSymbolFromTileIndex(uint8_t tileIndex) {
+char ChunkSystem::biomeToSymbolFromTileIndex(uint8_t tileIndex) {
     for (const auto& biome : BIOMES) {
         for (const auto& [tile, _] : biome.tileVariants) {
             if (tile == tileIndex) {
@@ -133,7 +208,7 @@ char WorldChanger::biomeToSymbolFromTileIndex(uint8_t tileIndex) {
     return BIOMES[0].symbol;
 }
 
-void WorldChanger::saveFullWorld() {
+void ChunkSystem::saveFullWorld() {
     std::string oldFile = filename + "/world.dat";
     std::string newFile = filename + "/world_temp.dat";
 

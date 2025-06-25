@@ -4,37 +4,12 @@
 #include "Constants/WorldConst.h"
 #include <sstream>
 
-World::World(const std::string &filename) 
-    : filename(filename),
-    worldChanger(chunks, headers, worldFile, filename)
-{
-    LoadHeaders();
-}
+World::World(const std::string &filename) : chunkSystem(chunks, filename) {}
 
-World::~World() {
-    for (const auto& [coord, chunk] : chunks) {
-        if (chunk.isModified) {
-            int cx = coord.first;
-            int cy = coord.second;
-            worldChanger.overwriteChunk(cx, cy, chunk);
-        }
-    }
-}
-
-void World::LoadHeaders() {
-    worldFile.open(filename + "/world.dat", std::ios::binary);
-    if (!worldFile.is_open()) {
-        std::cerr << "Error: can't open world.dat\n";
-        return;
-    }
-
-    int totalChunks = worldSize;
-    headers.resize(totalChunks);
-    worldFile.read(reinterpret_cast<char*>(headers.data()), totalChunks * sizeof(ChunkHeader));
-}
+World::~World() = default;
 
 void World::update(Vector2 playerPos, Camera2D& camera) {
-    updateChunks(playerPos);
+    chunkSystem.update(playerPos);
 
     if (IsKeyPressed(KEY_E)) {
     Vector2 mouseScreen = GetMousePosition();
@@ -56,54 +31,7 @@ void World::update(Vector2 playerPos, Camera2D& camera) {
 }
 
 void World::render(Renderer& renderer) const {
-    Texture2D& tilemap = renderer.getTexture("tilemap");
-    for (const auto& chunk : chunks | std::views::values) {
-        chunk.Draw(tilemap);
-    }
-}
-
-void World::updateChunks(Vector2 playerPos) {
-    int playerChunkX = static_cast<int>(playerPos.x / chunkPixelSize);
-    int playerChunkY = static_cast<int>(playerPos.y / chunkPixelSize);
-
-    const int preloadAhead = renderDistance / 2;
-    const int preloadBehind = renderDistance - preloadAhead;
-
-    int loadStartX = playerChunkX - preloadBehind;
-    int loadEndX   = playerChunkX + preloadAhead + 1;
-
-    int loadStartY = playerChunkY - preloadBehind;
-    int loadEndY   = playerChunkY + preloadAhead + 1;
-
-    for (int y = loadStartY; y < loadEndY; ++y) {
-        for (int x = loadStartX; x < loadEndX; ++x) {
-            auto key = std::make_pair(x, y);
-            if (chunks.find(key) == chunks.end()) {
-                chunks.emplace(key, Chunk(x, y, headers, worldFile));
-            }
-        }
-    }
-
-    int unloadStartX = loadStartX - unloadMargin;
-    int unloadEndX   = loadEndX + unloadMargin;
-    int unloadStartY = loadStartY - unloadMargin;
-    int unloadEndY   = loadEndY + unloadMargin;
-
-    auto it = chunks.begin();
-    while (it != chunks.end()) {
-        auto [chunkX, chunkY] = it->first;
-        if (chunkX < unloadStartX || chunkX >= unloadEndX ||
-            chunkY < unloadStartY || chunkY >= unloadEndY) {
-            if (it->second.isModified) {
-                worldChanger.overwriteChunk(chunkX, chunkY, it->second);
-                // it->second.isModified = false; anyway delete
-            }
-            it = chunks.erase(it);
-        } 
-        else {
-            ++it;
-        }
-    }
+    chunkSystem.render(renderer);
 }
 
 bool World::removeObjectAt(int worldX, int worldY) {
@@ -125,8 +53,4 @@ bool World::removeObjectAt(int worldX, int worldY) {
         return true;
     }
     return false;
-}
-
-int World::getChunkCount() const {
-    return chunks.size();
 }
