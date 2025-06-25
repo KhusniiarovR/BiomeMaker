@@ -1,5 +1,4 @@
 #include "AssetManager.h"
-#include <iostream>
 #include "Utilities/Logger/Logger.h"
 
 AssetManager::AssetManager() {

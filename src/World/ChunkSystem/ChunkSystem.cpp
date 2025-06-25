@@ -192,7 +192,7 @@ char ChunkSystem::objectToSymbol(const Object& obj) {
         case ObjectType::None: return ' ';
         default: {
             mycerr << "unknown ObjectType";
-            return '?';
+            return ' ';
         }
     }
 }

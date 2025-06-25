@@ -1,6 +1,4 @@
 #include "TextBox.h"
-#include <utility>
-#include <Constants/GraphicsConst.h>
 void TextBox::update()
 {
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
@@ -37,7 +35,7 @@ void TextBox::draw(Renderer& renderer) const
 {
     DrawRectangleRec(box,BGColor);
     DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, lineColor);
-    DrawText(text.c_str(), box.x + 0.00260416666f, box.y + 0.00416666666f, 20, BLACK);
+    DrawText(text.c_str(), box.x + 0.002f, box.y + 0.004f, 20, BLACK);
 }
 string TextBox::returnText()
 {

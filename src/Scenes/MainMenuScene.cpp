@@ -1,5 +1,4 @@
 #include "MainMenuScene.h"
-#include <Constants/GraphicsConst.h>
 #include "raylib.h"
 
 MainMenuScene::MainMenuScene(Renderer& renderer) : Scene(renderer) {

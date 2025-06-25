@@ -1,6 +1,4 @@
 #include "Enemy.h"
-#include <cmath>
-#include <iostream>
 #include "EnemyManager.h"
 Enemy::Enemy(Vector2 init_pos,Player &player) : Entity(init_pos), player(player){
     position.x -=200;

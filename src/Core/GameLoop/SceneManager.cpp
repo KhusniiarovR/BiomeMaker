@@ -1,5 +1,4 @@
 #include "SceneManager.h"
-#include <iostream>
 #include "Scenes/MainMenuScene.h"
 #include "Scenes/GameScene.h"
 #include "Scenes/WorldSelectionScene.h"
