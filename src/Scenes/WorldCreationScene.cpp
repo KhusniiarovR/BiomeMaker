@@ -43,7 +43,7 @@ void WorldCreationScene::update(float dt)
     createButton.update();
     backButton.update();
     createRandButton.update();
-    enterName.update();
+    enterName.update(dt);
 }
 void WorldCreationScene::render() const 
 {

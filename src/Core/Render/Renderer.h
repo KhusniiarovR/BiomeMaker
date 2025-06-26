@@ -20,7 +20,8 @@ public:
 
     void drawText(const std::string& text, Vector2 position = {0.5f, 0.5f},
                   float size = 100.0f, Color color = WHITE,
-                  bool isCentered = true, const std::string& fontKey = "Inter", float spacing = 4.0f); 
+                  bool isCentered = true, bool isNormalizedPos = true,
+                  const std::string& fontKey = "Inter", float spacing = 4.0f); 
                 
     void drawTextGradient(
                 const std::string& text, Vector2 position = {0.5f, 0.5f},

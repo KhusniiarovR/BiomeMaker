@@ -13,6 +13,7 @@ class TextBox
         bool active;    
         Color BGColor;
         Color lineColor;
+        float backspaceTimer = 0.0f;
     
     public:
         TextBox(float x, float y, float width, float height,Color BGcolor, Color lineColor)
@@ -23,7 +24,7 @@ class TextBox
             BGColor = BGcolor;
             lineColor = lineColor;
         }
-        void update();
+        void update(float dt);
         void draw(Renderer& renderer) const;
         string returnText();
 };

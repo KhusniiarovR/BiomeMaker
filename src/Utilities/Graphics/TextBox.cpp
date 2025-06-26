@@ -1,10 +1,9 @@
 #include "TextBox.h"
-void TextBox::update()
+void TextBox::update(float dt)
 {
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        Vector2 mousePos = GetMousePosition();
-        active = CheckCollisionPointRec(mousePos, box);
+        active = CheckCollisionPointRec(GetMousePosition(), box);
     }
     if (active)
     {
@@ -20,6 +19,20 @@ void TextBox::update()
         if (IsKeyPressed(KEY_BACKSPACE) && !text.empty())
         {
             text.pop_back();
+            backspaceTimer = 0.6f; // задержка впервый раз
+        }
+        else if (IsKeyDown(KEY_BACKSPACE) && !text.empty()) 
+        {
+            backspaceTimer -= dt;
+            if (backspaceTimer <= 0.0f) 
+            {
+                text.pop_back();
+                backspaceTimer = 0.05f; // задержка в последующие
+            }
+        }
+        else
+        {
+            backspaceTimer = 0.0f; 
         }
     }
     if(CheckCollisionPointRec(GetMousePosition(), box))
@@ -35,7 +48,7 @@ void TextBox::draw(Renderer& renderer) const
 {
     DrawRectangleRec(box,BGColor);
     DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, lineColor);
-    DrawText(text.c_str(), box.x + 0.002f, box.y + 0.004f, 20, BLACK);
+    renderer.drawText(text.c_str(), {box.x, box.y}, 25, BLACK, false, false, "Inter", 0.3f);
 }
 string TextBox::returnText()
 {

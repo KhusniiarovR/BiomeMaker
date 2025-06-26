@@ -20,7 +20,8 @@ void Renderer::updateCamera(Vector2 playerPos) {
 
 void Renderer::drawText(const std::string& text, Vector2 position,
                         float size, Color color,
-                        bool isCentered, const std::string& fontKey, float spacing) {
+                        bool isCentered, bool isNormalizedPos,
+                        const std::string& fontKey, float spacing) {
 
     const Font& font = assetManager.getFont(fontKey, size);
 
@@ -29,14 +30,17 @@ void Renderer::drawText(const std::string& text, Vector2 position,
     }
     
     Vector2 dimensions = MeasureTextEx(font, text.c_str(), size, spacing);
-    Vector2 pos = { screenSizeX * position.x, screenSizeY * position.y};
+    if (isNormalizedPos) {
+        position = { screenSizeX * position.x, screenSizeY * position.y};
+    }
+
     if (isCentered) {
-        pos.x -= (0.5f * dimensions.x);
-        pos.y -= (0.5f * dimensions.y);
-        DrawTextEx(font, text.c_str(), pos, dimensions.y, spacing, color);
+        position.x -= (0.5f * dimensions.x);
+        position.y -= (0.5f * dimensions.y);
+        DrawTextEx(font, text.c_str(), position, dimensions.y, spacing, color);
     }
     else {
-        DrawTextEx(font, text.c_str(), pos, dimensions.y, spacing, color);
+        DrawTextEx(font, text.c_str(), position, dimensions.y, spacing, color);
     }
 }
 
