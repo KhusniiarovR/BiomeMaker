@@ -16,7 +16,7 @@ Button::Button(float posX, float posY, float sizeX, float sizeY, std::string tex
     textColor(textColor),
     rounding(rounding) {}
 
-void Button::setTexture(Texture2D tex) {
+void Button::setTexture(Texture2D& tex) {
     texture = tex;
     hasTexture = true;
 }
@@ -25,25 +25,33 @@ void Button::setOnClick(std::function<void()> handler) {
     onClickHandler = std::move(handler);
 }
 
-void Button::render(Renderer& renderer) const {
-    Rectangle rect = { position.x, position.y, size.x, size.y };
-
-    DrawRectangleRounded(rect, rounding, 10, LIGHTGRAY);
-
-    if (hasTexture) {
-        DrawTexturePro(texture,{0, 0, (float)texture.width, (float)texture.height },
-                       rect, {0, 0}, 0.0f, WHITE);
-    }
-    DrawRectangleRoundedLines(rect, rounding, 12, DARKGRAY);
-
-    renderer.drawText(text, {(position.x + (size.x / 2)) / screenSizeX, (position.y + (size.y / 2)) / screenSizeY}, size.x / 5, textColor);
-}
-
 void Button::update() {
     Rectangle rect = { position.x, position.y, size.x, size.y };
     if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+        isHovered = true;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             if (onClickHandler) onClickHandler();
         }
     }
+    else isHovered = false;
 }
+
+void Button::render(Renderer& renderer) const {
+    Rectangle rect = { position.x, position.y, size.x, size.y };
+
+    if (hasTexture) {
+        Rectangle source;
+        source.width = (float)texture.width / 2;
+        source.height = (float)texture.height;
+        source.x = isHovered ? source.width : 0;
+        source.y = 0;
+        DrawTexturePro(texture, source, rect, {0, 0}, 0.0f, WHITE);
+    }
+    else {
+        Color color = isHovered ? WHITE : LIGHTGRAY;
+        DrawRectangleRounded(rect, rounding, 10, color);
+    }
+
+    renderer.drawText(text, {(position.x + (size.x / 2)) / screenSizeX, (position.y + (size.y / 2)) / screenSizeY}, size.x / 5, textColor);
+}
+

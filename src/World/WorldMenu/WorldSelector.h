@@ -10,7 +10,7 @@ class WorldSelector {
 public:
     explicit WorldSelector(const std::string& path = "saves/");
     void update();
-    void draw(Renderer& renderer) const;
+    void render(Renderer& renderer) const;
     [[nodiscard]] std::string getSelectedFolder() const;
     void loadFolders();
     void deleteCurrent();

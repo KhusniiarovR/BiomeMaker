@@ -15,16 +15,17 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
     });
 
     createButton.setOnClick([this]() {
-    std::thread([this]() {
         changeScene = true;
         nextScene = SceneType::WorldCreation;
-        }).detach();
-        // doesn't work when spamming button create so need to make separate world creation menu
     });
-
+    
     deleteButton.setOnClick([this]() {
         worldSelector.deleteCurrent();
     });
+    
+    createButton.setTexture(renderer.getTexture("button1"));
+    playButton.setTexture(renderer.getTexture("button1"));
+    deleteButton.setTexture(renderer.getTexture("button1"));
 }
 
 void WorldSelectionScene::update(float dt) {
@@ -47,7 +48,7 @@ void WorldSelectionScene::update(float dt) {
 }
 
 void WorldSelectionScene::render() const {
-    worldSelector.draw(renderer);
+    worldSelector.render(renderer);
     playButton.render(renderer);
     createButton.render(renderer);
     deleteButton.render(renderer);
