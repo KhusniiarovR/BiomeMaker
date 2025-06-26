@@ -2,19 +2,21 @@
 #include <utility>
 #include <Constants/GraphicsConst.h>
 
-Button::Button(Vector2 pos, Vector2 size, std::string text, Color textColor, float rounding)
+Button::Button(Vector2 pos, Vector2 size, std::string text, Color textColor, float rounding, Color buttonColor)
     : position({pos.x * screenSizeX, pos.y * screenSizeY}),
     size({size.x * screenSizeX, size.y * screenSizeY}),
     text(std::move(text)),
     textColor(textColor),
-    rounding(rounding) {}
+    rounding(rounding),
+    buttonColor(buttonColor) {}
 
-Button::Button(float posX, float posY, float sizeX, float sizeY, std::string text, Color textColor, float rounding)
+Button::Button(float posX, float posY, float sizeX, float sizeY, std::string text, Color textColor, float rounding, Color buttonColor)
     : position({posX * screenSizeX, posY * screenSizeY}),
     size({sizeX * screenSizeX, sizeY * screenSizeY}),
     text(std::move(text)),
     textColor(textColor),
-    rounding(rounding) {}
+    rounding(rounding),
+    buttonColor(buttonColor) {}
 
 void Button::setTexture(Texture2D& tex) {
     texture = tex;
@@ -48,10 +50,13 @@ void Button::render(Renderer& renderer) const {
         DrawTexturePro(texture, source, rect, {0, 0}, 0.0f, WHITE);
     }
     else {
-        Color color = isHovered ? WHITE : LIGHTGRAY;
+        Color color = isHovered ? DARKGRAY : buttonColor;
         DrawRectangleRounded(rect, rounding, 10, color);
     }
 
-    renderer.drawText(text, {(position.x + (size.x / 2)) / screenSizeX, (position.y + (size.y / 2)) / screenSizeY}, size.x / 5, textColor);
+    renderer.drawText (
+    text, {(position.x + (size.x / 2)) / screenSizeX, 
+    (position.y + (size.y / 2)) / screenSizeY}, 
+    size.x / (isHovered ? 4 : 5), isHovered ? YELLOW : textColor );
 }
 

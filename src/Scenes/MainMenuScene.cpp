@@ -14,6 +14,7 @@ void MainMenuScene::update(float dt) {
 }
 
 void MainMenuScene::render() const {
+    renderer.drawBackground();
     renderer.drawTextGradient("Press enter to continue", {0.5f, 0.5f}, 100.0f, 4.0f, PURPLE, RED);
 }
 

@@ -14,7 +14,7 @@ public:
     void registerFont(const std::string& key, const std::string& path);
     void registerSound(const std::string& key, const std::string& path);
 
-    Texture2D& getTexture(const std::string& key);
+    Texture2D& getTexture(const std::string& key, bool shouldBeWrapped = false);
     Font& getFont(const std::string& key, int size);
     Sound& getSound(const std::string& key);
 

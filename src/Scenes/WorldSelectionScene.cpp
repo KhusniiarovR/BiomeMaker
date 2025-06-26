@@ -23,8 +23,8 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
         worldSelector.deleteCurrent();
     });
     
-    createButton.setTexture(renderer.getTexture("button1"));
     playButton.setTexture(renderer.getTexture("button1"));
+    createButton.setTexture(renderer.getTexture("button1"));
     deleteButton.setTexture(renderer.getTexture("button1"));
 }
 
@@ -48,6 +48,7 @@ void WorldSelectionScene::update(float dt) {
 }
 
 void WorldSelectionScene::render() const {
+    renderer.drawBackground();
     worldSelector.render(renderer);
     playButton.render(renderer);
     createButton.render(renderer);

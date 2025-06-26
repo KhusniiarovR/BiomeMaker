@@ -9,7 +9,6 @@ class WorldCreationScene : public Scene
 {
     private:
         WorldCreator worldCreator;
-        WorldSelector worldSelector;
         Button backButton;
         Button createRandButton;
         Button createButton;
@@ -22,5 +21,4 @@ class WorldCreationScene : public Scene
         void render() const override;
         [[nodiscard]] bool shouldTransition() const override;
         [[nodiscard]] SceneType getNextScene() const override;
-        [[nodiscard]] std::string getWorldName() const override;
 };

@@ -86,6 +86,20 @@ void Renderer::drawTextGradient(const std::string& text, Vector2 position,
     }
 }
 
+void Renderer::drawBackground() {
+    const int pixelheight = 30;
+    Texture2D bg = getTexture("background", true);
+    bgoffset += GetFrameTime() * 100;
+
+    float scale = screenSizeY / pixelheight;
+    float sourceWidth = screenSizeX / scale;
+
+    Rectangle sourceRec = { bgoffset / scale, 0, sourceWidth, (float)bg.height };
+    Rectangle destRec = { 0, 0, (float)screenSizeX, (float)screenSizeY };
+
+    DrawTexturePro(bg, sourceRec, destRec, { 0, 0 }, 0.0f, WHITE);
+}    
+
 void Renderer::drawPlayer(Vector2 playerPos) {
     DrawCircleV(playerPos, 50, RED);
     DrawCircleLinesV(playerPos, handDistance * tileSize, YELLOW);
@@ -96,6 +110,6 @@ void Renderer::drawEnemy(Vector2 enemyPos)
 }
 
 
-Texture2D& Renderer::getTexture(const std::string& key) {
-    return assetManager.getTexture(key);
+Texture2D& Renderer::getTexture(const std::string& key, bool shouldBeWrapped) {
+    return assetManager.getTexture(key, shouldBeWrapped);
 }

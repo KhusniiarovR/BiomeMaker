@@ -8,7 +8,6 @@
 
 class WorldSelectionScene : public Scene {
 private:
-    WorldCreator worldCreator;
     WorldSelector worldSelector;
 
     Button playButton;

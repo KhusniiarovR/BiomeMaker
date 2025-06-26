@@ -8,8 +8,8 @@
 
 class Button {
 public:
-    Button(Vector2 pos, Vector2 size, std::string text, Color textColor = WHITE, float rounding = 0.0f);
-    Button(float posX, float posY, float sizeX, float sizeY, std::string text, Color textColor = WHITE, float rounding = 0.0f);
+    Button(Vector2 pos, Vector2 size, std::string text, Color textColor = WHITE, float rounding = 0.0f, Color buttonColor = BLACK);
+    Button(float posX, float posY, float sizeX, float sizeY, std::string text, Color textColor = WHITE, float rounding = 0.0f, Color buttonColor = BLACK);
     void setTexture(Texture2D& tex);
     void setOnClick(std::function<void()> handler);
 
@@ -21,6 +21,7 @@ private:
     Vector2 size;
     std::string text;
     Color textColor;
+    Color buttonColor;
     float rounding = 0.0f;
     Texture2D texture = {0};
     bool hasTexture = false;

@@ -13,16 +13,19 @@ class TextBox
         bool active;    
         Color BGColor;
         Color lineColor;
+        Color textColor;
         float backspaceTimer = 0.0f;
+        int textSize;
     
     public:
-        TextBox(float x, float y, float width, float height,Color BGcolor, Color lineColor)
+        TextBox(float x, float y, float width, float height,Color BGcolor, Color lineColor, Color textColor, int textSize) : textSize(textSize)
         {
             box = { screenSizeX*x, screenSizeY*y, screenSizeX*width, screenSizeY*height };
             text = "";
             active = false;
             BGColor = BGcolor;
             lineColor = lineColor;
+            textColor = textColor;
         }
         void update(float dt);
         void draw(Renderer& renderer) const;

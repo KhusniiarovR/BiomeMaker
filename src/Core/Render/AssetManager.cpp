@@ -5,6 +5,7 @@ AssetManager::AssetManager() {
     registerFont("Inter", "data/text/InterFont.ttf");
     registerTexture("tilemap", "data/textures/tilemap.png");
     registerTexture("button1", "data/textures/buttonPack1.png");
+    registerTexture("background", "data/textures/background.png");
 }
 
 AssetManager::~AssetManager() {
@@ -35,7 +36,7 @@ void AssetManager::registerSound(const std::string& key, const std::string& path
     soundPaths[key] = path;
 }
 
-Texture2D& AssetManager::getTexture(const std::string& key) {
+Texture2D& AssetManager::getTexture(const std::string& key, bool shouldBeWrapped) {
     auto it = textures.find(key);
     if (it != textures.end()) return it->second;
 
@@ -47,6 +48,12 @@ Texture2D& AssetManager::getTexture(const std::string& key) {
     }
 
     Texture2D tex = LoadTexture(pathIt->second.c_str());
+    if (shouldBeWrapped) SetTextureWrap(tex, TEXTURE_WRAP_REPEAT);
+
+    if (tex.id == 0) {
+        mycerr << "incorrect texture path: " << key;
+    }
+
     textures[key] = tex;
     return textures[key];
 }
@@ -66,6 +73,10 @@ Font& AssetManager::getFont(const std::string& key, int size) {
     }
 
     Font font = LoadFontEx(pathIt->second.c_str(), size, nullptr, 0);
+
+    if (font.texture.id == 0) {
+        mycerr << "incorrect font path: " << key;
+    }
     fonts[key][size] = font;
     return fonts[key][size];;
 }
@@ -82,6 +93,11 @@ Sound& AssetManager::getSound(const std::string& key) {
     }
 
     Sound sound = LoadSound(pathIt->second.c_str());
+
+    if (sound.frameCount == 0) {
+        mycerr << "incorrect sound path: " << key;
+    }
+
     sounds[key] = sound;
     return sounds[key];
 }

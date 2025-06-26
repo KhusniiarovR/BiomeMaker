@@ -51,7 +51,7 @@ void WorldSelector::update() {
 }
 
 void WorldSelector::render(Renderer& renderer) const {
-    renderer.drawTextGradient("Choose world: ", {0.5, 0.1}, 100, 4.0f, LIGHTGRAY, DARKGRAY, 0.0f, 0.0f);
+    renderer.drawTextGradient("Choose world: ", {0.5, 0.1}, 100, 4.0f, BLACK, RED, 0.0f, 0.0f);
     // TODO dynamic text size everywhere
 
     BeginScissorMode(worldBox.x, worldBox.y, worldBox.width, listAreaHeight);

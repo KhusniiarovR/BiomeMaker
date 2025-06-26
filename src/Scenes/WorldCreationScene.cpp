@@ -1,10 +1,10 @@
 #include "WorldCreationScene.h"
 #include <thread>
 WorldCreationScene::WorldCreationScene(Renderer &renderer): Scene(renderer),
-    createButton({0.1f, 0.55f}, {0.2f, 0.1f}, "CREATE", BLACK, 0.5f),
-    backButton({0.7f, 0.55f}, {0.2f, 0.1f}, "BACK", BLACK, 0.5f),
-    createRandButton({0.4f, 0.55f}, {0.2f, 0.1f}, "RANDOM", BLACK, 0.5f),
-    enterName(0.42f,0.14f,0.21f,0.1f,WHITE, RED)
+    createButton({0.1f, 0.55f}, {0.2f, 0.1f}, "CREATE", WHITE, 0.5f),
+    backButton({0.7f, 0.55f}, {0.2f, 0.1f}, "BACK", WHITE, 0.5f),
+    createRandButton({0.4f, 0.55f}, {0.2f, 0.1f}, "RANDOM", WHITE, 0.5f),
+    enterName(0.3f,0.2f,0.4f,0.05f, BLACK, RED, WHITE, 60)
     {
         createButton.setOnClick([this]() 
         {
@@ -13,7 +13,6 @@ WorldCreationScene::WorldCreationScene(Renderer &renderer): Scene(renderer),
                 if(!enterName.returnText().empty())
                 {
                     worldCreator.generate(enterName.returnText());
-                    worldSelector.loadFolders();
                     changeScene = true;
                     nextScene = SceneType::WorldSelection;
                 }
@@ -22,9 +21,9 @@ WorldCreationScene::WorldCreationScene(Renderer &renderer): Scene(renderer),
         backButton.setOnClick([this]()
         {
             std::thread([this]()
-            {
-                changeScene = true;
-                nextScene = SceneType::WorldSelection;
+        {
+            changeScene = true;
+            nextScene = SceneType::WorldSelection;
             }).join();
         });
         createRandButton.setOnClick([this]()
@@ -32,7 +31,6 @@ WorldCreationScene::WorldCreationScene(Renderer &renderer): Scene(renderer),
             std::thread([this]() 
             {
                 worldCreator.generate();
-                worldSelector.loadFolders();
                 changeScene = true;
                 nextScene = SceneType::WorldSelection;
             }).join();
@@ -47,6 +45,8 @@ void WorldCreationScene::update(float dt)
 }
 void WorldCreationScene::render() const 
 {
+    renderer.drawBackground();
+    renderer.drawTextGradient("World Name: ", {0.5, 0.15}, 100, 1.0f, BLACK, YELLOW, 0.0f, 0.0f);
     createRandButton.render(renderer);
     backButton.render(renderer);
     createButton.render(renderer);
@@ -61,8 +61,4 @@ bool WorldCreationScene::shouldTransition() const
 SceneType WorldCreationScene::getNextScene() const 
 {
     return nextScene;
-}
-std::string WorldCreationScene::getWorldName() const 
-{
-    return worldSelector.getSelectedFolder();
 }
