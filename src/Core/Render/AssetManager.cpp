@@ -2,7 +2,7 @@
 #include "Utilities/Logger/Logger.h"
 
 AssetManager::AssetManager() {
-    registerFont("Inter", "data/text/InterFont.ttf");
+    registerFont("inter", "data/text/InterFont.ttf");
     registerTexture("tilemap", "data/textures/tilemap.png");
     registerTexture("button1", "data/textures/buttonPack1.png");
     registerTexture("background", "data/textures/background.png");

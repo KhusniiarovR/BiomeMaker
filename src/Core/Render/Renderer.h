@@ -22,14 +22,14 @@ public:
     void drawText(const std::string& text, Vector2 position = {0.5f, 0.5f},
                   float size = 100.0f, Color color = WHITE,
                   bool isCentered = true, bool isNormalizedPos = true,
-                  const std::string& fontKey = "Inter", float spacing = 4.0f); 
+                  const std::string& fontKey = "inter", float spacing = 4.0f); 
                 
     void drawTextGradient(
                 const std::string& text, Vector2 position = {0.5f, 0.5f},
                 float size = 100.0f,  float speed = 4.0f,
                 Color colorA = WHITE, Color colorB = BLACK,
                 float bounceSpeed = 0.5f, float bounceHeight = 12.0f,
-                const std::string& fontKey = "Inter", float spacing = 4.0f);  
+                const std::string& fontKey = "inter", float spacing = 4.0f);  
                 
     void drawBackground();            
 

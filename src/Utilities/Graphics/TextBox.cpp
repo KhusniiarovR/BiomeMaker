@@ -48,7 +48,7 @@ void TextBox::draw(Renderer& renderer) const
 {
     DrawRectangleRec(box,BGColor);
     DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, lineColor);
-    renderer.drawText(text.c_str(), {box.x, box.y}, textSize, textColor, false, false, "Inter", 0.3f);
+    renderer.drawText(text.c_str(), {box.x, box.y}, textSize, textColor, false, false, "inter", 0.3f);
 }
 string TextBox::returnText()
 {

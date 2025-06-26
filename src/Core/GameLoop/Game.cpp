@@ -23,6 +23,8 @@ void Game::init() {
     screenSizeY = GetScreenHeight();
     SetTargetFPS(60);
     //ToggleFullscreen();
+    renderer.drawText("a", {-100,-100}, screenSizeX*0.05f);
+    renderer.drawText("a", {-100,-100}, screenSizeX*0.04f); // caching fonts
 }
 
 void Game::stop() {

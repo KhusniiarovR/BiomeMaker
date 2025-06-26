@@ -50,13 +50,12 @@ void Button::render(Renderer& renderer) const {
         DrawTexturePro(texture, source, rect, {0, 0}, 0.0f, WHITE);
     }
     else {
-        Color color = isHovered ? DARKGRAY : buttonColor;
-        DrawRectangleRounded(rect, rounding, 10, color);
+        DrawRectangleRounded(rect, rounding, 10, isHovered ? DARKGRAY : buttonColor);
     }
 
     renderer.drawText (
     text, {(position.x + (size.x / 2)) / screenSizeX, 
     (position.y + (size.y / 2)) / screenSizeY}, 
-    size.x / (isHovered ? 4 : 5), isHovered ? YELLOW : textColor );
+    static_cast<int>(size.x / (isHovered ? 4 : 5)), isHovered ? YELLOW : textColor );
 }
 
