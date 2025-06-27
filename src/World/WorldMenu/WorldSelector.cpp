@@ -7,16 +7,15 @@
 WorldSelector::WorldSelector(const std::string& path)
 {
     basePath = path;
-    listAreaHeight = screenSizeY * 0.70f;
+    listAreaHeight = virtualScreenSizeY * 0.70f;
     worldHeight = listAreaHeight * 0.25f;
-    worldBox = {screenSizeX * 0.05f, screenSizeY * 0.2f, screenSizeX * 0.5f, worldHeight };
-    textX = (worldBox.x + worldBox.width / 2.0f) / screenSizeX;
+    worldBox = {virtualScreenSizeX * 0.05f, virtualScreenSizeY * 0.2f, virtualScreenSizeX * 0.5f, worldHeight };
+    textX = worldBox.x + worldBox.width / 2.0f;
     scrollSpeed = 10.0f;
     worldSpacing = 15.0f;
     loadFolders();
     totalContentHeight = folders.size() * (worldHeight + worldSpacing);
 }
-// TODO fix buttons incorrect hitbox
 
 void WorldSelector::loadFolders() {
     folders.clear();
@@ -29,7 +28,7 @@ void WorldSelector::loadFolders() {
     }
 }
 
-void WorldSelector::update() {
+void WorldSelector::update(Vector2 mouseVirtual) {
     scrollOffset -= GetMouseWheelMove() * scrollSpeed * 3;
     if (IsKeyDown(KEY_DOWN)) scrollOffset += scrollSpeed;
     if (IsKeyDown(KEY_UP)) scrollOffset -= scrollSpeed;
@@ -44,14 +43,14 @@ void WorldSelector::update() {
             continue;
         }
 
-        if (CheckCollisionPointRec(GetMousePosition(), worldBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (CheckCollisionPointRec(mouseVirtual, worldBox) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             selectedIndex = static_cast<int>(i);
         }
     }
 }
 
 void WorldSelector::render(Renderer& renderer) const {
-    renderer.drawTextGradient("Choose world: ", {0.5, 0.1}, 100, 4.0f, BLACK, RED, 0.0f, 0.0f);
+    renderer.drawTextGradient("Choose world: ", {0.5, 0.1}, 20, 4.0f, BLACK, RED, true, true, 0.0f, 0.0f);
     // TODO dynamic text size everywhere
 
     BeginScissorMode(worldBox.x, worldBox.y, worldBox.width, listAreaHeight);
@@ -63,13 +62,13 @@ void WorldSelector::render(Renderer& renderer) const {
             continue;
         }
 
-        bool hovered = CheckCollisionPointRec(GetMousePosition(), worldBox);
+        bool hovered = CheckCollisionPointRec(renderer.getMouseVirtual(), worldBox);
         Color bgColor = GRAY;
         if (hovered) bgColor = LIGHTGRAY;
         if (i == selectedIndex) bgColor = DARKGRAY;
 
         DrawRectangleRounded(worldBox, 0.15f, 12, bgColor);
-        renderer.drawText(folders[i], {textX, (worldBox.y + worldBox.height / 2.0f) / screenSizeY}, 100, BLACK);
+        renderer.drawText(folders[i], {textX, worldBox.y + worldBox.height / 2.0f}, 20, BLACK, true, false);
     }
     EndScissorMode();
 }

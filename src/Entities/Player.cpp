@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(Vector2 init_pos) : Entity(init_pos){
-    speed = 2000.0f;
+    speed = 80.0f;
 }
 
 void Player::update(float dt) {

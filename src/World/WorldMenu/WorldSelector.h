@@ -9,7 +9,7 @@
 class WorldSelector {
 public:
     explicit WorldSelector(const std::string& path = "saves/");
-    void update();
+    void update(Vector2 mouseVirtual);
     void render(Renderer& renderer) const;
     [[nodiscard]] std::string getSelectedFolder() const;
     void loadFolders();
@@ -29,7 +29,5 @@ private:
     float scrollSpeed;
     float totalContentHeight;
 };
-
-
 
 #endif //WORLDSELECTOR_H

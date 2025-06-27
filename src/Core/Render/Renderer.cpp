@@ -3,7 +3,8 @@
 #include "Utilities/Logger/Logger.h"
 #include "Constants/WorldConst.h"
 
-Renderer::Renderer(AssetManager& assets) : assetManager(assets) {
+Renderer::Renderer(AssetManager& assets, int width, int height, Vector2& mouseVirtual)
+: assetManager(assets), virtualWidth(width), virtualHeight(height), mouseVirtual(mouseVirtual) {
     camera.offset = {0, 0};
     camera.zoom = 1.0f;
     camera.rotation = 0.0f;
@@ -14,8 +15,12 @@ Camera2D& Renderer::GetCamera() {
     return camera;
 }
 
-void Renderer::updateCamera(Vector2 playerPos) {
-    camera.target = playerPos;
+void Renderer::updateCamera(Vector2 position) {
+    camera.target = position;
+}
+
+Vector2 Renderer::getMouseVirtual() {
+    return mouseVirtual;
 }
 
 void Renderer::drawText(const std::string& text, Vector2 position,
@@ -24,45 +29,51 @@ void Renderer::drawText(const std::string& text, Vector2 position,
                         const std::string& fontKey, float spacing) {
 
     const Font& font = assetManager.getFont(fontKey, size);
-
-    if (font.texture.id == 0) {
-            mycerr << "font " << fontKey << " is invalid!";
-    }
-    
-    Vector2 dimensions = MeasureTextEx(font, text.c_str(), size, spacing);
-    if (isNormalizedPos) {
-        position = { screenSizeX * position.x, screenSizeY * position.y};
-    }
-
-    if (isCentered) {
-        position.x -= (0.5f * dimensions.x);
-        position.y -= (0.5f * dimensions.y);
-        DrawTextEx(font, text.c_str(), position, dimensions.y, spacing, color);
-    }
-    else {
-        DrawTextEx(font, text.c_str(), position, dimensions.y, spacing, color);
-    }
-}
-
-void Renderer::drawTextGradient(const std::string& text, Vector2 position,
-                                float size, float speed,
-                                Color colorA, Color colorB,
-                                float bounceSpeed, float bounceHeight,
-                                const std::string& fontKey, float spacing) {
-    // TODO not be that lazy and merge drawText functions
-
-    const Font& font = assetManager.getFont(fontKey, size);
-
     if (font.texture.id == 0) {
         mycerr << "font " << fontKey << " is invalid!";
         return;
     }
 
+    if (isNormalizedPos) {
+        position.x *= virtualWidth;
+        position.y *= virtualHeight;
+    }
+
+    Vector2 dimensions = MeasureTextEx(font, text.c_str(), size, spacing);
+
+    if (isCentered) {
+        position.x -= 0.5f * dimensions.x;
+        position.y -= 0.5f * dimensions.y;
+    }
+
+    DrawTextEx(font, text.c_str(), position, size, spacing, color);
+}
+
+void Renderer::drawTextGradient(const std::string& text, Vector2 position,
+                                float size, float speed,
+                                Color colorA, Color colorB,
+                                bool isNormalizedPos, bool isCentered,
+                                float bounceSpeed, float bounceHeight,
+                                const std::string& fontKey, float spacing) {
+    
+    const Font& font = assetManager.getFont(fontKey, size);
+    if (font.texture.id == 0) {
+        mycerr << "font " << fontKey << " is invalid!";
+        return;
+    }
+
+    if (isNormalizedPos) {
+        position.x *= virtualWidth;
+        position.y *= virtualHeight;
+    }
+
     Vector2 totalDim = MeasureTextEx(font, text.c_str(), size, spacing);
-    Vector2 basePos = {
-        (screenSizeX * position.x) - (0.5f * totalDim.x),
-        (screenSizeY * position.y) - (0.5f * totalDim.y)
-    };
+
+    Vector2 basePos = position;
+    if (isCentered) {
+        basePos.x -= 0.5f * totalDim.x;
+        basePos.y -= 0.5f * totalDim.y;
+    }
 
     Vector2 pos = basePos;
     float time = GetTime() * speed;
@@ -91,24 +102,23 @@ void Renderer::drawBackground() {
     Texture2D bg = getTexture("background", true);
     bgoffset += GetFrameTime() * 100;
 
-    float scale = screenSizeY / pixelheight;
-    float sourceWidth = screenSizeX / scale;
+    float scale = (float)virtualHeight / pixelheight;
+    float sourceWidth = (float)virtualWidth / scale;
 
     Rectangle sourceRec = { bgoffset / scale, 0, sourceWidth, (float)bg.height };
-    Rectangle destRec = { 0, 0, (float)screenSizeX, (float)screenSizeY };
+    Rectangle destRec = { 0, 0, (float)virtualWidth, (float)virtualHeight };
 
-    DrawTexturePro(bg, sourceRec, destRec, { 0, 0 }, 0.0f, WHITE);
-}    
+    DrawTexturePro(bg, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
+} 
 
 void Renderer::drawPlayer(Vector2 playerPos) {
-    DrawCircleV(playerPos, 50, RED);
+    DrawCircleV(playerPos, 10, RED);
     DrawCircleLinesV(playerPos, handDistance * tileSize, YELLOW);
 }
-void Renderer::drawEnemy(Vector2 enemyPos)
-{
-    DrawCircleV(enemyPos, 50, BLUE);
-}
 
+void Renderer::drawEnemy(Vector2 enemyPos) {
+    DrawCircleV(enemyPos, 10, BLUE);
+}
 
 Texture2D& Renderer::getTexture(const std::string& key, bool shouldBeWrapped) {
     return assetManager.getTexture(key, shouldBeWrapped);

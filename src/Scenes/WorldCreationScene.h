@@ -17,7 +17,7 @@ class WorldCreationScene : public Scene
 
     public:
         explicit WorldCreationScene(Renderer& renderer);
-        void update(float dt) override;
+        void update(float dt, Vector2 mouseVirtual) override;
         void render() const override;
         [[nodiscard]] bool shouldTransition() const override;
         [[nodiscard]] SceneType getNextScene() const override;

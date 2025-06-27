@@ -16,7 +16,7 @@ public:
     World(const std::string &filename);
     ~World();
 
-    void update(Vector2 playerPos, Camera2D& camera);
+    void update(Vector2 playerPos, Camera2D& camera, Vector2 mouseVirtual);
     void render(Renderer& renderer) const;
 
 private:

@@ -1,7 +1,6 @@
 #ifndef GAMESCENE_H
 #define GAMESCENE_H
 
-
 #include "Scene.h"
 #include <Entities/Player.h>
 #include <Entities/Enemy.h>
@@ -15,12 +14,10 @@ private:
 
 public:
     GameScene(Renderer& renderer, const std::string& worldName);
-    void update(float dt) override;
+    void update(float dt, Vector2 mouseVirtual) override;
     void render() const override;
     [[nodiscard]] bool shouldTransition() const override;
     [[nodiscard]] SceneType getNextScene() const override;
 };
-
-
 
 #endif //GAMESCENE_H

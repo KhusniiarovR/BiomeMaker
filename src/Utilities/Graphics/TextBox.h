@@ -9,8 +9,8 @@ class TextBox
 {
     private:
         Rectangle box;
-        string text;
-        bool active;    
+        string text = "";
+        bool active = false;    
         Color BGColor;
         Color lineColor;
         Color textColor;
@@ -18,16 +18,8 @@ class TextBox
         int textSize;
     
     public:
-        TextBox(float x, float y, float width, float height,Color BGcolor, Color lineColor, Color textColor, int textSize) : textSize(textSize)
-        {
-            box = { screenSizeX*x, screenSizeY*y, screenSizeX*width, screenSizeY*height };
-            text = "";
-            active = false;
-            BGColor = BGcolor;
-            lineColor = lineColor;
-            textColor = textColor;
-        }
-        void update(float dt);
+        TextBox(float x, float y, float width, float height,Color BGcolor, Color lineColor, Color textColor, int textSize);
+        void update(float dt, Vector2 mouseVirtual);
         void draw(Renderer& renderer) const;
         string returnText();
 };

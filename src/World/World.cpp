@@ -5,26 +5,25 @@ World::World(const std::string &filename) : chunkSystem(chunks, filename) {}
 
 World::~World() = default;
 
-void World::update(Vector2 playerPos, Camera2D& camera) {
+void World::update(Vector2 playerPos, Camera2D& camera, Vector2 mouseVirtual) {
     chunkSystem.update(playerPos);
 
     if (IsKeyPressed(KEY_E)) {
-    Vector2 mouseScreen = GetMousePosition();
-    Vector2 mouseWorld = GetScreenToWorld2D(mouseScreen, camera);
+        Vector2 mouseWorld = GetScreenToWorld2D(mouseVirtual, camera);
 
-    int tileX = static_cast<int>(mouseWorld.x / tileSize);
-    int tileY = static_cast<int>(mouseWorld.y / tileSize);
+        int tileX = static_cast<int>(mouseWorld.x / tileSize);
+        int tileY = static_cast<int>(mouseWorld.y / tileSize);
 
-    int playerTileX = static_cast<int>(playerPos.x / tileSize);
-    int playerTileY = static_cast<int>(playerPos.y / tileSize);
+        int playerTileX = static_cast<int>(playerPos.x / tileSize);
+        int playerTileY = static_cast<int>(playerPos.y / tileSize);
 
-    int dx = tileX - playerTileX;
-    int dy = tileY - playerTileY;
+        int dx = tileX - playerTileX;
+        int dy = tileY - playerTileY;
 
-    if (dx * dx + dy * dy <= handDistance*handDistance) {
-        removeObjectAt(tileX, tileY);
+        if (dx * dx + dy * dy <= handDistance*handDistance) {
+            removeObjectAt(tileX, tileY);
+        }
     }
-}
 }
 
 void World::render(Renderer& renderer) const {

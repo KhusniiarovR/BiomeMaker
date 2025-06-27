@@ -29,9 +29,9 @@ void SceneManager::loadScene(SceneType sceneType, const std::string& worldName) 
     }
 }
 
-void SceneManager::update(float dt) {
+void SceneManager::update(float dt, Vector2 mouseVirtual) {
     if (currentScene) {
-        currentScene->update(dt);
+        currentScene->update(dt, mouseVirtual);
         if (currentScene->shouldTransition()) {
             loadScene(currentScene->getNextScene(), currentScene->getWorldName());
         }
@@ -43,11 +43,9 @@ void SceneManager::update(float dt) {
 
 void SceneManager::render() {
     if (currentScene) {
-        BeginDrawing();
         BeginMode2D(renderer.GetCamera());
         ClearBackground(BLACK);
         currentScene->render();
-        EndDrawing();
     }
     else {
         mycerr << "no current scene";

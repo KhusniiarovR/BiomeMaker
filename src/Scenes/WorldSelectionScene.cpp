@@ -28,11 +28,11 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
     deleteButton.setTexture(renderer.getTexture("button1"));
 }
 
-void WorldSelectionScene::update(float dt) {
-    worldSelector.update();
-    playButton.update();
-    createButton.update();
-    deleteButton.update();
+void WorldSelectionScene::update(float dt, Vector2 mouseVirtual) {
+    worldSelector.update(mouseVirtual);
+    playButton.update(mouseVirtual);
+    createButton.update(mouseVirtual);
+    deleteButton.update(mouseVirtual);
 
     if (IsKeyPressed(KEY_ENTER)) {
         if (!worldSelector.getSelectedFolder().empty()) {

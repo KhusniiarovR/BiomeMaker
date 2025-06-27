@@ -4,7 +4,7 @@ WorldCreationScene::WorldCreationScene(Renderer &renderer): Scene(renderer),
     createButton({0.1f, 0.55f}, {0.2f, 0.1f}, "CREATE", WHITE, 0.5f),
     backButton({0.7f, 0.55f}, {0.2f, 0.1f}, "BACK", WHITE, 0.5f),
     createRandButton({0.4f, 0.55f}, {0.2f, 0.1f}, "RANDOM", WHITE, 0.5f),
-    enterName(0.3f,0.2f,0.4f,0.05f, BLACK, RED, WHITE, 60)
+    enterName(0.3f,0.2f,0.4f,0.05f, BLACK, RED, WHITE, 20)
     {
         createButton.setOnClick([this]() 
         {
@@ -36,17 +36,17 @@ WorldCreationScene::WorldCreationScene(Renderer &renderer): Scene(renderer),
             }).join();
         });
     }
-void WorldCreationScene::update(float dt) 
+void WorldCreationScene::update(float dt, Vector2 mouseVirtual) 
 {
-    createButton.update();
-    backButton.update();
-    createRandButton.update();
-    enterName.update(dt);
+    createButton.update(mouseVirtual);
+    backButton.update(mouseVirtual);
+    createRandButton.update(mouseVirtual);
+    enterName.update(dt, mouseVirtual);
 }
 void WorldCreationScene::render() const 
 {
     renderer.drawBackground();
-    renderer.drawTextGradient("World Name: ", {0.5, 0.15}, 100, 1.0f, BLACK, YELLOW, 0.0f, 0.0f);
+    renderer.drawTextGradient("World Name: ", {0.5, 0.15}, 20, 2.0f, BLACK, YELLOW, true, true, 0.0f, 0.0f);
     createRandButton.render(renderer);
     backButton.render(renderer);
     createButton.render(renderer);

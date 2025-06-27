@@ -13,7 +13,7 @@ private:
 public:
     SceneManager(Renderer& renderer);
     void loadScene(SceneType sceneType, const std::string& worldName = "\0");
-    void update(float dt);
+    void update(float dt, Vector2 mouseVirtual);
     void render();
 };
 

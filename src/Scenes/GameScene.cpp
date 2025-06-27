@@ -8,15 +8,14 @@ GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          enemy ({worldSize * tileSize / 2.0f, worldSize * tileSize / 2.0f}, player),
          world(worldName)
 {
-    renderer.GetCamera().offset = {screenSizeX / 2.0f, screenSizeY / 2.0f};
-    // TODO add zoom and delete offset
+    renderer.GetCamera().offset = {virtualScreenSizeX / 2.0f, virtualScreenSizeY / 2.0f};
 }
 
-void GameScene::update(float dt) {
+void GameScene::update(float dt, Vector2 mouseVirtual) {
     player.update(dt);
     enemy.update(dt);
     renderer.updateCamera(player.getPosition());
-    world.update(player.getPosition(), renderer.GetCamera());
+    world.update(player.getPosition(), renderer.GetCamera(), mouseVirtual);
 
     // TODO function to handle scene manager inputs
     if (IsKeyPressed(KEY_SPACE)) {

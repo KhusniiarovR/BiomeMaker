@@ -9,11 +9,10 @@
 class Button {
 public:
     Button(Vector2 pos, Vector2 size, std::string text, Color textColor = WHITE, float rounding = 0.0f, Color buttonColor = BLACK);
-    Button(float posX, float posY, float sizeX, float sizeY, std::string text, Color textColor = WHITE, float rounding = 0.0f, Color buttonColor = BLACK);
     void setTexture(Texture2D& tex);
     void setOnClick(std::function<void()> handler);
 
-    void update();
+    void update(Vector2 mouseVirtual);
     void render(Renderer& renderer) const;
 
 private:

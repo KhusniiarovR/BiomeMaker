@@ -48,11 +48,13 @@ Texture2D& AssetManager::getTexture(const std::string& key, bool shouldBeWrapped
     }
 
     Texture2D tex = LoadTexture(pathIt->second.c_str());
-    if (shouldBeWrapped) SetTextureWrap(tex, TEXTURE_WRAP_REPEAT);
-
+    
     if (tex.id == 0) {
         mycerr << "incorrect texture path: " << key;
     }
+    
+    SetTextureFilter(tex, TEXTURE_FILTER_POINT);
+    if (shouldBeWrapped) SetTextureWrap(tex, TEXTURE_WRAP_REPEAT);
 
     textures[key] = tex;
     return textures[key];
@@ -77,6 +79,9 @@ Font& AssetManager::getFont(const std::string& key, int size) {
     if (font.texture.id == 0) {
         mycerr << "incorrect font path: " << key;
     }
+
+    SetTextureFilter(font.texture, TEXTURE_FILTER_POINT);
+
     fonts[key][size] = font;
     return fonts[key][size];;
 }

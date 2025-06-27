@@ -6,7 +6,7 @@
 constexpr int worldSize = 1024;
 const int chunkSize = 32;
 constexpr int numberOfChunks = worldSize / chunkSize;
-const int tileSize = 128;
+const int tileSize = 16;
 const int chunkPixelSize = chunkSize * tileSize;
 const int sourceTileSize = 16;
 const int tilesPerRow = 10; // connected with sourceTileSizes tilemap.width = 160 / 16 = 10

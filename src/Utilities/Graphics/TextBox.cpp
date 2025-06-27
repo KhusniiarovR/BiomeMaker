@@ -1,9 +1,15 @@
 #include "TextBox.h"
-void TextBox::update(float dt)
+
+TextBox::TextBox(float x, float y, float width, float height, Color BGcolor, Color lineColor, Color textColor, int textSize) :
+box{ virtualScreenSizeX*x, virtualScreenSizeY*y, virtualScreenSizeX*width, virtualScreenSizeY*height }, 
+BGColor{BGcolor}, lineColor{lineColor},
+textColor{textColor}, textSize(textSize) {}
+
+void TextBox::update(float dt, Vector2 mouseVirtual)
 {
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        active = CheckCollisionPointRec(GetMousePosition(), box);
+        active = CheckCollisionPointRec(mouseVirtual, box);
     }
     if (active)
     {
@@ -35,7 +41,7 @@ void TextBox::update(float dt)
             backspaceTimer = 0.0f; 
         }
     }
-    if(CheckCollisionPointRec(GetMousePosition(), box))
+    if(CheckCollisionPointRec(mouseVirtual, box))
     {
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
