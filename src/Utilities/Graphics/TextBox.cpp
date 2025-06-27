@@ -60,3 +60,8 @@ string TextBox::returnText()
 {
     return text;
 }
+
+void TextBox::eraseText() 
+{
+    text.clear();
+}

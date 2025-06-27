@@ -10,6 +10,7 @@ const int tileSize = 16;
 const int chunkPixelSize = chunkSize * tileSize;
 const int sourceTileSize = 16;
 const int tilesPerRow = 10; // connected with sourceTileSizes tilemap.width = 160 / 16 = 10
+const float padding = 0.01f;
 
 const int renderDistance = 2;
 const int unloadMargin = 0;

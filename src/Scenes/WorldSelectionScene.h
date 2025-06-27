@@ -5,14 +5,29 @@
 #include "World/WorldMenu/WorldSelector.h"
 #include "World/WorldMenu/WorldCreator.h"
 #include "Utilities/Graphics/Button.h"
+#include "Utilities/Graphics/TextBox.h"
 
 class WorldSelectionScene : public Scene {
 private:
     WorldSelector worldSelector;
+    WorldCreator worldCreator;
 
     Button playButton;
-    Button createButton;
+    Button createNewButton;
     Button deleteButton;
+
+    Button createButton;
+    Button createRandButton;
+    Button backButton;
+    TextBox enterName;
+
+    bool firstPage = true;
+    bool generationStage = false;
+
+    std::atomic<bool> generationFinished = false;
+
+    float fakeTimer = 0.0f;
+    float totalFakeTime = 7.0f;
 
 public:
     explicit WorldSelectionScene(Renderer& renderer);
@@ -22,6 +37,7 @@ public:
     [[nodiscard]] bool shouldTransition() const override;
     [[nodiscard]] SceneType getNextScene() const override;
     [[nodiscard]] std::string getWorldName() const override;
+    void eraseWorldName();
 };
 
 #endif //WORLDSELECTIONSCENE_H

@@ -22,4 +22,5 @@ class TextBox
         void update(float dt, Vector2 mouseVirtual);
         void draw(Renderer& renderer) const;
         string returnText();
+        void eraseText();
 };

@@ -80,15 +80,21 @@ void Chunk::Draw(Texture2D& tilemap) const  {
     const int chunkY = this->y * chunkSize;
     for (int y = 0; y < chunkSize; y++) {
         for (int x = 0; x < chunkSize; x++) {
-            float worldX = (chunkX + x) * tileSize;
-            float worldY = (chunkY + y) * tileSize;
+            int worldX = (chunkX + x) * tileSize;
+            int worldY = (chunkY + y) * tileSize;
 
             int tileIndex = tiles[y][x];
             int tileX = (tileIndex % tilesPerRow) * sourceTileSize;
             int tileY = (tileIndex / tilesPerRow) * sourceTileSize;
 
-            Rectangle sourceRec = { (float)tileX, (float)tileY, (float)sourceTileSize, (float)sourceTileSize };
-            Rectangle destRec = { worldX, worldY, (float)tileSize, (float)tileSize };
+            Rectangle sourceRec = {
+                (float)tileX + padding,
+                (float)tileY + padding,
+                (float)sourceTileSize - 2 * padding,
+                (float)sourceTileSize - 2 * padding
+            };
+            
+            Rectangle destRec = { (float)worldX, (float)worldY, (float)tileSize, (float)tileSize };
 
             DrawTexturePro(tilemap, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
 
