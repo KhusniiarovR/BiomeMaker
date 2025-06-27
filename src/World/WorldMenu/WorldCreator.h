@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <string>
 #include <filesystem>
+#include "World/ChunkSystem/Biome.h"
 
 class WorldCreator {
 private:
@@ -14,14 +15,19 @@ private:
     static constexpr int ringWidth = 30;
     static constexpr int outerRadius = innerRadius + ringWidth;
 
+    const uint8_t errorBiome = BIOME_UNKNOWN;
+    const uint8_t centerBiome = BIOME_FOREST;
+    const std::vector<uint8_t> innerBiomes = {BIOME_WINTER, BIOME_SAND, BIOME_SWAMP, BIOME_VOLCANO};
+    const std::vector<uint8_t> outerBiomes = {BIOME_GLASS, BIOME_BEACH, BIOME_CRYSTAL, BIOME_MOUNTAIN};
+    const uint8_t ringBiome = BIOME_EXIT;
+
 // TODO configure world size
-// merge biomes here and biome.h
 
     std::string worldName;
 
     struct BiomeCenter {
         int x, y;
-        char type;
+        uint8_t type;
     };
 
 public:
@@ -37,8 +43,8 @@ private:
 
     std::string getName();
 
-    void write_rle_chunk(std::ofstream& out,const std::vector<std::vector<char>>& data,int startX, int startY);
-    void save_world_rle(const std::vector<std::vector<char>>& world, const std::vector<std::vector<char>>& objects);
+    void write_rle_chunk(std::ofstream& out,const std::vector<std::vector<uint8_t>>& data,int startX, int startY);
+    void save_world_rle(const std::vector<std::vector<uint8_t>>& world, const std::vector<std::vector<uint8_t>>& objects);
 };
 
 

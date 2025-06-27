@@ -7,12 +7,13 @@
 #include <string>
 #include <filesystem>
 #include <iostream>
+#include "raylib.h"
 #include "Constants/WorldConst.h"
 
 class Chunk {
 public:
     int x, y;
-    std::vector<std::vector<char>> tiles{chunkSize, std::vector<char>(chunkSize)};
+    std::vector<std::vector<uint8_t>> tiles{chunkSize, std::vector<uint8_t>(chunkSize)};
     std::vector<std::vector<Object>> objectTiles{chunkSize, std::vector<Object>(chunkSize)};
     bool isModified = false;
 
@@ -21,9 +22,6 @@ public:
     void Draw(Texture2D& tilemap) const;
 
 private:
-    const Biome* SymbolToBiome(char symbol);
-    Object symbolToObject(char symbol);
-
     uint8_t ChooseTileIndex(const Biome* biome, uint32_t seed);
     int objectTypeToTile(ObjectType objectType) const;
 };

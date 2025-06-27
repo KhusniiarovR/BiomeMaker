@@ -27,9 +27,7 @@ public:
     void updateChunks(Vector2& playerPos);
 
     void overwriteChunk(int cx, int cy, const Chunk& chunk);
-    void writeData(std::ostream& out, const std::vector<std::vector<char>>& data);
-    char objectToSymbol(const Object& obj);
-    char biomeToSymbolFromTileIndex(uint8_t tileIndex);
+    void writeData(std::ostream& out, const std::vector<std::vector<uint8_t>>& data);
     void saveFullWorld();
 };
 

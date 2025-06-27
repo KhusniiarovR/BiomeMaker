@@ -23,12 +23,12 @@ void Chunk::Generate(const std::vector<ChunkHeader>& headers, std::ifstream& fil
 
         while (file.tellg() < biome_end) {
             unsigned char count;
-            char symbol;
+            uint8_t biomeId;
 
             file.read(reinterpret_cast<char*>(&count), 1);
-            file.read(&symbol, 1);
+            file.read(reinterpret_cast<char*>(&biomeId), 1);
 
-            const Biome* biome = SymbolToBiome(symbol);
+            const Biome* biome = (biomeId < BIOMES.size()) ? &BIOMES[biomeId] : &BIOMES[0];
 
             for (int i = 0; i < count; ++i) {
                 if (ty >= chunkSize) break;
@@ -55,15 +55,15 @@ void Chunk::Generate(const std::vector<ChunkHeader>& headers, std::ifstream& fil
 
         while (file.tellg() < object_end) {
             unsigned char count;
-            char symbol;
+            uint8_t id;
 
             file.read(reinterpret_cast<char*>(&count), 1);
-            file.read(&symbol, 1);
+            file.read(reinterpret_cast<char*>(&id), 1);
 
             for (int i = 0; i < count; ++i) {
                 if (ty >= chunkSize) break;
 
-                objectTiles[ty][tx] = symbolToObject(symbol);
+                objectTiles[ty][tx] = Object{ static_cast<ObjectType>(id) };
 
                 tx++;
                 if (tx >= chunkSize) {
@@ -105,15 +105,6 @@ void Chunk::Draw(Texture2D& tilemap) const  {
     }
 }
 
-const Biome* Chunk::SymbolToBiome(char symbol) {
-    for (int i = 0; i < sizeof(BIOME_SYMBOLS); ++i) {
-        if (BIOME_SYMBOLS[i] == symbol)
-            return &BIOMES[i+1]; // first is none biome
-    }
-    mycerr << "unknown symbol:" << symbol;
-    return &BIOMES[0];
-}
-
 uint8_t Chunk::ChooseTileIndex(const Biome* biome, uint32_t seed) {
     float roll = (seed % 10000) / 10000.0f;
     float cumulative = 0.0f;
@@ -130,17 +121,4 @@ uint8_t Chunk::ChooseTileIndex(const Biome* biome, uint32_t seed) {
 int Chunk::objectTypeToTile(ObjectType objectType) const {
     auto it = objectTileMap.find(objectType);
     return (it != objectTileMap.end()) ? it->second : 0;
-}
-
-Object Chunk::symbolToObject(char symbol) {
-    switch (symbol) {
-        case 'T': return { ObjectType::Tree };
-        case 'R': return { ObjectType::Rock };
-        case 'B': return { ObjectType::Bush };
-        case ' ': return { ObjectType::None };
-        default: {
-            mycerr << "unknown object:" << symbol;
-            return {};
-        };
-    }
 }

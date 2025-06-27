@@ -105,22 +105,41 @@ void ChunkSystem::overwriteChunk(int cx, int cy, const Chunk& chunk) {
         return;
     }
 
-    std::vector<std::vector<char>> biomeAsChar(chunkSize, std::vector<char>(chunkSize));
-    std::vector<std::vector<char>> objectsAsChar(chunkSize, std::vector<char>(chunkSize));
-
+    std::vector<std::vector<uint8_t>> biomeIds(chunkSize, std::vector<uint8_t>(chunkSize));
     for (int y = 0; y < chunkSize; ++y) {
         for (int x = 0; x < chunkSize; ++x) {
-            biomeAsChar[y][x] = biomeToSymbolFromTileIndex(chunk.tiles[y][x]);
-            objectsAsChar[y][x] = objectToSymbol(chunk.objectTiles[y][x]);
+            uint8_t tileIndex = chunk.tiles[y][x];
+            bool found = false;
+            for (const auto& biome : BIOMES) {
+                for (const auto& [tile, _] : biome.tileVariants) {
+                    if (tile == tileIndex) {
+                        biomeIds[y][x] = biome.id;
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+            if (!found) {
+                biomeIds[y][x] = BIOMES[0].id;
+                mycerr << "Unknown tileIndex while saving chunk (" << cx << "," << cy << "): " << (int)tileIndex;
+            }
+        }
+    }
+
+    std::vector<std::vector<uint8_t>> objectTypes(chunkSize, std::vector<uint8_t>(chunkSize));
+    for (int y = 0; y < chunkSize; ++y) {
+        for (int x = 0; x < chunkSize; ++x) {
+            objectTypes[y][x] = static_cast<uint8_t>(chunk.objectTiles[y][x].type);
         }
     }
 
     std::stringstream biomeBuffer;
-    writeData(biomeBuffer, biomeAsChar);
+    writeData(biomeBuffer, biomeIds);
     std::string biomeData = biomeBuffer.str();
 
     std::stringstream objectBuffer;
-    writeData(objectBuffer, objectsAsChar);
+    writeData(objectBuffer, objectTypes);
     std::string objectData = objectBuffer.str();
 
     if (biomeData.size() > header.reservedSizeBiome) {
@@ -161,7 +180,8 @@ void ChunkSystem::overwriteChunk(int cx, int cy, const Chunk& chunk) {
     file.close();
 }
 
-void ChunkSystem::writeData(std::ostream& out, const std::vector<std::vector<char>>& data) {
+
+void ChunkSystem::writeData(std::ostream& out, const std::vector<std::vector<uint8_t>>& data) {
     char current = data[0][0];
     uint8_t count = 1;
 
@@ -182,31 +202,6 @@ void ChunkSystem::writeData(std::ostream& out, const std::vector<std::vector<cha
 
     out.write(reinterpret_cast<const char*>(&count), 1);
     out.write(&current, 1);
-}
-
-char ChunkSystem::objectToSymbol(const Object& obj) {
-    switch (obj.type) {
-        case ObjectType::Tree: return 'T';
-        case ObjectType::Rock: return 'R';
-        case ObjectType::Bush: return 'B';
-        case ObjectType::None: return ' ';
-        default: {
-            mycerr << "unknown ObjectType";
-            return ' ';
-        }
-    }
-}
-
-char ChunkSystem::biomeToSymbolFromTileIndex(uint8_t tileIndex) {
-    for (const auto& biome : BIOMES) {
-        for (const auto& [tile, _] : biome.tileVariants) {
-            if (tile == tileIndex) {
-                return biome.symbol;
-            }
-        }
-    }
-    mycerr << "unknown tile index " << (int)tileIndex;
-    return BIOMES[0].symbol;
 }
 
 void ChunkSystem::saveFullWorld() {
@@ -233,7 +228,7 @@ void ChunkSystem::saveFullWorld() {
 
     out.seekp(total_chunks * sizeof(ChunkHeader), std::ios::beg);
 
-    for (int cy = 0; cy < numberOfChunks; ++cy) {
+for (int cy = 0; cy < numberOfChunks; ++cy) {
         for (int cx = 0; cx < numberOfChunks; ++cx) {
             int index = cy * numberOfChunks + cx;
             if (index < 0 || index >= total_chunks) continue;
@@ -243,26 +238,46 @@ void ChunkSystem::saveFullWorld() {
 
             if (chunkIt != chunks.end() && chunkIt->second.isModified) {
                 const Chunk& chunk = chunkIt->second;
-                std::vector<std::vector<char>> biomeAsChar(chunkSize, std::vector<char>(chunkSize));
-                for (int y = 0; y < chunkSize; ++y)
-                    for (int x = 0; x < chunkSize; ++x)
-                        biomeAsChar[y][x] = biomeToSymbolFromTileIndex(chunk.tiles[y][x]);
+
+                std::vector<std::vector<uint8_t>> biomeIds(chunkSize, std::vector<uint8_t>(chunkSize));
+                for (int y = 0; y < chunkSize; ++y) {
+                    for (int x = 0; x < chunkSize; ++x) {
+                        uint8_t tileIndex = chunk.tiles[y][x];
+                        bool found = false;
+                        for (const auto& biome : BIOMES) {
+                            for (const auto& [tile, _] : biome.tileVariants) {
+                                if (tile == tileIndex) {
+                                    biomeIds[y][x] = biome.id;
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (found) break;
+                        }
+                        if (!found) {
+                            biomeIds[y][x] = BIOMES[0].id;
+                            mycerr << "Unknown tileIndex while saving chunk (" << cx << "," << cy << "): " << (int)tileIndex;
+                        }
+                    }
+                }
 
                 std::stringstream biomeBuffer;
-                writeData(biomeBuffer, biomeAsChar);
+                writeData(biomeBuffer, biomeIds);
                 std::string biomeData = biomeBuffer.str();
 
                 uint32_t biomeReserve = biomeData.size() + reserveSizeBiome;
                 out.write(biomeData.data(), biomeData.size());
                 out.write(std::string(biomeReserve - biomeData.size(), '~').c_str(), biomeReserve - biomeData.size());
 
-                std::vector<std::vector<char>> objectAsChar(chunkSize, std::vector<char>(chunkSize));
-                for (int y = 0; y < chunkSize; ++y)
-                    for (int x = 0; x < chunkSize; ++x)
-                        objectAsChar[y][x] = objectToSymbol(chunk.objectTiles[y][x]);
+                std::vector<std::vector<uint8_t>> objectTypes(chunkSize, std::vector<uint8_t>(chunkSize));
+                for (int y = 0; y < chunkSize; ++y) {
+                    for (int x = 0; x < chunkSize; ++x) {
+                        objectTypes[y][x] = static_cast<uint8_t>(chunk.objectTiles[y][x].type);
+                    }
+                }
 
                 std::stringstream objectBuffer;
-                writeData(objectBuffer, objectAsChar);
+                writeData(objectBuffer, objectTypes);
                 std::string objectData = objectBuffer.str();
 
                 std::streampos objectOffset = out.tellp();

@@ -1,34 +1,34 @@
 #ifndef BIOME_H
 #define BIOME_H
 
-#include "raylib.h"
 #include <vector>
 
 struct Biome {
     uint8_t id;
-    char symbol;
     std::vector<std::pair<uint8_t, float>> tileVariants;
 };
 
-const char errorBiome = 'U';
-const char centerBiome = 'F';
-const std::vector<char> innerBiomes = { 'O', 'W', 'S', 'V' };
-const std::vector<char> outerBiomes = { 'G', 'B', 'C', 'M' };
-const char ringBiome = 'E';
-
-const char BIOME_SYMBOLS[] = { 'F', 'W', 'S', 'O', 'V', 'E', 'G', 'B', 'C', 'M'};
+constexpr uint8_t BIOME_UNKNOWN = 0;
+constexpr uint8_t BIOME_FOREST = 1;
+constexpr uint8_t BIOME_WINTER = 2;
+constexpr uint8_t BIOME_SAND = 3;
+constexpr uint8_t BIOME_SWAMP = 4;
+constexpr uint8_t BIOME_VOLCANO = 5;
+constexpr uint8_t BIOME_EXIT = 6;
+constexpr uint8_t BIOME_GLASS = 7;
+constexpr uint8_t BIOME_BEACH = 8;
+constexpr uint8_t BIOME_CRYSTAL = 9;
+constexpr uint8_t BIOME_MOUNTAIN = 10;
 
 const std::vector<Biome> BIOMES = {
-    // Unknown
     {
-        0, 'U',
+        BIOME_UNKNOWN,
         {
             { 0, 1.0f }
         }
     },
-    // Forest
     {
-        1, 'F',
+        BIOME_FOREST,
         {
             { 1, 0.970f },
             { 2, 0.015f },
@@ -37,9 +37,8 @@ const std::vector<Biome> BIOMES = {
             
         }
     },
-    // Winter
     {
-        2, 'W',
+        BIOME_WINTER,
         {
             { 5, 0.970f },
             { 6, 0.015f },
@@ -47,9 +46,8 @@ const std::vector<Biome> BIOMES = {
             { 8, 0.005f }
         }
     },
-    // Sand
     {
-        3, 'S',
+        BIOME_SAND,
         {
             {  9, 0.970f },
             { 10, 0.015f },
@@ -57,9 +55,8 @@ const std::vector<Biome> BIOMES = {
             { 12, 0.005f }
         }
     },
-    // Swamp
     {
-        4, 'O',
+        BIOME_SWAMP,
         {
             { 13, 0.970f },
             { 14, 0.015f },
@@ -67,45 +64,39 @@ const std::vector<Biome> BIOMES = {
             { 16, 0.005f }
         }
     },
-    // Volcano
     {
-        5, 'V',
+        BIOME_VOLCANO,
         {
             { 17, 0.995f},
             { 18, 0.005f}
         }
     },
-    // Exit
     {
-        6, 'E',
+        BIOME_EXIT,
         {
             { 19, 1.0f }
         }
     },
-    // Glass
     {
-        7, 'G',
+        BIOME_GLASS,
         {
             { 20, 1.0f }
         }
     },
-    // Beach
     {
-        8, 'B',
+        BIOME_BEACH,
         {
             { 21, 1.0f }
         }
     },
-    // Crystal
     {
-        9, 'C',
+        BIOME_CRYSTAL,
         {
             { 22, 1.0f }
         }
     },
-    // Mountain
     {
-        10, 'M',
+        BIOME_MOUNTAIN,
         {
             { 23, 1.0f }
         }

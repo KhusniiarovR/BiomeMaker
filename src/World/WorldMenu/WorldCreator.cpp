@@ -6,7 +6,6 @@
 #include <fstream>
 #include <random>
 #include "Constants/WorldConst.h"
-#include "World/ChunkSystem/Biome.h"
 #include "World/ChunkSystem/Object.h"
 #include "Utilities/Logger/Logger.h"
 
@@ -34,7 +33,7 @@ void WorldCreator::generate(int seed, std::string worldName)
 
     centers.push_back({ worldSize / 2, worldSize / 2, centerBiome });
 
-    for (char b : innerBiomes) {
+    for (uint8_t b : innerBiomes) {
         int angle = dist(rng) % 360;
         int r = innerRadius * 2 / 3 + (dist(rng) % (innerRadius / 3));
         int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
@@ -42,7 +41,7 @@ void WorldCreator::generate(int seed, std::string worldName)
         centers.push_back({ cx, cy, b });
     }
 
-    for (char b : outerBiomes) {
+    for (uint8_t b : outerBiomes) {
         int angle = dist(rng) % 360;
         int r = outerRadius + 30 + (dist(rng) % 50);
         int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
@@ -51,7 +50,7 @@ void WorldCreator::generate(int seed, std::string worldName)
     }
 
     for (int i = 0; i < extraCentersInner; ++i) {
-        char b = innerBiomes[dist(rng) % innerBiomes.size()];
+        uint8_t b = innerBiomes[dist(rng) % innerBiomes.size()];
         int r = innerRadius / 2 + (dist(rng) % (innerRadius / 2));
         int angle = dist(rng) % 360;
         int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
@@ -60,7 +59,7 @@ void WorldCreator::generate(int seed, std::string worldName)
     }
 
     for (int i = 0; i < extraCentersOuter; ++i) {
-        char b = outerBiomes[dist(rng) % outerBiomes.size()];
+        uint8_t b = outerBiomes[dist(rng) % outerBiomes.size()];
         int r = outerRadius + 40 + (dist(rng) % 50);
         int angle = dist(rng) % 360;
         int cx = worldSize / 2 + static_cast<int>(r * std::cos(angle));
@@ -68,7 +67,7 @@ void WorldCreator::generate(int seed, std::string worldName)
         centers.push_back({ cx, cy, b });
     }
 
-    std::vector<std::vector<char>> map(worldSize, std::vector<char>(worldSize, errorBiome));
+    std::vector<std::vector<uint8_t>> map(worldSize, std::vector<uint8_t>(worldSize, errorBiome));
 
     for (int y = 0; y < worldSize; ++y) {
         for (int x = 0; x < worldSize; ++x) {
@@ -76,7 +75,7 @@ void WorldCreator::generate(int seed, std::string worldName)
             int dy = y - worldSize / 2;
             int r = static_cast<int>(std::sqrt(dx * dx + dy * dy));
 
-            char biome = errorBiome;
+            uint8_t biome = errorBiome;
 
             if (r >= innerRadius && r <= outerRadius) {
                 biome = ringBiome;
@@ -107,17 +106,17 @@ void WorldCreator::generate(int seed, std::string worldName)
         }
     }
 
-    std::vector<std::vector<char>> objects(worldSize, std::vector<char>(worldSize, ' '));
+    std::vector<std::vector<uint8_t>> objects(worldSize, std::vector<uint8_t>(worldSize, OBJECT_NONE));
     std::uniform_real_distribution<float> chance(0.0f, 1.0f);
 
     for (int y = 0; y < worldSize; ++y) {
         for (int x = 0; x < worldSize; ++x) {
-            char biome = map[y][x];
+            uint8_t biome = map[y][x];
             auto it = objectRules.find(biome);
             if (it != objectRules.end()) {
                 for (const ObjectRule& rule : it->second) {
                     if (chance(rng) < rule.probability) {
-                        objects[y][x] = rule.symbol;
+                        objects[y][x] = rule.type;
                         break;
                     }
                 }
@@ -133,20 +132,20 @@ int WorldCreator::dist2(int x1, int y1, int x2, int y2) {
 }
 
 void WorldCreator::write_rle_chunk(std::ofstream& out,
-    const std::vector<std::vector<char>>& data,
+    const std::vector<std::vector<uint8_t>>& data,
     int startX, int startY) {
-    char current = data[startY][startX];
+    uint8_t current = data[startY][startX];
     unsigned char count = 1;
 
     for (int y = 0; y < chunkSize; ++y) {
         for (int x = 0; x < chunkSize; ++x) {
             if (x == 0 && y == 0) continue;
-            char next = data[startY + y][startX + x];
+            uint8_t next = data[startY + y][startX + x];
             if (next == current && count < 255) {
                 count++;
             } else {
                 out.write(reinterpret_cast<char*>(&count), 1);
-                out.write(&current, 1);
+                out.write(reinterpret_cast<char*>(&current), 1);
                 current = next;
                 count = 1;
             }
@@ -154,11 +153,11 @@ void WorldCreator::write_rle_chunk(std::ofstream& out,
     }
 
     out.write(reinterpret_cast<char*>(&count), 1);
-    out.write(&current, 1);
+    out.write(reinterpret_cast<char*>(&current), 1);
 }
 
-void WorldCreator::save_world_rle(const std::vector<std::vector<char>>& biomes, 
-                                  const std::vector<std::vector<char>>& objects) {
+void WorldCreator::save_world_rle(const std::vector<std::vector<uint8_t>>& biomes, 
+                                  const std::vector<std::vector<uint8_t>>& objects) {
     if (!std::filesystem::exists("saves/")) {
         mycerr << "Recreated saves folder";
         std::filesystem::create_directory("saves");
