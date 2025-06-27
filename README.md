@@ -1,1 +1,1 @@
-ochki nada?
+v tualet nado?
