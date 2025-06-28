@@ -109,16 +109,59 @@ void Renderer::drawBackground() {
     Rectangle destRec = { 0, 0, (float)virtualWidth, (float)virtualHeight };
 
     DrawTexturePro(bg, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
-} 
-
-void Renderer::drawPlayer(Vector2 playerPos) {
-    DrawCircleV(playerPos, 10, RED);
-    DrawCircleLinesV(playerPos, handDistance * tileSize, YELLOW);
 }
 
 void Renderer::drawEnemy(Vector2 enemyPos) {
     DrawCircleV(enemyPos, 10, BLUE);
 }
+
+void Renderer::drawInventory(const Inventory* inventory) {
+    if (!inventory) {
+        mycerr << "inventory == nullptr";
+        return;
+    }
+
+    const int padding = 4;
+    const int columns = 5;
+    const int slotSize = 20;
+    const Vector2 position = {20, 20};
+    Texture2D& itemTilemap = getTexture("itemTilemap");
+
+    for (int i = 0; i < Inventory::SLOT_COUNT; ++i) {
+        int col = i % columns;
+        int row = i / columns;
+
+        float x = position.x + col * (slotSize + padding);
+        float y = position.y + row * (slotSize + padding);
+        Rectangle slotRect = { x, y, (float)slotSize, (float)slotSize };
+
+        DrawRectangleRec(slotRect, DARKGRAY);
+        DrawRectangleLinesEx(slotRect, 2, LIGHTGRAY);
+
+        const ItemStack& stack = inventory->getSlot(i);
+        if (!stack.isEmpty()) {
+            const Item& item = stack.getItem();
+
+            float iconSize = slotSize * 0.8f;
+            float iconX = x + (slotSize - iconSize) * 0.5f;
+            float iconY = y + (slotSize - iconSize) * 0.5f;
+
+            Rectangle src = item.getIconSourceRect();
+            Rectangle dst = { iconX, iconY, iconSize, iconSize };
+
+            DrawTexturePro(itemTilemap, src, dst, {0, 0}, 0.0f, WHITE);
+
+            if (stack.count > 1) {
+                std::string countText = std::to_string(stack.count);
+                int fontSize = 12;
+                Vector2 textSize = MeasureTextEx(GetFontDefault(), countText.c_str(), (float)fontSize, 1);
+                DrawText(countText.c_str(), x + slotSize - textSize.x - 2, y + slotSize - textSize.y, fontSize, WHITE);
+            }
+        }
+    }
+}
+
+
 
 Texture2D& Renderer::getTexture(const std::string& key, bool shouldBeWrapped) {
     return assetManager.getTexture(key, shouldBeWrapped);

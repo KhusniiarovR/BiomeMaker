@@ -1,11 +1,14 @@
 #include "AssetManager.h"
 #include "Utilities/Logger/Logger.h"
+#include "Items/ItemRegister.h"
 
 AssetManager::AssetManager() {
     registerFont("inter", "data/text/InterFont.ttf");
     registerTexture("tilemap", "data/textures/tilemap.png");
     registerTexture("button1", "data/textures/buttonPack1.png");
     registerTexture("background", "data/textures/background.png");
+    registerTexture("itemTilemap", "data/textures/itemTilemap.png");
+    registerAllItems();
 }
 
 AssetManager::~AssetManager() {

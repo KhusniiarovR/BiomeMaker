@@ -4,6 +4,7 @@
 #include "raylib.h"
 #include <string>
 #include "AssetManager.h"
+#include "Items/Inventory/Inventory.h"
 
 class Renderer {
 private:
@@ -39,8 +40,8 @@ public:
                 
     void drawBackground();            
 
-    void drawPlayer(Vector2 playerPos);
     void drawEnemy(Vector2 enemyPos);
+    void drawInventory(const Inventory* inventory);
 
     Texture2D& getTexture(const std::string& key, bool shouldBeWrapped = false);
 };

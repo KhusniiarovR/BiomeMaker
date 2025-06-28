@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Constants/WorldConst.h"
 
 Player::Player(Vector2 init_pos) : Entity(init_pos){
     speed = 80.0f;
@@ -11,14 +12,16 @@ void Player::update(float dt) {
     if (IsKeyDown(KEY_D)) position.x += speed * dt;
 }
 
-float Player::getPositionX() const {
-    return position.x;
-}
-
-float Player::getPositionY() const {
-    return position.y;
+void Player::render(Renderer& renderer) const {
+    DrawCircleV(position, 10, RED);
+    DrawCircleLinesV(position, handDistance * tileSize, YELLOW);
+    renderer.drawInventory(&inventory);
 }
 
 Vector2 Player::getPosition() const {
     return position;
+}
+
+void Player::giveItem(ItemID id, uint8_t count) {
+    inventory.addItem(id, count);
 }

@@ -9,6 +9,7 @@ GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          world(worldName)
 {
     renderer.GetCamera().offset = {virtualScreenSizeX / 2.0f, virtualScreenSizeY / 2.0f};
+    player.giveItem(ItemID::WOOD, 5); 
 }
 
 void GameScene::update(float dt, Vector2 mouseVirtual) {
@@ -26,7 +27,7 @@ void GameScene::update(float dt, Vector2 mouseVirtual) {
 
 void GameScene::render() const {
     world.render(renderer);
-    renderer.drawPlayer(player.getPosition());
+    player.render(renderer);
     renderer.drawEnemy(enemy.getPosition());
 }
 
