@@ -11,7 +11,14 @@ private:
 public:
     Player(Vector2 init_pos);
     void update(float dt) override;
-    Texture2D texture;  
+    Texture2D textureDown;  
+    Texture2D textureRight;
+    Texture2D textureLeft;  
+    Texture2D textureUp;
+    bool movingUp;
+    bool movingDown;
+    bool movingLeft;
+    bool movingRight;
     float rotation;
     [[nodiscard]] float getPositionX() const;
     [[nodiscard]] float getPositionY() const;

@@ -112,7 +112,17 @@ void Renderer::drawBackground() {
 } 
 
 void Renderer::drawPlayer(const Player& player) {
-    Texture2D pl = getTexture("player", true);
+    Texture2D pl;
+    if (player.movingUp)
+        pl = getTexture("playerUp", true);
+    else if (player.movingDown)
+        pl = getTexture("playerDown", true);
+    else if (player.movingLeft)
+        pl = getTexture("playerLeft", true);
+    else if (player.movingRight)
+        pl = getTexture("playerRight", true);
+    else
+        pl = getTexture("playerDown", true);
 
     Rectangle source = { 0, 0, (float)pl.width, (float)pl.height };
     Rectangle dest = { player.position.x, player.position.y, (float)pl.width, (float)pl.height };
@@ -123,8 +133,7 @@ DrawTexturePro(pl, source, dest, origin, rotation, WHITE);
 }
 
 void Renderer::drawEnemy(const Enemy& enemy) {
-    Texture2D en = getTexture("enemy", true);
-
+    Texture2D en = getTexture("enemy"+enemy.currentDir, true);
     Rectangle source = { 0, 0, (float)en.width, (float)en.height };
     Rectangle dest = { enemy.position.x, enemy.position.y, (float)en.width, (float)en.height };
     Vector2 origin = { en.width / 2.0f, en.height / 2.0f };
