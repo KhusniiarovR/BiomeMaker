@@ -3,10 +3,10 @@
 Enemy::Enemy(Vector2 init_pos,Player &player) : Entity(init_pos), player(player){
     position.x -= 200;
     speed = 0.5f;
-    textureFront = LoadTexture("enemy.png");
+    textureUp = LoadTexture("enemyUp.png");
     textureLeft = LoadTexture("enemyLeft.png");
     textureRight = LoadTexture("enemyRight.png");
-    textureBack = LoadTexture("enemyBack.png");
+    textureDown = LoadTexture("enemyDown.png");
     rotation = 0.0f;
     Vector2 diff = {
     player.position.x - position.x,
@@ -18,7 +18,7 @@ Enemy::Enemy(Vector2 init_pos,Player &player) : Entity(init_pos), player(player)
 
 void Enemy::update(float dt) {
     moveToPlayer(player, position, speed);
-    
+
     Vector2 toPlayer = {
     player.position.x - position.x,
     player.position.y - position.y

@@ -12,10 +12,10 @@ class Enemy : public Entity
     public:
         Enemy(Vector2 init_pos, Player &player);
         void update(float dt) override;
-        Texture2D textureFront;  
+        Texture2D textureUp;  
         Texture2D textureRight;
         Texture2D textureLeft;  
-        Texture2D textureBack;
+        Texture2D textureDown;
         
         float rotation;
         Vector2 direction;
