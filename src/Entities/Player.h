@@ -3,7 +3,7 @@
 
 #include "raylib.h"
 #include "Entity.h"
-
+#include <string>
 class Player : public Entity {
 private:
     float speed;
@@ -19,6 +19,7 @@ public:
     bool movingDown;
     bool movingLeft;
     bool movingRight;
+    std::string lastDirection;
     float rotation;
     [[nodiscard]] float getPositionX() const;
     [[nodiscard]] float getPositionY() const;

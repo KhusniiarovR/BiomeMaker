@@ -7,6 +7,7 @@ Player::Player(Vector2 init_pos) : Entity(init_pos){
     textureRight = LoadTexture("playerRight.png");
     textureUp = LoadTexture("playerUp.png");
     rotation = 0.0f;
+    lastDirection = "playerDown";
 }
 
 void Player::update(float dt) {
@@ -18,6 +19,15 @@ void Player::update(float dt) {
     if (IsKeyDown(KEY_S)) {position.y += speed * dt; movingDown = true;}
     if (IsKeyDown(KEY_A)) {position.x -= speed * dt; movingLeft = true;}
     if (IsKeyDown(KEY_D)) {position.x += speed * dt; movingRight = true;}
+
+    if (movingUp)
+        lastDirection = "playerUp";
+    else if (movingDown)
+        lastDirection = "playerDown";
+    else if (movingLeft)
+        lastDirection = "playerLeft";
+    else if (movingRight)
+        lastDirection = "playerRight";
 }
 
 float Player::getPositionX() const {

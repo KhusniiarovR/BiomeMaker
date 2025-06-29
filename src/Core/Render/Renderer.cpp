@@ -112,23 +112,13 @@ void Renderer::drawBackground() {
 } 
 
 void Renderer::drawPlayer(const Player& player) {
-    Texture2D pl;
-    if (player.movingUp)
-        pl = getTexture("playerUp", true);
-    else if (player.movingDown)
-        pl = getTexture("playerDown", true);
-    else if (player.movingLeft)
-        pl = getTexture("playerLeft", true);
-    else if (player.movingRight)
-        pl = getTexture("playerRight", true);
-    else
-        pl = getTexture("playerDown", true);
+    Texture2D pl = getTexture(player.lastDirection, true);
 
     Rectangle source = { 0, 0, (float)pl.width, (float)pl.height };
     Rectangle dest = { player.position.x, player.position.y, (float)pl.width, (float)pl.height };
     Vector2 origin = { pl.width / 2.0f, pl.height / 2.0f };
     float rotation = player.rotation;
-
+    //я случайно убрал желтый круг, сорян
 DrawTexturePro(pl, source, dest, origin, rotation, WHITE);
 }
 
