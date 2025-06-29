@@ -6,6 +6,8 @@ AssetManager::AssetManager() {
     registerTexture("tilemap", "data/textures/tilemap.png");
     registerTexture("button1", "data/textures/buttonPack1.png");
     registerTexture("background", "data/textures/background.png");
+    registerTexture("player", "data/textures/player.png");
+    registerTexture("enemy", "data/textures/enemy.png");
 }
 
 AssetManager::~AssetManager() {

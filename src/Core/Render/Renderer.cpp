@@ -111,13 +111,26 @@ void Renderer::drawBackground() {
     DrawTexturePro(bg, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
 } 
 
-void Renderer::drawPlayer(Vector2 playerPos) {
-    DrawCircleV(playerPos, 10, RED);
-    DrawCircleLinesV(playerPos, handDistance * tileSize, YELLOW);
+void Renderer::drawPlayer(const Player& player) {
+    Texture2D pl = getTexture("player", true);
+
+    Rectangle source = { 0, 0, (float)pl.width, (float)pl.height };
+    Rectangle dest = { player.position.x, player.position.y, (float)pl.width, (float)pl.height };
+    Vector2 origin = { pl.width / 2.0f, pl.height / 2.0f };
+    float rotation = player.rotation;
+
+DrawTexturePro(pl, source, dest, origin, rotation, WHITE);
 }
 
-void Renderer::drawEnemy(Vector2 enemyPos) {
-    DrawCircleV(enemyPos, 10, BLUE);
+void Renderer::drawEnemy(const Enemy& enemy) {
+    Texture2D en = getTexture("enemy", true);
+
+    Rectangle source = { 0, 0, (float)en.width, (float)en.height };
+    Rectangle dest = { enemy.position.x, enemy.position.y, (float)en.width, (float)en.height };
+    Vector2 origin = { en.width / 2.0f, en.height / 2.0f };
+    float rotation = enemy.rotation;
+
+DrawTexturePro(en, source, dest, origin, rotation, WHITE);
 }
 
 Texture2D& Renderer::getTexture(const std::string& key, bool shouldBeWrapped) {

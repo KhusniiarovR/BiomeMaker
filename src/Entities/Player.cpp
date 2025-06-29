@@ -2,6 +2,8 @@
 
 Player::Player(Vector2 init_pos) : Entity(init_pos){
     speed = 80.0f;
+    texture = LoadTexture("player.png");
+    rotation = 0.0f;
 }
 
 void Player::update(float dt) {

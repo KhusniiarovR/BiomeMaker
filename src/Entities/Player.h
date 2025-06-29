@@ -11,7 +11,8 @@ private:
 public:
     Player(Vector2 init_pos);
     void update(float dt) override;
-
+    Texture2D texture;  
+    float rotation;
     [[nodiscard]] float getPositionX() const;
     [[nodiscard]] float getPositionY() const;
     [[nodiscard]] Vector2 getPosition() const;

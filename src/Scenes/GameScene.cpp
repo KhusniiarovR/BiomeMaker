@@ -26,8 +26,8 @@ void GameScene::update(float dt, Vector2 mouseVirtual) {
 
 void GameScene::render() const {
     world.render(renderer);
-    renderer.drawPlayer(player.getPosition());
-    renderer.drawEnemy(enemy.getPosition());
+    renderer.drawPlayer(player);
+    renderer.drawEnemy(enemy);
 }
 
 bool GameScene::shouldTransition() const {

@@ -4,7 +4,8 @@
 #include "raylib.h"
 #include <string>
 #include "AssetManager.h"
-
+#include "Entities/Player.h"
+#include "Entities/Enemy.h"
 class Renderer {
 private:
     AssetManager& assetManager;
@@ -39,8 +40,8 @@ public:
                 
     void drawBackground();            
 
-    void drawPlayer(Vector2 playerPos);
-    void drawEnemy(Vector2 enemyPos);
+    void drawPlayer(const Player& player);
+    void drawEnemy(const Enemy& enemy);
 
     Texture2D& getTexture(const std::string& key, bool shouldBeWrapped = false);
 };

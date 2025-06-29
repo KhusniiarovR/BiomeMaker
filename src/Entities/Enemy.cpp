@@ -3,6 +3,8 @@
 Enemy::Enemy(Vector2 init_pos,Player &player) : Entity(init_pos), player(player){
     position.x -= 200;
     speed = 0.5f;
+    texture = LoadTexture("enemy.png");
+    rotation = 0.0f;
 }
 
 void Enemy::update(float dt) {

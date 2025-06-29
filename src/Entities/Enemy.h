@@ -12,6 +12,8 @@ class Enemy : public Entity
     public:
         Enemy(Vector2 init_pos, Player &player);
         void update(float dt) override;
+        Texture2D texture;  
+        float rotation;
         [[nodiscard]] float getPositionX() const;
         [[nodiscard]] float getPositionY() const;
         [[nodiscard]] Vector2 getPosition() const;

@@ -1,1 +1,1 @@
-v tualet nado?
+u kakih verbludov 3 gorba?
