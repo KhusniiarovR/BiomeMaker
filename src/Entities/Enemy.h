@@ -12,7 +12,7 @@ private:
 public:
     Enemy(Vector2 init_pos, Player &player);
     void update(float dt) override;
-    void draw(Renderer& renderer) const;
+    void render(Renderer& renderer) const;
     
     int index = 0;
     const int tilemapOffset = 4;

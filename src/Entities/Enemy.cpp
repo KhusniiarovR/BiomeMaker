@@ -14,8 +14,8 @@ void Enemy::update(float dt) {
     index += tilemapOffset;
 }
 
-void Enemy::draw(Renderer& renderer) const {
-    Texture2D enemyTexture = renderer.getTexture("entityTilemap");
+void Enemy::render(Renderer& renderer) const {
+    Texture2D& enemyTexture = renderer.getTexture("entityTilemap");
 
     int indexX = index % entityTilesPerRow;
     int indexY = index / entityTilesPerRow;

@@ -37,7 +37,7 @@ void ChunkSystem::update(Vector2& playerPos) {
 }
 
 void ChunkSystem::render(Renderer& renderer) const {
-    Texture2D& tilemap = renderer.getTexture("tilemap");
+    Texture2D& tilemap = renderer.getTexture("worldTilemap");
     for (const auto& [pos, chunk] : chunks) {
         chunk.Draw(tilemap);
     }

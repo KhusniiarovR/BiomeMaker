@@ -100,7 +100,7 @@ void Renderer::drawTextGradient(const std::string& text, Vector2 position,
 
 void Renderer::drawBackground() {
     const int pixelheight = 30;
-    Texture2D bg = getTexture("background", true);
+    Texture2D& bg = getTexture("background", true);
     bgoffset += GetFrameTime() * 100;
 
     float scale = (float)virtualHeight / pixelheight;

@@ -15,7 +15,7 @@ void Player::update(float dt) {
 }
 
 void Player::render(Renderer& renderer) const {
-    Texture2D playerTexture = renderer.getTexture("entityTilemap");
+    Texture2D& playerTexture = renderer.getTexture("entityTilemap");
     
     int indexX = index % entityTilesPerRow;
     int indexY = index / entityTilesPerRow;
