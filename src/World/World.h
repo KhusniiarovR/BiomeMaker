@@ -19,8 +19,10 @@ public:
     void update(Vector2 playerPos, Camera2D& camera, Vector2 mouseVirtual);
     void render(Renderer& renderer) const;
 
-private:
     bool removeObjectAt(int worldX, int worldY);
+    
+private:
+    Object* getObjectAt(int worldX, int worldY);
 };
 
 #endif //WORLD_H

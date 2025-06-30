@@ -92,17 +92,7 @@ void WorldSelectionScene::update(float dt, Vector2 mouseVirtual) {
         }   
     }
 
-    if (IsKeyPressed(KEY_ENTER) && !generationStage) {
-        if (!worldSelector.getSelectedFolder().empty()) {
-            changeScene = true;
-            nextScene = SceneType::Game;
-        }
-    }
-
-    if (IsKeyPressed(KEY_SPACE)  && !generationStage) {
-        changeScene = true;
-        nextScene = SceneType::MainMenu;
-    }
+    updateChangeScene();
 }
 
 void WorldSelectionScene::render() const {
@@ -133,6 +123,20 @@ void WorldSelectionScene::render() const {
             DrawRectangleRec(barBack, GRAY);
             DrawRectangleRec(barFill, GREEN);
         }
+    }
+}
+
+void WorldSelectionScene::updateChangeScene() {
+    if (IsKeyPressed(KEY_ENTER) && !generationStage) {
+        if (!worldSelector.getSelectedFolder().empty()) {
+            changeScene = true;
+            nextScene = SceneType::Game;
+        }
+    }
+
+    if (IsKeyPressed(KEY_SPACE)  && !generationStage) {
+        changeScene = true;
+        nextScene = SceneType::MainMenu;
     }
 }
 

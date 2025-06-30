@@ -34,9 +34,13 @@ public:
 
     void update(float dt, Vector2 mouseVirtual) override;
     void render() const override;
+
+    void updateChangeScene() override;
     [[nodiscard]] bool shouldTransition() const override;
     [[nodiscard]] SceneType getNextScene() const override;
     [[nodiscard]] std::string getWorldName() const override;
+
+private:    
     void eraseWorldName();
 };
 

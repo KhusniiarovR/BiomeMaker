@@ -31,7 +31,7 @@ void World::render(Renderer& renderer) const {
     chunkSystem.render(renderer);
 }
 
-bool World::removeObjectAt(int worldX, int worldY) {
+Object* World::getObjectAt(int worldX, int worldY) {
     int chunkX = worldX / chunkSize;
     int chunkY = worldY / chunkSize;
 
@@ -39,16 +39,23 @@ bool World::removeObjectAt(int worldX, int worldY) {
     int localY = worldY % chunkSize;
 
     auto it = chunks.find({chunkX, chunkY});
-    if (it == chunks.end()) return false;
+    if (it == chunks.end()) return nullptr;
 
     Chunk& chunk = it->second;
-    Object& obj = chunk.objectTiles[localY][localX];
+    return &chunk.objectTiles[localY][localX];
+}
 
-    if (obj.type != ObjectType::None) {
-        
-        obj.type = ObjectType::None;
-        chunks.at({chunkX, chunkY}).isModified = true; 
-        return true;
-    }
-    return false;
+
+bool World::removeObjectAt(int worldX, int worldY) {
+    Object* obj = getObjectAt(worldX, worldY);
+
+    if (!obj || obj->type == ObjectType::None) return false;
+    
+    obj->type = ObjectType::None;
+
+    int chunkX = worldX / chunkSize;
+    int chunkY = worldY / chunkSize;
+    chunks.at({chunkX, chunkY}).isModified = true;    
+
+    return true;
 }

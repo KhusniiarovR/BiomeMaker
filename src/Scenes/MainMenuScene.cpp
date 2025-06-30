@@ -7,15 +7,19 @@ MainMenuScene::MainMenuScene(Renderer& renderer) : Scene(renderer) {
 }
 
 void MainMenuScene::update(float dt, Vector2 mouseVirtual) {
-    if (IsKeyPressed(KEY_ENTER) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-        changeScene = true;
-        nextScene = SceneType::WorldSelection;
-    }
+    updateChangeScene();
 }
 
 void MainMenuScene::render() const {
     renderer.drawBackground();
     renderer.drawTextGradient("Press enter to continue", {0.5f, 0.5f}, 20, 4.0f, PURPLE, RED);
+}
+
+void MainMenuScene::updateChangeScene() {
+    if (IsKeyPressed(KEY_ENTER) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+        changeScene = true;
+        nextScene = SceneType::WorldSelection;
+    }
 }
 
 bool MainMenuScene::shouldTransition() const {

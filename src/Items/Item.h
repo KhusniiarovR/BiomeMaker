@@ -16,7 +16,7 @@ struct Item {
     std::string name;
     std::string description;
     bool stackable = true;
-    uint8_t maxStack = 64;
+    uint8_t maxStack = 10;
 
     Item() = default;
 

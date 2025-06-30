@@ -13,8 +13,11 @@ protected:
 
 public:
     Scene(Renderer& renderer) : renderer(renderer) {}
+
     virtual void update(float dt, Vector2 mouseVirtual) = 0;
     virtual void render() const = 0;
+
+    virtual void updateChangeScene() = 0;
     [[nodiscard]] virtual bool shouldTransition() const { return false; }
     [[nodiscard]] virtual SceneType getNextScene() const { return SceneType::None; }
     [[nodiscard]] virtual std::string getWorldName() const { return "";}

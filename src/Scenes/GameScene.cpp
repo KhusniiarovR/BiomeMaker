@@ -10,26 +10,28 @@ GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          world(worldName)
 {
     renderer.GetCamera().offset = {virtualScreenSizeX / 2.0f, virtualScreenSizeY / 2.0f};
-    player.giveItem(ItemID::WOOD, 5); 
 }
 
 void GameScene::update(float dt, Vector2 mouseVirtual) {
-    player.update(dt);
-    enemy.update(dt);
-    renderer.updateCamera(player.getPosition());
-    world.update(player.getPosition(), renderer.GetCamera(), mouseVirtual);
-
-    // TODO function to handle scene manager inputs
-    if (IsKeyPressed(KEY_SPACE)) {
-        changeScene = true;
-        nextScene = SceneType::MainMenu;
-    }
+    updatePlayer(dt);
+    updateEnemies(dt);
+    updateObjects(mouseVirtual);    
+    updateWorld(mouseVirtual);
+    updateCamera();
+    updateChangeScene();
 }
 
 void GameScene::render() const {
     world.render(renderer);
     enemy.render(renderer);
     player.render(renderer);
+}
+
+void GameScene::updateChangeScene() {
+    if (IsKeyPressed(KEY_SPACE)) {
+        changeScene = true;
+        nextScene = SceneType::MainMenu;
+    }
 }
 
 bool GameScene::shouldTransition() const {
@@ -39,4 +41,41 @@ bool GameScene::shouldTransition() const {
 
 SceneType GameScene::getNextScene() const {
     return nextScene;
+}
+
+void GameScene::updatePlayer(float dt) {
+    player.update(dt);
+}
+
+void GameScene::updateEnemies(float dt) {
+    enemy.update(dt);
+}
+
+void GameScene::updateObjects(Vector2 mouseVirtual) {
+    if (IsKeyPressed(KEY_E)) {
+        Vector2 mouseWorld = GetScreenToWorld2D(mouseVirtual, renderer.GetCamera());
+
+        int tileX = static_cast<int>(mouseWorld.x / worldTileSize);
+        int tileY = static_cast<int>(mouseWorld.y / worldTileSize);
+
+        Vector2 playerPos = player.getPosition();
+        int playerTileX = static_cast<int>(playerPos.x / worldTileSize);
+        int playerTileY = static_cast<int>(playerPos.y / worldTileSize);
+
+        int dx = tileX - playerTileX;
+        int dy = tileY - playerTileY;
+
+        if (dx * dx + dy * dy <= handDistance * handDistance) {
+            if (world.removeObjectAt(tileX, tileY)) 
+                player.giveItem(ItemID::WOOD, 1);
+        }
+    }
+}
+
+void GameScene::updateWorld(Vector2 mouseVirtual) {
+    world.update(player.getPosition(), renderer.GetCamera(), mouseVirtual);
+}
+
+void GameScene::updateCamera() {
+    renderer.updateCamera(player.getPosition());
 }
