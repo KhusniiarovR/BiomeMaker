@@ -19,7 +19,7 @@ public:
     void update(Vector2 playerPos, Camera2D& camera, Vector2 mouseVirtual);
     void render(Renderer& renderer) const;
 
-    bool removeObjectAt(int worldX, int worldY);
+    std::optional<ObjectType> removeObjectAt(int worldX, int worldY);
     
 private:
     Object* getObjectAt(int worldX, int worldY);

@@ -129,7 +129,7 @@ void Renderer::drawInventory(const Inventory* inventory) {
         Rectangle slotRect = { x, y, (float)invSlotSize, (float)invSlotSize };
 
         DrawRectangleRec(slotRect, DARKGRAY);
-        DrawRectangleLinesEx(slotRect, 2, LIGHTGRAY);
+        DrawRectangleLinesEx(slotRect, 2, (i == inventory->selectedSlot) ? RED : LIGHTGRAY);
 
         const ItemStack& stack = inventory->getSlot(i);
         if (!stack.isEmpty()) {

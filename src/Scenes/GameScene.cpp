@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include <Constants/GraphicsConst.h>
 #include <Constants/TilemapConst.h>
+#include "Items/ObjectToItem.h"
 
 GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          Scene(renderer),
@@ -66,8 +67,13 @@ void GameScene::updateObjects(Vector2 mouseVirtual) {
         int dy = tileY - playerTileY;
 
         if (dx * dx + dy * dy <= handDistance * handDistance) {
-            if (world.removeObjectAt(tileX, tileY)) 
-                player.giveItem(ItemID::WOOD, 1);
+            auto removed = world.removeObjectAt(tileX, tileY);
+            if (removed) {
+                std::vector<ItemID> drops = generateLootForObject(*removed);
+                for (ItemID id : drops) {
+                    player.giveItem(id, 1);
+                }
+            }
         }
     }
 }

@@ -15,6 +15,15 @@ const ItemStack& Inventory::getSlot(int index) const {
     return slots[index];
 }
 
+void Inventory::setSelectedSlot(int index) {
+    if (index >= 0 && index < SLOT_COUNT)
+        selectedSlot = index;
+}
+    
+const ItemStack& Inventory::getSelectedSlot() const {
+    return slots[selectedSlot];
+}
+
 bool Inventory::addItem(ItemID id, uint8_t count) {
     for (auto& slot : slots) {
         if (slot.id == id && slot.count < slot.getItem().maxStack) {

@@ -11,6 +11,22 @@ struct ItemWood : public Item {
     }
 };
 
+struct ItemStone : public Item {
+    ItemStone() {
+        id = ItemID::STONE;
+        name = "Stone";
+        description = "dropped from big stone";
+    }
+};
+
+struct ItemBerry : public Item {
+    ItemBerry() {
+        id = ItemID::BERRY;
+        name = "Berry";
+        description = "looks tasty";
+    }
+};
+
 
 
 #endif // ITEMRESOURCES_H

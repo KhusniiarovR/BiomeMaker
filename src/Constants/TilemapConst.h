@@ -10,7 +10,7 @@ const float worldPadding = 0.01f;
 // inventory
 const int invPadding = 5;
 const int invColumns = 10;
-const int invSlotSize = 35;
+const int invSlotSize = 32;
 const Vector2 invPosition = {120, 5};
 
 // entity tilemap

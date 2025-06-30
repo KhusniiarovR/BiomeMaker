@@ -7,11 +7,14 @@
 class Inventory {
 public:
     static const int SLOT_COUNT = 20;
+    int selectedSlot = 0;
 
     Inventory();
 
     ItemStack& getSlot(int index);
     const ItemStack& getSlot(int index) const;
+    void setSelectedSlot(int index);
+    const ItemStack& getSelectedSlot() const;
 
     bool addItem(ItemID id, uint8_t count);
 
