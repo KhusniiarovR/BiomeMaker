@@ -6,6 +6,7 @@
 #include "World/WorldMenu/WorldCreator.h"
 #include "Utilities/Graphics/Button.h"
 #include "Utilities/Graphics/TextBox.h"
+#include "Utilities/Graphics/Bar.h"
 
 class WorldSelectionScene : public Scene {
 private:
@@ -21,13 +22,12 @@ private:
     Button backButton;
     TextBox enterName;
 
+    TimerBar timer;
+
     bool firstPage = true;
     bool generationStage = false;
 
     std::atomic<bool> generationFinished = false;
-
-    float fakeTimer = 0.0f;
-    float totalFakeTime = 7.0f;
 
 public:
     explicit WorldSelectionScene(Renderer& renderer);

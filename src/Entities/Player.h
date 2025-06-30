@@ -7,12 +7,14 @@
 #include "Core/Render/Renderer.h"
 #include <string>
 #include "Core/Render/Renderer.h"
+#include "Utilities/Graphics/Bar.h"
 
 class Player : public Entity {
 private:
     float speed;
     Inventory inventory;
-    
+    ValueBar hp;
+
 public:
     Player(Vector2 init_pos);
     void update(float dt) override;

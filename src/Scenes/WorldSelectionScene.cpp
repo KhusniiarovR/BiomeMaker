@@ -3,13 +3,14 @@
 
 WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
     : Scene(renderer),
-    playButton      ({0.6f, 0.3f},  {0.2f, 0.1f}, "PLAY",   BLACK, 0.5f),
+    playButton      ({0.6f, 0.3f} , {0.2f, 0.1f}, "PLAY",   BLACK, 0.5f),
     createNewButton ({0.6f, 0.55f}, {0.2f, 0.1f}, "CREATE", BLACK, 0.5f),
-    deleteButton    ({0.6f, 0.8f},  {0.2f, 0.1f}, "DELETE", BLACK, 0.5f),
+    deleteButton    ({0.6f, 0.8f} , {0.2f, 0.1f}, "DELETE", BLACK, 0.5f),
     createButton    ({0.1f, 0.55f}, {0.2f, 0.1f}, "CREATE", WHITE, 0.5f),
     createRandButton({0.4f, 0.55f}, {0.2f, 0.1f}, "RANDOM", WHITE, 0.5f),
     backButton      ({0.7f, 0.55f}, {0.2f, 0.1f}, "BACK",   WHITE, 0.5f),
-    enterName       (0.3f , 0.2f ,   0.4f ,0.05f, BLACK, RED, SKYBLUE, WHITE, 20)
+    enterName       ( 0.3f , 0.2f ,  0.4f ,0.05f, BLACK, RED, SKYBLUE, WHITE, 20),
+    timer           ({0.2f, 0.2f} , {0.6f, 0.3f}, 1.0f/3.0f, true, GREEN, GRAY, "", 20, true)
 {
     playButton.setOnClick([this]() {
         if (!worldSelector.getSelectedFolder().empty()) {
@@ -31,11 +32,10 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
 
         generationStage = true;
         generationFinished = false;
-        fakeTimer = 0.0f;
+        timer.setProgress(0.0f);
         std::thread([this]() 
         {
             {
-                std::this_thread::sleep_for(std::chrono::seconds(5));
                 worldCreator.generate(enterName.returnText());
                 worldSelector.loadFolders();
                 firstPage = true;
@@ -48,11 +48,10 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
     {
         generationStage = true;
         generationFinished = false;
-        fakeTimer = 0.0f;
+        timer.setProgress(0.0f);
         std::thread([this]() 
         {
             {
-                std::this_thread::sleep_for(std::chrono::seconds(5));
                 worldCreator.generate();
                 worldSelector.loadFolders();
                 firstPage = true;
@@ -83,8 +82,8 @@ void WorldSelectionScene::update(float dt, Vector2 mouseVirtual) {
             enterName.update(dt, mouseVirtual);
         }
         else {
-            fakeTimer += dt;
-            if (fakeTimer >= totalFakeTime && generationFinished) {
+            timer.update(dt);
+            if (timer.getProgress() == 1.0f && generationFinished) {
                 worldSelector.loadFolders();
                 firstPage = true;
                 generationStage = false;
@@ -114,14 +113,7 @@ void WorldSelectionScene::render() const {
         }
         else {
             renderer.drawTextGradient("Generating World...", {0.5, 0.15}, 20, 2.0f, RED, PURPLE, true, true, 0.0f, 0.0f);
-
-            float progress = std::min(fakeTimer / totalFakeTime, 0.9f);
-            Rectangle barBack = { 0.2f * virtualScreenSizeX, 0.2f * virtualScreenSizeY, 0.6f * virtualScreenSizeX, 0.3f * virtualScreenSizeX,};
-            Rectangle barFill = barBack;
-            barFill.width *= progress;
-
-            DrawRectangleRec(barBack, GRAY);
-            DrawRectangleRec(barFill, GREEN);
+            timer.render(renderer);
         }
     }
 }

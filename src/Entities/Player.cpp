@@ -3,8 +3,12 @@
 #include "Constants/GraphicsConst.h"
 #include "Constants/TilemapConst.h"
 
-Player::Player(Vector2 init_pos) : Entity(init_pos){
+Player::Player(Vector2 init_pos) 
+      : Entity(init_pos),
+        hp{{0.01f, 0.05f}, {0.15f, 0.05f}, RED, GRAY, "HEALTH", 10}
+{
     speed = 80.0f;
+    hp.setProgress(1.0f);
 }
 
 void Player::update(float dt) {
@@ -12,6 +16,8 @@ void Player::update(float dt) {
     if (IsKeyDown(KEY_D)) {position.x += speed * dt; index = 3;}
     if (IsKeyDown(KEY_W)) {position.y -= speed * dt; index = 0;}
     if (IsKeyDown(KEY_S)) {position.y += speed * dt; index = 1;}
+
+    if (IsKeyPressed(KEY_Q)) {hp.decrease(0.05f);}
 }
 
 void Player::render(Renderer& renderer) const {
@@ -35,6 +41,7 @@ void Player::render(Renderer& renderer) const {
     EndMode2D();
     is2DModeDone = true;
     renderer.drawInventory(&inventory);
+    hp.render(renderer);
 }
 
 Vector2 Player::getPosition() const {
