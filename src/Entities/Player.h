@@ -20,7 +20,7 @@ public:
     void update(float dt) override;
     void render(Renderer& renderer) const;
 
-    int index = 0;
+    int index = 1;
 
     [[nodiscard]] Vector2 getPosition() const;
     void giveItem(ItemID id, uint8_t count);
