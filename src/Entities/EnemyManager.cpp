@@ -1,6 +1,7 @@
 #include "EnemyManager.h"
 #include <iostream>
-void moveToPlayer(Player &player, Vector2 &position, float speed, std::string& currentDir){
+void moveToPlayer(Player &player, Vector2 &position, float speed, int& index)
+{
     Vector2 dir = { player.position.x - position.x, player.position.y - position.y };
     float length = sqrt(dir.x * dir.x + dir.y * dir.y);
     if (length > 0)
@@ -15,14 +16,14 @@ void moveToPlayer(Player &player, Vector2 &position, float speed, std::string& c
 
     if (absX > absY) {
         if (dir.x > 0)
-            currentDir = "Right";
+            index = 3;
         else
-            currentDir = "Left";
+            index = 2;
     } 
     else {
         if (dir.y > 0)
-            currentDir = "Down";
+            index = 1;
         else
-            currentDir = "Up";
-}
+            index = 0;
+    }
 }

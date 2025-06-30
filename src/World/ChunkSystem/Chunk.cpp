@@ -1,5 +1,7 @@
 #include "Chunk.h"
 #include "Utilities/Logger/Logger.h"
+#include "Constants/WorldConst.h"
+#include "Constants/TilemapConst.h"
 
 Chunk::Chunk(int cx, int cy, const std::vector<ChunkHeader>& headers, std::ifstream& file) : x(cx), y(cy) {
     Generate(headers, file);
@@ -80,31 +82,31 @@ void Chunk::Draw(Texture2D& tilemap) const  {
     const int chunkY = this->y * chunkSize;
     for (int y = 0; y < chunkSize; y++) {
         for (int x = 0; x < chunkSize; x++) {
-            int worldX = (chunkX + x) * tileSize;
-            int worldY = (chunkY + y) * tileSize;
+            int worldX = (chunkX + x) * worldTileSize;
+            int worldY = (chunkY + y) * worldTileSize;
 
             int tileIndex = tiles[y][x];
-            int tileX = (tileIndex % tilesPerRow) * sourceTileSize;
-            int tileY = (tileIndex / tilesPerRow) * sourceTileSize;
+            int tileX = (tileIndex % worldTilesPerRow) * worldSourceTileSize;
+            int tileY = (tileIndex / worldTilesPerRow) * worldSourceTileSize;
 
             Rectangle sourceRec = {
-                (float)tileX + padding,
-                (float)tileY + padding,
-                (float)sourceTileSize - 2 * padding,
-                (float)sourceTileSize - 2 * padding
+                (float)tileX + worldPadding,
+                (float)tileY + worldPadding,
+                (float)worldSourceTileSize - 2 * worldPadding,
+                (float)worldSourceTileSize - 2 * worldPadding
             };
             
-            Rectangle destRec = { (float)worldX, (float)worldY, (float)tileSize, (float)tileSize };
+            Rectangle destRec = { (float)worldX, (float)worldY, (float)worldTileSize, (float)worldTileSize };
 
             DrawTexturePro(tilemap, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
 
             const Object& obj = objectTiles[y][x];
             if (obj.type != ObjectType::None) {
                 int objectTileIndex = objectTypeToTile(obj.type);
-                int objTileX = (objectTileIndex % tilesPerRow) * sourceTileSize;
-                int objTileY = (objectTileIndex / tilesPerRow) * sourceTileSize;
+                int objTileX = (objectTileIndex % worldTilesPerRow) * worldSourceTileSize;
+                int objTileY = (objectTileIndex / worldTilesPerRow) * worldSourceTileSize;
 
-                Rectangle objSource = { (float)objTileX, (float)objTileY, (float)sourceTileSize, (float)sourceTileSize };
+                Rectangle objSource = { (float)objTileX, (float)objTileY, (float)worldSourceTileSize, (float)worldSourceTileSize };
                 DrawTexturePro(tilemap, objSource, destRec, {0, 0}, 0.0f, WHITE);
             }
         }

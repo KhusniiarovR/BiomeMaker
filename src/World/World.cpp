@@ -1,5 +1,6 @@
 #include "World.h"
 #include "Constants/WorldConst.h"
+#include "Constants/TilemapConst.h"
 
 World::World(const std::string &filename) : chunkSystem(chunks, filename) {}
 
@@ -11,11 +12,11 @@ void World::update(Vector2 playerPos, Camera2D& camera, Vector2 mouseVirtual) {
     if (IsKeyPressed(KEY_E)) {
         Vector2 mouseWorld = GetScreenToWorld2D(mouseVirtual, camera);
 
-        int tileX = static_cast<int>(mouseWorld.x / tileSize);
-        int tileY = static_cast<int>(mouseWorld.y / tileSize);
+        int tileX = static_cast<int>(mouseWorld.x / worldTileSize);
+        int tileY = static_cast<int>(mouseWorld.y / worldTileSize);
 
-        int playerTileX = static_cast<int>(playerPos.x / tileSize);
-        int playerTileY = static_cast<int>(playerPos.y / tileSize);
+        int playerTileX = static_cast<int>(playerPos.x / worldTileSize);
+        int playerTileY = static_cast<int>(playerPos.y / worldTileSize);
 
         int dx = tileX - playerTileX;
         int dy = tileY - playerTileY;
@@ -44,6 +45,7 @@ bool World::removeObjectAt(int worldX, int worldY) {
     Object& obj = chunk.objectTiles[localY][localX];
 
     if (obj.type != ObjectType::None) {
+        
         obj.type = ObjectType::None;
         chunks.at({chunkX, chunkY}).isModified = true; 
         return true;

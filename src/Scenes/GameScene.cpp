@@ -1,11 +1,12 @@
 #include "GameScene.h"
 #include "raylib.h"
 #include <Constants/GraphicsConst.h>
+#include <Constants/TilemapConst.h>
 
 GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          Scene(renderer),
-         player ({worldSize * tileSize / 2.0f, worldSize * tileSize / 2.0f}),
-         enemy ({worldSize * tileSize / 2.0f, worldSize * tileSize / 2.0f}, player),
+         player ({worldSize * worldTileSize / 2.0f, worldSize * worldTileSize / 2.0f}),
+         enemy ({worldSize * worldTileSize / 2.0f, worldSize * worldTileSize / 2.0f}, player),
          world(worldName)
 {
     renderer.GetCamera().offset = {virtualScreenSizeX / 2.0f, virtualScreenSizeY / 2.0f};

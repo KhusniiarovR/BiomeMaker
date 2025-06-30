@@ -7,15 +7,8 @@ AssetManager::AssetManager() {
     registerTexture("tilemap", "data/textures/tilemap.png");
     registerTexture("button1", "data/textures/buttonPack1.png");
     registerTexture("background", "data/textures/background.png");
-    registerTexture("playerDown", "data/textures/playerDown.png");
-    registerTexture("playerUp", "data/textures/playerUp.png");
-    registerTexture("playerLeft", "data/textures/playerLeft.png");
-    registerTexture("playerRight", "data/textures/playerRight.png");
-    registerTexture("enemyDown", "data/textures/enemyDown.png");
-    registerTexture("enemyUp", "data/textures/enemyUp.png");
-    registerTexture("enemyLeft", "data/textures/enemyLeft.png");
-    registerTexture("enemyRight", "data/textures/enemyRight.png");
     registerTexture("itemTilemap", "data/textures/itemTilemap.png");
+    registerTexture("entityTilemap", "data/textures/entityTilemap.png");
     registerAllItems();
 }
 

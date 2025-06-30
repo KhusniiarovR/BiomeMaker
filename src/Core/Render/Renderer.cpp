@@ -2,6 +2,7 @@
 #include "Constants/GraphicsConst.h"
 #include "Utilities/Logger/Logger.h"
 #include "Constants/WorldConst.h"
+#include "Constants/TilemapConst.h"
 
 Renderer::Renderer(AssetManager& assets, int width, int height, Vector2& mouseVirtual)
 : assetManager(assets), virtualWidth(width), virtualHeight(height), mouseVirtual(mouseVirtual) {
@@ -117,19 +118,15 @@ void Renderer::drawInventory(const Inventory* inventory) {
         return;
     }
 
-    const int padding = 5;
-    const int columns = 10;
-    const int slotSize = 35;
-    const Vector2 position = {120, 5};
     Texture2D& itemTilemap = getTexture("itemTilemap");
 
     for (int i = 0; i < Inventory::SLOT_COUNT; ++i) {
-        int col = i % columns;
-        int row = i / columns;
+        int col = i % invColumns;
+        int row = i / invColumns;
 
-        float x = position.x + col * (slotSize + padding);
-        float y = position.y + row * (slotSize + padding);
-        Rectangle slotRect = { x, y, (float)slotSize, (float)slotSize };
+        float x = invPosition.x + col * (invSlotSize + invPadding);
+        float y = invPosition.y + row * (invSlotSize + invPadding);
+        Rectangle slotRect = { x, y, (float)invSlotSize, (float)invSlotSize };
 
         DrawRectangleRec(slotRect, DARKGRAY);
         DrawRectangleLinesEx(slotRect, 2, LIGHTGRAY);
@@ -138,9 +135,9 @@ void Renderer::drawInventory(const Inventory* inventory) {
         if (!stack.isEmpty()) {
             const Item& item = stack.getItem();
 
-            float iconSize = slotSize * 0.8f;
-            float iconX = x + (slotSize - iconSize) * 0.5f;
-            float iconY = y + (slotSize - iconSize) * 0.5f;
+            float iconSize = invSlotSize * 0.8f;
+            float iconX = x + (invSlotSize - iconSize) * 0.5f;
+            float iconY = y + (invSlotSize - iconSize) * 0.5f;
 
             Rectangle src = item.getIconSourceRect();
             Rectangle dst = { iconX, iconY, iconSize, iconSize };
@@ -151,7 +148,7 @@ void Renderer::drawInventory(const Inventory* inventory) {
                 std::string countText = std::to_string(stack.count);
                 int fontSize = 12;
                 Vector2 textSize = MeasureTextEx(GetFontDefault(), countText.c_str(), (float)fontSize, 1);
-                DrawText(countText.c_str(), x + slotSize - textSize.x - 2, y + slotSize - textSize.y, fontSize, WHITE);
+                DrawText(countText.c_str(), x + invSlotSize - textSize.x - 2, y + invSlotSize - textSize.y, fontSize, WHITE);
             }
         }
     }
