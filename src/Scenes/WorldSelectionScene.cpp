@@ -9,7 +9,7 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
     createButton    ({0.1f, 0.55f}, {0.2f, 0.1f}, "CREATE", WHITE, 0.5f),
     createRandButton({0.4f, 0.55f}, {0.2f, 0.1f}, "RANDOM", WHITE, 0.5f),
     backButton      ({0.7f, 0.55f}, {0.2f, 0.1f}, "BACK",   WHITE, 0.5f),
-    enterName       (0.3f , 0.2f ,   0.4f ,0.05f, BLACK, RED, WHITE, 20)
+    enterName       (0.3f , 0.2f ,   0.4f ,0.05f, BLACK, RED, SKYBLUE, WHITE, 20)
 {
     playButton.setOnClick([this]() {
         if (!worldSelector.getSelectedFolder().empty()) {

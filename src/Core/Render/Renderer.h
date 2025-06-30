@@ -38,9 +38,8 @@ public:
                 float bounceSpeed = 0.5f, float bounceHeight = 12.0f,
                 const std::string& fontKey = "inter", float spacing = 4.0f);  
                 
-    void drawBackground();            
-
-    void drawEnemy(Vector2 enemyPos);
+    void drawBackground();       
+    
     void drawInventory(const Inventory* inventory);
 
     Texture2D& getTexture(const std::string& key, bool shouldBeWrapped = false);

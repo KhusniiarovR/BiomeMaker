@@ -27,7 +27,7 @@ void GameScene::update(float dt, Vector2 mouseVirtual) {
 
 void GameScene::render() const {
     world.render(renderer);
-    renderer.drawEnemy(enemy.getPosition());
+    enemy.draw(renderer);
     player.render(renderer);
 }
 

@@ -1,6 +1,6 @@
 #include "TextBox.h"
 
-TextBox::TextBox(float x, float y, float width, float height, Color BGcolor, Color lineColor, Color textColor, int textSize) :
+TextBox::TextBox(float x, float y, float width, float height, Color BGcolor, Color lineColor, Color activeLineColor, Color textColor, int textSize) :
 box{ virtualScreenSizeX*x, virtualScreenSizeY*y, virtualScreenSizeX*width, virtualScreenSizeY*height }, 
 BGColor{BGcolor}, lineColor{lineColor},
 textColor{textColor}, textSize(textSize) {}
@@ -53,7 +53,10 @@ void TextBox::update(float dt, Vector2 mouseVirtual)
 void TextBox::draw(Renderer& renderer) const
 {
     DrawRectangleRec(box,BGColor);
-    DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, lineColor);
+    if(active)
+        DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, activeLineColor);
+    else
+        DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, lineColor);
     renderer.drawText(text.c_str(), {box.x, box.y}, textSize, textColor, false, false, "inter", 0.3f);
 }
 string TextBox::returnText()

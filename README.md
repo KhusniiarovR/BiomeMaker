@@ -1,1 +1,1 @@
-ochki nada?
+kolobok povesilsya

@@ -111,10 +111,6 @@ void Renderer::drawBackground() {
     DrawTexturePro(bg, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
 }
 
-void Renderer::drawEnemy(Vector2 enemyPos) {
-    DrawCircleV(enemyPos, 10, BLUE);
-}
-
 void Renderer::drawInventory(const Inventory* inventory) {
     if (!inventory) {
         mycerr << "inventory == nullptr";
