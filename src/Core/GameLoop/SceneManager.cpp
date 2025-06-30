@@ -40,8 +40,12 @@ void SceneManager::update(float dt, Vector2 mouseVirtual) {
 void SceneManager::render() {
     if (currentScene) {
         BeginMode2D(renderer.GetCamera());
+        is2DModeDone = false;
         ClearBackground(BLACK);
         currentScene->render();
+        if (!is2DModeDone) {
+            EndMode2D();
+        }
     }
     else {
         mycerr << "no current scene";

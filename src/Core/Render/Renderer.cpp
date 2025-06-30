@@ -121,10 +121,10 @@ void Renderer::drawInventory(const Inventory* inventory) {
         return;
     }
 
-    const int padding = 4;
-    const int columns = 5;
-    const int slotSize = 20;
-    const Vector2 position = {20, 20};
+    const int padding = 5;
+    const int columns = 10;
+    const int slotSize = 35;
+    const Vector2 position = {120, 5};
     Texture2D& itemTilemap = getTexture("itemTilemap");
 
     for (int i = 0; i < Inventory::SLOT_COUNT; ++i) {

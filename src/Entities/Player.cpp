@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Constants/WorldConst.h"
+#include "Constants/GraphicsConst.h"
 
 Player::Player(Vector2 init_pos) : Entity(init_pos){
     speed = 80.0f;
@@ -15,6 +16,8 @@ void Player::update(float dt) {
 void Player::render(Renderer& renderer) const {
     DrawCircleV(position, 10, RED);
     DrawCircleLinesV(position, handDistance * tileSize, YELLOW);
+    EndMode2D();
+    is2DModeDone = true;
     renderer.drawInventory(&inventory);
 }
 
