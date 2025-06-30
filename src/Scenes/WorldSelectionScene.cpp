@@ -92,14 +92,14 @@ void WorldSelectionScene::update(float dt, Vector2 mouseVirtual) {
         }   
     }
 
-    if (IsKeyPressed(KEY_ENTER)) {
+    if (IsKeyPressed(KEY_ENTER) && !generationStage) {
         if (!worldSelector.getSelectedFolder().empty()) {
             changeScene = true;
             nextScene = SceneType::Game;
         }
     }
 
-    if (IsKeyPressed(KEY_SPACE)) {
+    if (IsKeyPressed(KEY_SPACE)  && !generationStage) {
         changeScene = true;
         nextScene = SceneType::MainMenu;
     }
