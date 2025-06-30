@@ -8,10 +8,10 @@ Player::Player(Vector2 init_pos) : Entity(init_pos){
 }
 
 void Player::update(float dt) {
-    if (IsKeyDown(KEY_W)) {position.y -= speed * dt; index = 0;}
-    if (IsKeyDown(KEY_S)) {position.y += speed * dt; index = 1;}
     if (IsKeyDown(KEY_A)) {position.x -= speed * dt; index = 2;}
     if (IsKeyDown(KEY_D)) {position.x += speed * dt; index = 3;}
+    if (IsKeyDown(KEY_W)) {position.y -= speed * dt; index = 0;}
+    if (IsKeyDown(KEY_S)) {position.y += speed * dt; index = 1;}
 }
 
 void Player::render(Renderer& renderer) const {
