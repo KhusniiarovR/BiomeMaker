@@ -27,6 +27,7 @@ void SceneManager::loadScene(SceneType sceneType, const std::string& worldName) 
 
 void SceneManager::update(float dt, Vector2 mouseVirtual) {
     if (currentScene) {
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         currentScene->update(dt, mouseVirtual);
         if (currentScene->shouldTransition()) {
             loadScene(currentScene->getNextScene(), currentScene->getWorldName());

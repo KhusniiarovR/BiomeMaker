@@ -4,7 +4,6 @@
 #include "raylib.h"
 #include <string>
 #include "AssetManager.h"
-#include "Items/Inventory/Inventory.h"
 
 class Renderer {
 private:
@@ -38,9 +37,7 @@ public:
                 float bounceSpeed = 0.5f, float bounceHeight = 12.0f,
                 const std::string& fontKey = "inter", float spacing = 4.0f);  
                 
-    void drawBackground();       
-    
-    void drawInventory(const Inventory* inventory);
+    void drawBackground();
 
     Texture2D& getTexture(const std::string& key, bool shouldBeWrapped = false);
 };

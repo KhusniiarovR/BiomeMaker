@@ -1,11 +1,13 @@
 #include "itemRegister.h"
-#include "Items/resources/ItemResources.h"
+#include "Items/Blocks/ItemBlocks.h"
+#include "Items/Food/ItemFood.h"
 
-void registerAllResources();
-
+void registerAllBlocks();
+void registerAllFood();
 
 void registerAllItems() {
-    registerAllResources();
+    registerAllBlocks();
+    registerAllFood();
 }
 
 ItemRegister& ItemRegister::get() {

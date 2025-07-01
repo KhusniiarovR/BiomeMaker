@@ -1,8 +1,7 @@
 #include "Items/ItemRegister.h"
-#include "ItemResources.h"
+#include "ItemBlocks.h"
 
-void registerAllResources() {
+void registerAllBlocks() {
     ItemRegister::get().registerItem(std::make_unique<ItemWood>());
     ItemRegister::get().registerItem(std::make_unique<ItemStone>());
-    ItemRegister::get().registerItem(std::make_unique<ItemBerry>());
 }

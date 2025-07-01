@@ -3,6 +3,7 @@
 
 #include <array>
 #include "Items/ItemStack.h"
+#include "Core/Render/Renderer.h"
 
 class Inventory {
 public:
@@ -15,6 +16,9 @@ public:
     const ItemStack& getSlot(int index) const;
     void setSelectedSlot(int index);
     const ItemStack& getSelectedSlot() const;
+
+    void update(Vector2 mouseVirtual);
+    void render(Renderer& renderer) const;
 
     bool addItem(ItemID id, uint8_t count);
 

@@ -3,6 +3,7 @@
 #include <Constants/GraphicsConst.h>
 #include <Constants/TilemapConst.h>
 #include "Items/ObjectToItem.h"
+#include "Items/Inventory/Inventory.h"
 
 GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          Scene(renderer),
@@ -14,7 +15,7 @@ GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
 }
 
 void GameScene::update(float dt, Vector2 mouseVirtual) {
-    updatePlayer(dt);
+    updatePlayer(dt, mouseVirtual);
     updateEnemies(dt);
     updateObjects(mouseVirtual);    
     updateWorld(mouseVirtual);
@@ -26,6 +27,7 @@ void GameScene::render() const {
     world.render(renderer);
     enemy.render(renderer);
     player.render(renderer);
+    player.getInventory().render(renderer);
 }
 
 void GameScene::updateChangeScene() {
@@ -44,8 +46,12 @@ SceneType GameScene::getNextScene() const {
     return nextScene;
 }
 
-void GameScene::updatePlayer(float dt) {
+void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
     player.update(dt);
+    player.getInventory().update(mouseVirtual);
+    if (IsKeyPressed(KEY_R)) {
+        player.useSelectedItem();
+    }
 }
 
 void GameScene::updateEnemies(float dt) {

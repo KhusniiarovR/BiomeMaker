@@ -112,50 +112,6 @@ void Renderer::drawBackground() {
     DrawTexturePro(bg, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
 }
 
-void Renderer::drawInventory(const Inventory* inventory) {
-    if (!inventory) {
-        mycerr << "inventory == nullptr";
-        return;
-    }
-
-    Texture2D& itemTilemap = getTexture("itemTilemap");
-
-    for (int i = 0; i < Inventory::SLOT_COUNT; ++i) {
-        int col = i % invColumns;
-        int row = i / invColumns;
-
-        float x = invPosition.x + col * (invSlotSize + invPadding);
-        float y = invPosition.y + row * (invSlotSize + invPadding);
-        Rectangle slotRect = { x, y, (float)invSlotSize, (float)invSlotSize };
-
-        DrawRectangleRec(slotRect, DARKGRAY);
-        DrawRectangleLinesEx(slotRect, 2, (i == inventory->selectedSlot) ? RED : LIGHTGRAY);
-
-        const ItemStack& stack = inventory->getSlot(i);
-        if (!stack.isEmpty()) {
-            const Item& item = stack.getItem();
-
-            float iconSize = invSlotSize * 0.8f;
-            float iconX = x + (invSlotSize - iconSize) * 0.5f;
-            float iconY = y + (invSlotSize - iconSize) * 0.5f;
-
-            Rectangle src = item.getIconSourceRect();
-            Rectangle dst = { iconX, iconY, iconSize, iconSize };
-
-            DrawTexturePro(itemTilemap, src, dst, {0, 0}, 0.0f, WHITE);
-
-            if (stack.count > 1) {
-                std::string countText = std::to_string(stack.count);
-                int fontSize = 12;
-                Vector2 textSize = MeasureTextEx(GetFontDefault(), countText.c_str(), (float)fontSize, 1);
-                DrawText(countText.c_str(), x + invSlotSize - textSize.x - 2, y + invSlotSize - textSize.y, fontSize, WHITE);
-            }
-        }
-    }
-}
-
-
-
 Texture2D& Renderer::getTexture(const std::string& key, bool shouldBeWrapped) {
     return assetManager.getTexture(key, shouldBeWrapped);
 }

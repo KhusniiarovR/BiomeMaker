@@ -6,6 +6,8 @@
 #include "raylib.h"
 #include <functional>
 
+class Player;
+
 enum class ItemID : uint16_t {
     NONE = 0,
     WOOD = 1,
@@ -37,7 +39,7 @@ struct Item {
 
     virtual ~Item() = default;
 
-    virtual void onUse() {}
+    virtual void onUse(Player& player) const {}
 };
 
 #endif // ITEM_H

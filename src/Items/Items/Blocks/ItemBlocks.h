@@ -1,5 +1,5 @@
-#ifndef ITEMRESOURCES_H
-#define ITEMRESOURCES_H
+#ifndef ITEMBLOCKS_H
+#define ITEMBLOCKS_H
 
 #include "Items/Item.h"
 
@@ -19,14 +19,4 @@ struct ItemStone : public Item {
     }
 };
 
-struct ItemBerry : public Item {
-    ItemBerry() {
-        id = ItemID::BERRY;
-        name = "Berry";
-        description = "looks tasty";
-    }
-};
-
-
-
-#endif // ITEMRESOURCES_H
+#endif // ITEMBLOCKS_H

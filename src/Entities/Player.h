@@ -14,16 +14,20 @@ private:
     float speed;
     Inventory inventory;
     ValueBar hp;
+    int index = 1;
 
 public:
     Player(Vector2 init_pos);
     void update(float dt) override;
     void render(Renderer& renderer) const;
 
-    int index = 1;
-
+    Inventory& getInventory() { return inventory; }
+    const Inventory& getInventory() const { return inventory; }
     [[nodiscard]] Vector2 getPosition() const;
     void giveItem(ItemID id, uint8_t count);
+
+    void heal(int value);
+    void useSelectedItem();
 };
 
 #endif //PLAYER_H

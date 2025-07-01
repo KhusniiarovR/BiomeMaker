@@ -40,7 +40,6 @@ void Player::render(Renderer& renderer) const {
     DrawCircleLinesV(position, handDistance * worldTileSize, YELLOW);
     EndMode2D();
     is2DModeDone = true;
-    renderer.drawInventory(&inventory);
     hp.render(renderer);
 }
 
@@ -50,4 +49,19 @@ Vector2 Player::getPosition() const {
 
 void Player::giveItem(ItemID id, uint8_t count) {
     inventory.addItem(id, count);
+}
+
+void Player::heal(int value) {
+    hp.increase(value);
+}
+
+void Player::useSelectedItem() {
+    ItemStack& stack = inventory.getSlot(inventory.selectedSlot);
+    if (!stack.isEmpty()) {
+        const Item& item = stack.getItem();
+        item.onUse(*this);
+        if (--stack.count == 0) {
+            stack.id = ItemID::NONE;
+        }
+    }
 }

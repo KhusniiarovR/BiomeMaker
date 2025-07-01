@@ -45,10 +45,6 @@ void TextBox::update(float dt, Vector2 mouseVirtual)
     {
         SetMouseCursor(MOUSE_CURSOR_IBEAM);
     }
-    else
-    {
-        SetMouseCursor(MOUSE_CURSOR_DEFAULT); 
-    }
 }
 void TextBox::draw(Renderer& renderer) const
 {
