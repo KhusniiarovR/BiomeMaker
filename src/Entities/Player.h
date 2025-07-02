@@ -8,13 +8,17 @@
 #include <string>
 #include "Core/Render/Renderer.h"
 #include "Utilities/Graphics/Bar.h"
+#include "Items/Buffs/Buffs.h"
+#include "Entities/BuffSystem.h"
 
 class Player : public Entity {
 private:
     float speed;
+    float speedMultiplier = 1.0f;
     Inventory inventory;
     ValueBar hp;
     int index = 1;
+    ActiveBuffSystem buffSystem;
 
 public:
     Player(Vector2 init_pos);
@@ -26,7 +30,12 @@ public:
     [[nodiscard]] Vector2 getPosition() const;
     void giveItem(ItemID id, uint8_t count);
 
-    void heal(int value);
+    float getSpeedMultiplier() const { return speedMultiplier; }
+    void setSpeedMultiplier(float mult) { speedMultiplier = mult; }
+
+    void heal(float value);
+    void applyEffect(const BuffEffect& effect);
+
     void useSelectedItem();
 };
 

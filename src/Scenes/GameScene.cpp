@@ -2,7 +2,7 @@
 #include "raylib.h"
 #include <Constants/GraphicsConst.h>
 #include <Constants/TilemapConst.h>
-#include "Items/ObjectToItem.h"
+#include "Items/ItemBase/ObjectToItem.h"
 #include "Items/Inventory/Inventory.h"
 
 GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
@@ -59,7 +59,7 @@ void GameScene::updateEnemies(float dt) {
 }
 
 void GameScene::updateObjects(Vector2 mouseVirtual) {
-    if (IsKeyPressed(KEY_E)) {
+    if (IsKeyPressed(KEY_E) || IsKeyPressed(KEY_T)) {
         Vector2 mouseWorld = GetScreenToWorld2D(mouseVirtual, renderer.GetCamera());
 
         int tileX = static_cast<int>(mouseWorld.x / worldTileSize);
@@ -73,12 +73,16 @@ void GameScene::updateObjects(Vector2 mouseVirtual) {
         int dy = tileY - playerTileY;
 
         if (dx * dx + dy * dy <= handDistance * handDistance) {
-            auto removed = world.removeObjectAt(tileX, tileY);
-            if (removed) {
-                std::vector<ItemID> drops = generateLootForObject(*removed);
-                for (ItemID id : drops) {
-                    player.giveItem(id, 1);
+            if (IsKeyPressed(KEY_E)) {
+                auto removed = world.removeObjectAt(tileX, tileY);
+                if (removed) {
+                    std::vector<ItemID> drops = generateLootForObject(*removed);
+                    for (ItemID id : drops) {
+                        player.giveItem(id, 1);
+                    }
                 }
+            } else if (IsKeyPressed(KEY_T)) {
+                world.placeObjectAt(tileX, tileY, ObjectType::Tree);
             }
         }
     }

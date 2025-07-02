@@ -20,6 +20,7 @@ public:
     void render(Renderer& renderer) const;
 
     std::optional<ObjectType> removeObjectAt(int worldX, int worldY);
+    bool placeObjectAt(int worldX, int worldY, ObjectType type);
     
 private:
     Object* getObjectAt(int worldX, int worldY);

@@ -1,4 +1,4 @@
-#include "Items/ItemRegister.h"
+#include "Items/ItemRegister/ItemRegister.h"
 #include "ItemBlocks.h"
 
 void registerAllBlocks() {

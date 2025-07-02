@@ -1,13 +1,11 @@
 #ifndef ITEMFOOD_H
 #define ITEMFOOD_H
 
-#include "Items/Item.h"
-#include "Entities/Player.h"
+#include "Items/ItemBase/Item.h"
+#include "ItemConsumable.h"
 
-struct ItemBerry : public Item {
+struct ItemBerry : public ConsumableItem {
     ItemBerry();
-
-    void onUse(Player& player) const override;
 };
 
 #endif // ITEMFOOD_H

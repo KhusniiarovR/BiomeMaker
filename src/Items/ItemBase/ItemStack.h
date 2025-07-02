@@ -2,7 +2,7 @@
 #define ITEMSTACK_H
 
 #include "Item.h"
-#include "ItemRegister.h"
+#include "Items/ItemRegister/ItemRegister.h"
 
 struct ItemStack {
     ItemID id = ItemID::NONE;

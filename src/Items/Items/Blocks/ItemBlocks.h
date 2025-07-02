@@ -1,7 +1,7 @@
 #ifndef ITEMBLOCKS_H
 #define ITEMBLOCKS_H
 
-#include "Items/Item.h"
+#include "Items/ItemBase/Item.h"
 
 struct ItemWood : public Item {
     ItemWood() {

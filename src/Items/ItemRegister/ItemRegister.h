@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 #include <memory>
-#include "Item.h"
+#include "Items/ItemBase/Item.h"
 
 class ItemRegister {
 public:

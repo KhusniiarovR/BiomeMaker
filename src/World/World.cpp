@@ -43,3 +43,31 @@ std::optional<ObjectType> World::removeObjectAt(int worldX, int worldY) {
 
     return removedType;
 }
+
+bool World::placeObjectAt(int worldX, int worldY, ObjectType type) {
+    if (type == ObjectType::None)
+        return false;
+
+    int chunkX = worldX / chunkSize;
+    int chunkY = worldY / chunkSize;
+
+    int localX = worldX % chunkSize;
+    int localY = worldY % chunkSize;
+
+    if (localX < 0) { chunkX--; localX += chunkSize; }
+    if (localY < 0) { chunkY--; localY += chunkSize; }
+
+    auto it = chunks.find({chunkX, chunkY});
+    if (it == chunks.end()) return false;
+
+    Chunk& chunk = it->second;
+    Object& obj = chunk.objectTiles[localY][localX];
+
+    if (obj.type != ObjectType::None)
+        return false;
+
+    obj.type = type;
+    chunk.isModified = true;
+
+    return true;
+}

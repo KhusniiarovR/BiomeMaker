@@ -26,6 +26,7 @@ const ItemStack& Inventory::getSelectedSlot() const {
 }
 
 void Inventory::update(Vector2 mouseVirtual) {
+    hoveredSlot = -1;
     for (int i = 0; i < SLOT_COUNT; i++) {
         int col = i % invColumns;
         int row = i / invColumns;
@@ -36,6 +37,7 @@ void Inventory::update(Vector2 mouseVirtual) {
 
         if (CheckCollisionPointRec(mouseVirtual, slotRect)) {
             SetMouseCursor(MOUSE_CURSOR_IBEAM);
+            hoveredSlot = i;
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 setSelectedSlot(i);
                 break;
@@ -76,7 +78,20 @@ void Inventory::render(Renderer& renderer) const {
             }
         }
     }
+
+    if (hoveredSlot != -1) {
+        const ItemStack& stack = getSlot(hoveredSlot);
+        if (!stack.isEmpty()) {
+            const Item& item = stack.getItem();
+
+            float descX = invPosition.x;
+            float descY = invPosition.y + invRows * (invSlotSize + invPadding) + 5;
+
+            renderer.drawText(item.description, {descX, descY}, 16, DARKGRAY, false, false);
+        }
+    }
 }
+// todo inventory saving and block place 
 
 
 bool Inventory::addItem(ItemID id, uint8_t count) {

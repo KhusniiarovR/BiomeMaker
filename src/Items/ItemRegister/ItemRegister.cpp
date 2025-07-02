@@ -1,6 +1,6 @@
 #include "itemRegister.h"
-#include "Items/Blocks/ItemBlocks.h"
-#include "Items/Food/ItemFood.h"
+#include "Items/Items/Blocks/ItemBlocks.h"
+#include "Items/Items/Food/ItemFood.h"
 
 void registerAllBlocks();
 void registerAllFood();

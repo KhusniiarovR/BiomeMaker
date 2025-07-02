@@ -2,13 +2,14 @@
 #define INVENTORY_H
 
 #include <array>
-#include "Items/ItemStack.h"
+#include "Items/ItemBase/ItemStack.h"
 #include "Core/Render/Renderer.h"
 
 class Inventory {
 public:
     static const int SLOT_COUNT = 20;
     int selectedSlot = 0;
+    int hoveredSlot = -1; 
 
     Inventory();
 
