@@ -4,19 +4,22 @@
 #include <unordered_map>
 #include <vector>
 #include <cstdint>
+#include "Biome.h"
 
 constexpr uint8_t OBJECT_NONE   = 0;
 constexpr uint8_t OBJECT_TREE   = 1;
 constexpr uint8_t OBJECT_ROCK   = 2;
 constexpr uint8_t OBJECT_BUSH   = 3;
 constexpr uint8_t OBJECT_FLOWER = 4;
+constexpr uint8_t OBJECT_WOODEN_WALL = 5;
 
 enum class ObjectType : uint8_t {
     None = OBJECT_NONE,
     Tree = OBJECT_TREE,
     Rock = OBJECT_ROCK,
     Bush = OBJECT_BUSH,
-    Flower = OBJECT_FLOWER
+    Flower = OBJECT_FLOWER,
+    WoodenWall = OBJECT_WOODEN_WALL
 };
 
 struct Object {
@@ -39,7 +42,8 @@ const std::unordered_map<ObjectType, int> objectTileMap = {
     { ObjectType::Tree, 60 },
     { ObjectType::Rock, 61 },
     { ObjectType::Bush, 62 },
-    { ObjectType::Flower, 63}
+    { ObjectType::Flower, 63},
+    { ObjectType::WoodenWall, 64},
 };
 
 #endif // OBJECT_H

@@ -2,21 +2,14 @@
 #define ITEMBLOCKS_H
 
 #include "Items/ItemBase/Item.h"
+#include "ItemPlaceable.h"
 
-struct ItemWood : public Item {
-    ItemWood() {
-        id = ItemID::WOOD;
-        name = "Wood";
-        description = "dropped from tree";
-    }
+struct ItemWood : public ItemPlaceable {
+    ItemWood();
 };
 
-struct ItemStone : public Item {
-    ItemStone() {
-        id = ItemID::STONE;
-        name = "Stone";
-        description = "dropped from big stone";
-    }
+struct ItemStone : public ItemPlaceable {
+    ItemStone();
 };
-
+ 
 #endif // ITEMBLOCKS_H

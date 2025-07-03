@@ -58,17 +58,7 @@ void Player::heal(float value) {
     hp.increase(value);
 }
 
-void Player::applyEffect(const BuffEffect& effect) {
+bool Player::applyEffect(const BuffEffect& effect) {
     buffSystem.addBuff(effect);
-}
-
-void Player::useSelectedItem() {
-    ItemStack& stack = inventory.getSlot(inventory.selectedSlot);
-    if (!stack.isEmpty()) {
-        const Item& item = stack.getItem();
-        item.onUse(*this);
-        if (--stack.count == 0) {
-            stack.id = ItemID::NONE;
-        }
-    }
+    return true;
 }

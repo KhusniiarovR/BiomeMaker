@@ -4,6 +4,8 @@
 #include <Constants/TilemapConst.h>
 #include "Items/ItemBase/ObjectToItem.h"
 #include "Items/Inventory/Inventory.h"
+#include "Items/ItemBase/ItemUseContext.h"
+
 
 GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          Scene(renderer),
@@ -50,7 +52,18 @@ void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
     player.update(dt);
     player.getInventory().update(mouseVirtual);
     if (IsKeyPressed(KEY_R)) {
-        player.useSelectedItem();
+        ItemStack& stack = player.getInventory().getSlot(player.getInventory().selectedSlot);
+        if (!stack.isEmpty()) {
+            const Item& item = stack.getItem();
+
+            ItemUseContext context(world, player, mouseVirtual, renderer.GetCamera(), worldTileSize);
+            bool used = item.onUse(context);
+
+            if (used && item.shouldConsumeOnUse()) {
+                if (--stack.count == 0)
+                    stack.id = ItemID::NONE;
+            }
+        }
     }
 }
 
@@ -59,7 +72,7 @@ void GameScene::updateEnemies(float dt) {
 }
 
 void GameScene::updateObjects(Vector2 mouseVirtual) {
-    if (IsKeyPressed(KEY_E) || IsKeyPressed(KEY_T)) {
+    if (IsKeyPressed(KEY_E)) {
         Vector2 mouseWorld = GetScreenToWorld2D(mouseVirtual, renderer.GetCamera());
 
         int tileX = static_cast<int>(mouseWorld.x / worldTileSize);
@@ -81,8 +94,6 @@ void GameScene::updateObjects(Vector2 mouseVirtual) {
                         player.giveItem(id, 1);
                     }
                 }
-            } else if (IsKeyPressed(KEY_T)) {
-                world.placeObjectAt(tileX, tileY, ObjectType::Tree);
             }
         }
     }

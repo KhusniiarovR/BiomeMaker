@@ -34,9 +34,7 @@ public:
     void setSpeedMultiplier(float mult) { speedMultiplier = mult; }
 
     void heal(float value);
-    void applyEffect(const BuffEffect& effect);
-
-    void useSelectedItem();
+    bool applyEffect(const BuffEffect& effect);
 };
 
 #endif //PLAYER_H

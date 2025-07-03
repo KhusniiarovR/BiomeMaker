@@ -1,6 +1,6 @@
 #include "AssetManager.h"
 #include "Utilities/Logger/Logger.h"
-#include "Items/ItemRegister/ItemRegister.h"
+#include "Items/ItemRegister/ItemRegisterAll.h"
 
 AssetManager::AssetManager() {
     registerFont("inter", "data/text/InterFont.ttf");

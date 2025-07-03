@@ -7,7 +7,7 @@
 struct ConsumableItem : public Item {
     BuffEffect effect;
     ConsumableItem(BuffEffect eff);
-    void onUse(Player& player) const override;
+    bool onUse(const ItemUseContext& context) const override;
 };
 
 #endif // CONSUMABLEITEM_H

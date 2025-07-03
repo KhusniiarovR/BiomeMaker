@@ -9,7 +9,7 @@ class ItemRegister {
 public:
     static ItemRegister& get();
 
-    void registerItem(std::unique_ptr<Item> item);
+    void registerItem(Item* item);
     const Item& getItem(ItemID id) const;
 
 private:
