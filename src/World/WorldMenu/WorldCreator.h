@@ -6,6 +6,7 @@
 #include <string>
 #include <filesystem>
 #include "World/ChunkSystem/Biome.h"
+#include "World/ChunkSystem/Object.h"
 
 class WorldCreator {
 private:
@@ -34,8 +35,8 @@ public:
     WorldCreator();
     ~WorldCreator();
 
-    void generate(); // random name and seed
-    void generate(std::string worldName); // random seed
+    void generate();
+    void generate(std::string worldName);
     void generate(int seed, std::string worldName);
 
 private:
@@ -43,9 +44,10 @@ private:
 
     std::string getName();
 
-    void write_rle_chunk(std::ofstream& out,const std::vector<std::vector<uint8_t>>& data,int startX, int startY);
-    void save_world_rle(const std::vector<std::vector<uint8_t>>& world, const std::vector<std::vector<uint8_t>>& objects);
+    void writeBiomeChunk(std::ofstream& out,const std::vector<std::vector<uint8_t>>& data,int startX, int startY);
+    void saveWorld(const std::vector<std::vector<uint8_t>>& world, const std::vector<Object>& allObjects);
+    void writeObjectsChunk(std::ofstream& out, const std::vector<Object>& objects, int startTileX, int startTileY, int tileSize);
+    std::vector<Object> takeObjectsInchunk(const std::vector<Object>& allObjects, int chunkX, int chunkY, int chunkSize, int tileSize);
 };
-
 
 #endif //WORLDCREATOR_H

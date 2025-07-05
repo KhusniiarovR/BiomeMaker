@@ -2,6 +2,7 @@
 #include <sstream>
 #include "Constants/WorldConst.h"
 #include "Utilities/Logger/Logger.h"
+#include "Constants/TilemapConst.h"
 
 ChunkSystem::ChunkSystem(
     std::unordered_map<std::pair<int, int>, Chunk, PairHash>& chunks,
@@ -38,8 +39,11 @@ void ChunkSystem::update(Vector2& playerPos) {
 
 void ChunkSystem::render(Renderer& renderer) const {
     Texture2D& tilemap = renderer.getTexture("worldTilemap");
-    for (const auto& [pos, chunk] : chunks) {
-        chunk.Draw(tilemap);
+    for (auto& [key, chunk] : chunks) {
+        chunk.DrawTiles(tilemap);
+    }
+    for (auto& [key, chunk] : chunks) {
+        chunk.DrawObjects(tilemap);
     }
 }
 
@@ -128,20 +132,49 @@ void ChunkSystem::overwriteChunk(int cx, int cy, const Chunk& chunk) {
         }
     }
 
-    std::vector<std::vector<uint8_t>> objectTypes(chunkSize, std::vector<uint8_t>(chunkSize));
-    for (int y = 0; y < chunkSize; ++y) {
-        for (int x = 0; x < chunkSize; ++x) {
-            objectTypes[y][x] = static_cast<uint8_t>(chunk.objectTiles[y][x].type);
+    std::vector<std::vector<uint8_t>> objectTypes(chunkSize, std::vector<uint8_t>(chunkSize, OBJECT_NONE));
+
+    for (const Object& obj : chunk.objects) {
+        auto it = objectPropertiesMap.find(obj.type);
+        if (it == objectPropertiesMap.end()) continue;
+
+        Vector2 size = it->second.size;
+        int w = static_cast<int>(size.x);
+        int h = static_cast<int>(size.y);
+
+        int objGlobalX = static_cast<int>(obj.position.x / worldTileSize);
+        int objGlobalY = static_cast<int>(obj.position.y / worldTileSize);
+
+        int chunkStartX = cx * chunkSize;
+        int chunkStartY = cy * chunkSize;
+        int chunkEndX = chunkStartX + chunkSize;
+        int chunkEndY = chunkStartY + chunkSize;
+
+        if (objGlobalX + w <= chunkStartX || objGlobalX >= chunkEndX ||
+            objGlobalY + h <= chunkStartY || objGlobalY >= chunkEndY)
+            continue;
+
+        int startX = std::max(objGlobalX, chunkStartX) - chunkStartX;
+        int startY = std::max(objGlobalY, chunkStartY) - chunkStartY;
+
+        int offsetX = std::max(chunkStartX - objGlobalX, 0);
+        int offsetY = std::max(chunkStartY - objGlobalY, 0);
+
+        int drawW = std::min(w - offsetX, chunkSize - startX);
+        int drawH = std::min(h - offsetY, chunkSize - startY);
+
+        for (int oy = 0; oy < drawH; ++oy) {
+            int ty = startY + oy;
+            for (int ox = 0; ox < drawW; ++ox) {
+                int tx = startX + ox;
+                objectTypes[ty][tx] = static_cast<uint8_t>(obj.type);
+            }
         }
     }
 
     std::stringstream biomeBuffer;
     writeData(biomeBuffer, biomeIds);
     std::string biomeData = biomeBuffer.str();
-
-    std::stringstream objectBuffer;
-    writeData(objectBuffer, objectTypes);
-    std::string objectData = objectBuffer.str();
 
     if (biomeData.size() > header.reservedSizeBiome) {
         mycerr << "Biome RLE data exceeds reserved space at chunk (" << cx << "," << cy << ")";
@@ -150,8 +183,12 @@ void ChunkSystem::overwriteChunk(int cx, int cy, const Chunk& chunk) {
         return;
     }
 
+    std::stringstream objectBuffer;
+    writeObjectsChunk(objectBuffer, chunk.objects, cx * chunkSize, cy * chunkSize, worldTileSize);
+    std::string objectData = objectBuffer.str();
+
     if (objectData.size() > header.reservedSizeObject) {
-        mycerr << "Object RLE data exceeds reserved space at chunk (" << cx << "," << cy << ")";
+        mycerr << "Object data exceeds reserved space at chunk (" << cx << "," << cy << ")";
         saveFullWorld();
         file.close();
         return;
@@ -181,20 +218,19 @@ void ChunkSystem::overwriteChunk(int cx, int cy, const Chunk& chunk) {
     file.close();
 }
 
-
 void ChunkSystem::writeData(std::ostream& out, const std::vector<std::vector<uint8_t>>& data) {
-    char current = data[0][0];
+    uint8_t current = data[0][0];
     uint8_t count = 1;
 
     for (int y = 0; y < chunkSize; ++y) {
         for (int x = 0; x < chunkSize; ++x) {
             if (x == 0 && y == 0) continue;
-            char next = data[y][x];
+            uint8_t next = data[y][x];
             if (next == current && count < 255) {
                 count++;
             } else {
                 out.write(reinterpret_cast<const char*>(&count), 1);
-                out.write(&current, 1);
+                out.write(reinterpret_cast<const char*>(&current), 1);
                 current = next;
                 count = 1;
             }
@@ -202,7 +238,7 @@ void ChunkSystem::writeData(std::ostream& out, const std::vector<std::vector<uin
     }
 
     out.write(reinterpret_cast<const char*>(&count), 1);
-    out.write(&current, 1);
+    out.write(reinterpret_cast<const char*>(&current), 1);
 }
 
 void ChunkSystem::saveFullWorld() {
@@ -229,7 +265,7 @@ void ChunkSystem::saveFullWorld() {
 
     out.seekp(total_chunks * sizeof(ChunkHeader), std::ios::beg);
 
-for (int cy = 0; cy < numberOfChunks; ++cy) {
+    for (int cy = 0; cy < numberOfChunks; ++cy) {
         for (int cx = 0; cx < numberOfChunks; ++cx) {
             int index = cy * numberOfChunks + cx;
             if (index < 0 || index >= total_chunks) continue;
@@ -266,32 +302,30 @@ for (int cy = 0; cy < numberOfChunks; ++cy) {
                 writeData(biomeBuffer, biomeIds);
                 std::string biomeData = biomeBuffer.str();
 
-                uint32_t biomeReserve = biomeData.size() + reserveSizeBiome;
-                out.write(biomeData.data(), biomeData.size());
-                out.write(std::string(biomeReserve - biomeData.size(), '~').c_str(), biomeReserve - biomeData.size());
+                uint32_t biomeDataSize = biomeData.size();
+                uint32_t biomeReserve = biomeDataSize + reserveSizeBiome;
 
-                std::vector<std::vector<uint8_t>> objectTypes(chunkSize, std::vector<uint8_t>(chunkSize));
-                for (int y = 0; y < chunkSize; ++y) {
-                    for (int x = 0; x < chunkSize; ++x) {
-                        objectTypes[y][x] = static_cast<uint8_t>(chunk.objectTiles[y][x].type);
-                    }
-                }
+                std::string biomePadding(biomeReserve - biomeDataSize, '~');
+                out.write(biomeData.data(), biomeDataSize);
+                out.write(biomePadding.data(), biomePadding.size());
 
                 std::stringstream objectBuffer;
-                writeData(objectBuffer, objectTypes);
+                writeObjectsChunk(objectBuffer, chunk.objects, cx * chunkSize, cy * chunkSize, worldTileSize);
                 std::string objectData = objectBuffer.str();
 
-                std::streampos objectOffset = out.tellp();
-                uint32_t objectReserve = objectData.size() + reserveSizeObject;
-                out.write(objectData.data(), objectData.size());
-                out.write(std::string(objectReserve - objectData.size(), '~').c_str(), objectReserve - objectData.size());
+                uint32_t objectDataSize = static_cast<uint32_t>(objectData.size());
+                uint32_t objectReserve = objectDataSize + reserveSizeObject;
+
+                std::string objectPadding(objectReserve - objectDataSize, '~');
+                out.write(objectData.data(), objectDataSize);
+                out.write(objectPadding.data(), objectPadding.size());
 
                 newHeaders[index] = {
                     static_cast<uint32_t>(biomeOffset),
-                    static_cast<uint32_t>(biomeData.size()),
+                    biomeDataSize,
                     biomeReserve,
-                    static_cast<uint32_t>(objectOffset),
-                    static_cast<uint32_t>(objectData.size()),
+                    static_cast<uint32_t>(biomeOffset) + static_cast<uint32_t>(biomeReserve),
+                    objectDataSize,
                     objectReserve
                 };
             } else {
@@ -324,9 +358,27 @@ for (int cy = 0; cy < numberOfChunks; ++cy) {
     out.seekp(0, std::ios::beg);
     out.write(reinterpret_cast<const char*>(newHeaders.data()), total_chunks * sizeof(ChunkHeader));
 
-    in = std::ifstream();
-    out = std::ofstream();
+    in.close();
+    out.close();
 
     std::filesystem::copy_file(newFile, oldFile, std::filesystem::copy_options::overwrite_existing);
     std::filesystem::remove(newFile);
+}
+
+void ChunkSystem::writeObjectsChunk(std::ostream& out, const std::vector<Object>& objects, int startTileX, int startTileY, int tileSize) {
+    uint16_t count = static_cast<uint16_t>(objects.size());
+    out.write(reinterpret_cast<const char*>(&count), sizeof(count));
+
+    for (const Object& obj : objects) {
+        FileObject fobj;
+        fobj.type = static_cast<uint8_t>(obj.type);
+
+        int tileX = static_cast<int>(obj.position.x / tileSize) - startTileX;
+        int tileY = static_cast<int>(obj.position.y / tileSize) - startTileY;
+
+        fobj.localX = static_cast<uint8_t>(tileX);
+        fobj.localY = static_cast<uint8_t>(tileY);
+
+        out.write(reinterpret_cast<const char*>(&fobj), sizeof(fobj));
+    }
 }

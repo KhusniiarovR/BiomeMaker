@@ -21,9 +21,8 @@ public:
 
     std::optional<ObjectType> removeObjectAt(int worldX, int worldY);
     bool placeObjectAt(int worldX, int worldY, ObjectType type);
-    
-private:
-    Object* getObjectAt(int worldX, int worldY);
+    std::vector<Object> getObjectsAll() const;
+
 };
 
 #endif //WORLD_H

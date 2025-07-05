@@ -6,8 +6,8 @@
 #include <fstream>
 #include <random>
 #include "Constants/WorldConst.h"
-#include "World/ChunkSystem/Object.h"
 #include "Utilities/Logger/Logger.h"
+#include "Constants/TilemapConst.h"
 
 WorldCreator::WorldCreator() = default;
 
@@ -106,7 +106,8 @@ void WorldCreator::generate(int seed, std::string worldName)
         }
     }
 
-    std::vector<std::vector<uint8_t>> objects(worldSize, std::vector<uint8_t>(worldSize, OBJECT_NONE));
+    std::vector<Object> objectsList;
+    std::vector<std::vector<bool>> occupiedTiles(worldSize, std::vector<bool>(worldSize, false));
     std::uniform_real_distribution<float> chance(0.0f, 1.0f);
 
     for (int y = 0; y < worldSize; ++y) {
@@ -116,22 +117,51 @@ void WorldCreator::generate(int seed, std::string worldName)
             if (it != objectRules.end()) {
                 for (const ObjectRule& rule : it->second) {
                     if (chance(rng) < rule.probability) {
-                        objects[y][x] = rule.type;
-                        break;
+                        ObjectType objType = static_cast<ObjectType>(rule.type);
+                        auto propIt = objectPropertiesMap.find(objType);
+                        if (propIt == objectPropertiesMap.end()) continue;
+
+                        int w = static_cast<int>(propIt->second.size.x);
+                        int h = static_cast<int>(propIt->second.size.y);
+
+                        if (x + w > worldSize || y + h > worldSize)
+                            continue;
+
+                        bool canPlace = true;
+                        for (int oy = 0; oy < h && canPlace; ++oy) {
+                            for (int ox = 0; ox < w; ++ox) {
+                                if (occupiedTiles[y + oy][x + ox]) {
+                                    canPlace = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!canPlace) continue;
+
+                        Object obj;
+                        obj.type = objType;
+                        obj.position = { (float)x * worldTileSize, (float)y * worldTileSize };
+                        objectsList.push_back(obj);
+
+                        for (int oy = 0; oy < h; ++oy) {
+                            for (int ox = 0; ox < w; ++ox) {
+                                occupiedTiles[y + oy][x + ox] = true;
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    save_world_rle(map, objects);
+    saveWorld(map, objectsList);
 }
 
 int WorldCreator::dist2(int x1, int y1, int x2, int y2) {
     return (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2);
 }
 
-void WorldCreator::write_rle_chunk(std::ofstream& out,
+void WorldCreator::writeBiomeChunk(std::ofstream& out,
     const std::vector<std::vector<uint8_t>>& data,
     int startX, int startY) {
     uint8_t current = data[startY][startX];
@@ -156,8 +186,8 @@ void WorldCreator::write_rle_chunk(std::ofstream& out,
     out.write(reinterpret_cast<char*>(&current), 1);
 }
 
-void WorldCreator::save_world_rle(const std::vector<std::vector<uint8_t>>& biomes, 
-                                  const std::vector<std::vector<uint8_t>>& objects) {
+void WorldCreator::saveWorld(const std::vector<std::vector<uint8_t>>& biomes, 
+                                  const std::vector<Object>& allObjects) {
     if (!std::filesystem::exists("saves/")) {
         mycerr << "Recreated saves folder";
         std::filesystem::create_directory("saves");
@@ -183,7 +213,7 @@ void WorldCreator::save_world_rle(const std::vector<std::vector<uint8_t>>& biome
             int startY = cy * chunkSize;
 
             std::streampos biome_start = out.tellp();
-            write_rle_chunk(out, biomes, startX, startY);
+            writeBiomeChunk(out, biomes, startX, startY);
             std::streampos biome_end = out.tellp();
 
             uint32_t biome_used = static_cast<uint32_t>(biome_end - biome_start);
@@ -191,7 +221,8 @@ void WorldCreator::save_world_rle(const std::vector<std::vector<uint8_t>>& biome
             out.write(std::string(biome_reserved - biome_used, '~').c_str(), biome_reserved - biome_used);
 
             std::streampos obj_start = out.tellp();
-            write_rle_chunk(out, objects, startX, startY);
+            std::vector<Object> chunkObjects = takeObjectsInchunk(allObjects, cx, cy, chunkSize, worldTileSize);
+            writeObjectsChunk(out, chunkObjects, startX, startY, worldTileSize);
             std::streampos obj_end = out.tellp();
 
             uint32_t obj_used = static_cast<uint32_t>(obj_end - obj_start);
@@ -258,4 +289,42 @@ std::string WorldCreator::getName() {
     std::uniform_int_distribution<> sDist(0, static_cast<int>(suffixes.size() - 1));
 
     return prefixes[pDist(gen)] + " " + suffixes[sDist(gen)];
+}
+
+void WorldCreator::writeObjectsChunk(std::ofstream& out, 
+    const std::vector<Object>& objects, int startTileX, int startTileY, int tileSize) {
+
+    uint16_t count = static_cast<uint16_t>(objects.size());
+    out.write(reinterpret_cast<const char*>(&count), sizeof(count));
+
+    for (const Object& obj : objects) {
+        FileObject fobj;
+        fobj.type = static_cast<uint8_t>(obj.type);
+
+        int tileX = static_cast<int>(obj.position.x / tileSize) - startTileX;
+        int tileY = static_cast<int>(obj.position.y / tileSize) - startTileY;
+
+        fobj.localX = static_cast<uint8_t>(tileX);
+        fobj.localY = static_cast<uint8_t>(tileY);
+
+        out.write(reinterpret_cast<const char*>(&fobj), sizeof(fobj));
+    }
+}
+
+std::vector<Object> WorldCreator::takeObjectsInchunk(const std::vector<Object>& allObjects, int chunkX, int chunkY, int chunkSize, int tileSize) {
+    std::vector<Object> result;
+
+    int startX = chunkX * chunkSize * tileSize;
+    int startY = chunkY * chunkSize * tileSize;
+    int endX = startX + chunkSize * tileSize;
+    int endY = startY + chunkSize * tileSize;
+
+    for (const Object& obj : allObjects) {
+        Rectangle r = obj.getBoundingBox(tileSize);
+        if (r.x < endX && r.x + r.width > startX &&
+            r.y < endY && r.y + r.height > startY) {
+            result.push_back(obj);
+        }
+    }
+    return result;
 }

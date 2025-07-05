@@ -13,12 +13,17 @@ Player::Player(Vector2 init_pos)
 }
 
 void Player::update(float dt) {
-    if (IsKeyDown(KEY_A)) {position.x -= speed * dt * speedMultiplier; index = 2;}
-    if (IsKeyDown(KEY_D)) {position.x += speed * dt * speedMultiplier; index = 3;}
-    if (IsKeyDown(KEY_W)) {position.y -= speed * dt * speedMultiplier; index = 0;}
-    if (IsKeyDown(KEY_S)) {position.y += speed * dt * speedMultiplier; index = 1;}
+    float moveSpeed = speed * dt * speedMultiplier;
+    float dx = 0, dy = 0;
 
-    if (IsKeyPressed(KEY_Q)) {hp.decrease(0.05f);}
+    if (IsKeyDown(KEY_A)) { dx -= moveSpeed; index = 2; }
+    if (IsKeyDown(KEY_D)) { dx += moveSpeed; index = 3; }
+    if (IsKeyDown(KEY_W)) { dy -= moveSpeed; index = 0; }
+    if (IsKeyDown(KEY_S)) { dy += moveSpeed; index = 1; }
+
+    tryMove(dx, dy);
+
+    if (IsKeyDown(KEY_Q)) { hp.decrease(0.05f); }
 
     buffSystem.update(dt);
 }
@@ -61,4 +66,41 @@ void Player::heal(float value) {
 bool Player::applyEffect(const BuffEffect& effect) {
     buffSystem.addBuff(effect);
     return true;
+}
+
+Rectangle Player::getBoundingBox() const {
+    float width = 0.45f * entityTileSize;
+    float height = 0.9f * entityTileSize;
+    return {
+        position.x - width / 2.0f,
+        position.y - height / 2.0f,
+        width,
+        height
+    };
+}
+
+void Player::tryMove(float dx, float dy) {
+    Rectangle oldBox = getBoundingBox();
+
+    Rectangle newBox = oldBox;
+    newBox.x += dx;
+    newBox.y += dy;
+
+    if (!collisionCallback || !collisionCallback(newBox)) {
+        position.x += dx;
+        position.y += dy;
+    } 
+    else {
+        newBox.x = oldBox.x + dx;
+        newBox.y = oldBox.y;
+        if (!collisionCallback || !collisionCallback(newBox)) {
+            position.x += dx;
+        }
+
+        newBox.x = oldBox.x;
+        newBox.y = oldBox.y + dy;
+        if (!collisionCallback || !collisionCallback(newBox)) {
+            position.y += dy;
+        }
+    }
 }

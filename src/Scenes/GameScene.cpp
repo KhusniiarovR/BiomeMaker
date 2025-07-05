@@ -6,7 +6,6 @@
 #include "Items/Inventory/Inventory.h"
 #include "Items/ItemBase/ItemUseContext.h"
 
-
 GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
          Scene(renderer),
          player ({worldSize * worldTileSize / 2.0f, worldSize * worldTileSize / 2.0f}),
@@ -49,8 +48,22 @@ SceneType GameScene::getNextScene() const {
 }
 
 void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
+    player.setCollisionCallback([this](Rectangle rect) {
+        const auto& objects = world.getObjectsAll();
+
+        for (const Object& obj : objects) {
+            if (!obj.hasCollision()) continue;
+            Rectangle objBox = obj.getBoundingBox(worldTileSize);
+
+            if (CheckCollisionRecs(rect, objBox)) { return true; }
+        }
+        return false;
+    });
+
     player.update(dt);
+
     player.getInventory().update(mouseVirtual);
+
     if (IsKeyPressed(KEY_R)) {
         ItemStack& stack = player.getInventory().getSlot(player.getInventory().selectedSlot);
         if (!stack.isEmpty()) {
@@ -68,6 +81,19 @@ void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
 }
 
 void GameScene::updateEnemies(float dt) {
+    enemy.setCollisionCallback([this](Rectangle rect) {
+        const auto& objects = world.getObjectsAll();
+
+        for (const Object& obj : objects) {
+            if (!obj.hasCollision()) continue;
+            Rectangle objBox = obj.getBoundingBox(worldTileSize);
+
+            if (CheckCollisionRecs(rect, objBox)) {
+                return true;
+            }
+        }
+        return false;
+    });
     enemy.update(dt);
 }
 

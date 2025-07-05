@@ -13,9 +13,9 @@ struct LootDrop {
 };
 
 const std::unordered_map<ObjectType, std::vector<LootDrop>> objectLootTable = {
-    { ObjectType::Tree, { { ItemID::WOOD, 1.0f, 1, 3 } } },
-    { ObjectType::Bush, { { ItemID::BERRY, 0.5f, 1, 2 } } },
-    { ObjectType::Rock, { { ItemID::STONE, 1.0f, 1, 2 } } }
+    { ObjectType::OBJECT_TREE, { { ItemID::WOOD, 1.0f, 1, 3 } } },
+    { ObjectType::OBJECT_BUSH, { { ItemID::BERRY, 0.5f, 1, 2 } } },
+    { ObjectType::OBJECT_ROCK, { { ItemID::STONE, 1.0f, 1, 2 } } }
 };
 
 inline std::vector<ItemID> generateLootForObject(ObjectType type) {

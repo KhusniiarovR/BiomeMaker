@@ -10,6 +10,7 @@
 #include "Utilities/Graphics/Bar.h"
 #include "Items/Buffs/Buffs.h"
 #include "Entities/BuffSystem.h"
+#include "Constants/TilemapConst.h"
 
 class Player : public Entity {
 private:
@@ -19,6 +20,7 @@ private:
     ValueBar hp;
     int index = 1;
     ActiveBuffSystem buffSystem;
+    std::function<bool(Rectangle)> collisionCallback;
 
 public:
     Player(Vector2 init_pos);
@@ -32,9 +34,12 @@ public:
 
     float getSpeedMultiplier() const { return speedMultiplier; }
     void setSpeedMultiplier(float mult) { speedMultiplier = mult; }
-
+    Rectangle getBoundingBox() const override;
+    void setCollisionCallback(std::function<bool(Rectangle)> func) { collisionCallback = std::move(func); }
+    
     void heal(float value);
     bool applyEffect(const BuffEffect& effect);
+    void tryMove(float dx, float dy);
 };
 
 #endif //PLAYER_H

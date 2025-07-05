@@ -2,6 +2,7 @@
 #include "Utilities/Logger/Logger.h"
 #include "Constants/WorldConst.h"
 #include "Constants/TilemapConst.h"
+#include "Object.h"
 
 Chunk::Chunk(int cx, int cy, const std::vector<ChunkHeader>& headers, std::ifstream& file) : x(cx), y(cy) {
     Generate(headers, file);
@@ -52,34 +53,34 @@ void Chunk::Generate(const std::vector<ChunkHeader>& headers, std::ifstream& fil
 
     file.seekg(header.offsetObject, std::ios::beg);
     {
-        int tx = 0, ty = 0;
-        std::streampos object_end = header.offsetObject + header.dataSizeObject;
+        uint16_t count;
+        file.read(reinterpret_cast<char*>(&count), sizeof(count));
 
-        while (file.tellg() < object_end) {
-            unsigned char count;
-            uint8_t id;
+        objects.clear();
+        objects.reserve(count);
 
-            file.read(reinterpret_cast<char*>(&count), 1);
-            file.read(reinterpret_cast<char*>(&id), 1);
+        for (uint16_t i = 0; i < count; ++i) {
+            FileObject fobj;
+            file.read(reinterpret_cast<char*>(&fobj), sizeof(fobj));
 
-            for (int i = 0; i < count; ++i) {
-                if (ty >= chunkSize) break;
+            Object obj;
+            obj.type = static_cast<ObjectType>(fobj.type);
 
-                objectTiles[ty][tx] = Object{ static_cast<ObjectType>(id) };
+            int startTileX = x * chunkSize;
+            int startTileY = y * chunkSize;
 
-                tx++;
-                if (tx >= chunkSize) {
-                    tx = 0;
-                    ty++;
-                }
-            }
+            obj.position.x = (startTileX + fobj.localX) * worldTileSize;
+            obj.position.y = (startTileY + fobj.localY) * worldTileSize;
+
+            objects.push_back(obj);
         }
     }
 }
 
-void Chunk::Draw(Texture2D& tilemap) const  {
+void Chunk::DrawTiles(Texture2D& tilemap) const {
     const int chunkX = this->x * chunkSize;
     const int chunkY = this->y * chunkSize;
+
     for (int y = 0; y < chunkSize; y++) {
         for (int x = 0; x < chunkSize; x++) {
             int worldX = (chunkX + x) * worldTileSize;
@@ -89,27 +90,35 @@ void Chunk::Draw(Texture2D& tilemap) const  {
             int tileX = (tileIndex % worldTilesPerRow) * worldSourceTileSize;
             int tileY = (tileIndex / worldTilesPerRow) * worldSourceTileSize;
 
-            Rectangle sourceRec = {
-                (float)tileX + worldPadding,
-                (float)tileY + worldPadding,
-                (float)worldSourceTileSize - 2 * worldPadding,
-                (float)worldSourceTileSize - 2 * worldPadding
-            };
-            
+            Rectangle sourceRec = { (float)tileX + worldPadding, (float)tileY + worldPadding,
+                                    (float)worldSourceTileSize - 2 * worldPadding, (float)worldSourceTileSize - 2 * worldPadding };
+
             Rectangle destRec = { (float)worldX, (float)worldY, (float)worldTileSize, (float)worldTileSize };
-
             DrawTexturePro(tilemap, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
-
-            const Object& obj = objectTiles[y][x];
-            if (obj.type != ObjectType::None) {
-                int objectTileIndex = objectTypeToTile(obj.type);
-                int objTileX = (objectTileIndex % worldTilesPerRow) * worldSourceTileSize;
-                int objTileY = (objectTileIndex / worldTilesPerRow) * worldSourceTileSize;
-
-                Rectangle objSource = { (float)objTileX, (float)objTileY, (float)worldSourceTileSize, (float)worldSourceTileSize };
-                DrawTexturePro(tilemap, objSource, destRec, {0, 0}, 0.0f, WHITE);
-            }
         }
+    }
+}
+
+void Chunk::DrawObjects(Texture2D& tilemap) const {
+    for (const Object& obj : objects) {
+        if (obj.type == ObjectType::OBJECT_NONE) continue;
+
+        int objectTileIndex = objectTypeToTile(obj.type);
+        int objTileX = (objectTileIndex % worldTilesPerRow) * worldSourceTileSize;
+        int objTileY = (objectTileIndex / worldTilesPerRow) * worldSourceTileSize;
+
+        Rectangle objSource = { (float)objTileX, (float)objTileY, (float)worldSourceTileSize, (float)worldSourceTileSize };
+
+        auto it = objectPropertiesMap.find(obj.type);
+        float widthPx = worldTileSize;
+        float heightPx = worldTileSize;
+        if (it != objectPropertiesMap.end()) {
+            widthPx = it->second.size.x * worldTileSize;
+            heightPx = it->second.size.y * worldTileSize;
+        }
+
+        Rectangle destRec = { obj.position.x, obj.position.y, widthPx, heightPx };
+        DrawTexturePro(tilemap, objSource, destRec, {0, 0}, 0.0f, WHITE);
     }
 }
 

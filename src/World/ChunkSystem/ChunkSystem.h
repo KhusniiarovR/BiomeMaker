@@ -21,20 +21,15 @@ public:
     void update(Vector2& playerPos);
     void render(Renderer& renderer) const;
     
-    private:
+private:
     void LoadHeaders();
     
     void updateChunks(Vector2& playerPos);
-
+    
+    void writeObjectsChunk(std::ostream& out, const std::vector<Object>& objects, int startTileX, int startTileY, int tileSize);
     void overwriteChunk(int cx, int cy, const Chunk& chunk);
     void writeData(std::ostream& out, const std::vector<std::vector<uint8_t>>& data);
-    void saveFullWorld();
+    void saveFullWorld();  
 };
-
-
-
-
-
-
 
 #endif // WORLDCHANGER_H

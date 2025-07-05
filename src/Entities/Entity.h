@@ -6,9 +6,12 @@
 class Entity {
 public:
     Vector2 position;
-    virtual void update(float dt) = 0;
+
     Entity(Vector2 initPos) : position(initPos) {}
     virtual ~Entity() = default;
+    
+    virtual void update(float dt) = 0;
+    virtual Rectangle getBoundingBox() const = 0;
 };
 
 #endif //ENTITY_H
