@@ -1,8 +1,8 @@
 #pragma once
 
 #include "raylib.h"
-#include "Entity.h"
-#include "Player.h"
+#include "Entities/Entity.h"
+#include "Entities/Player/Player.h"
 #include "string"
 class Enemy : public Entity
 {

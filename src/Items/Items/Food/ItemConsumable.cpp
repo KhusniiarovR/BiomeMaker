@@ -1,6 +1,6 @@
 #include "ItemConsumable.h"
 #include "Items/ItemBase/ItemUseContext.h"
-#include "Entities/Player.h"
+#include "Entities/Player/Player.h"
 
 ConsumableItem::ConsumableItem(BuffEffect eff)
     : effect(std::move(eff)) {}

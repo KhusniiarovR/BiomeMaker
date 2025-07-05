@@ -3,7 +3,7 @@
 
 #include "raylib.h"
 #include "World/World.h"
-#include "Entities/Player.h"
+#include "Entities/Player/Player.h"
 
 struct ItemUseContext {
     World& world;

@@ -2,14 +2,14 @@
 #define PLAYER_H
 
 #include "raylib.h"
-#include "Entity.h"
+#include "Entities/Entity.h"
 #include "Items/Inventory/Inventory.h"
 #include "Core/Render/Renderer.h"
 #include <string>
 #include "Core/Render/Renderer.h"
 #include "Utilities/Graphics/Bar.h"
 #include "Items/Buffs/Buffs.h"
-#include "Entities/BuffSystem.h"
+#include "Entities/BuffSystem/BuffSystem.h"
 #include "Constants/TilemapConst.h"
 
 class Player : public Entity {

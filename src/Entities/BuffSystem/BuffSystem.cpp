@@ -1,5 +1,5 @@
-#include "Entities/BuffSystem.h"
-#include "Entities/Player.h"
+#include "BuffSystem.h"
+#include "Entities/Player/Player.h"
 
 ActiveBuff::ActiveBuff(const BuffEffect& effect)
     : effect(effect), remainingTime(effect.duration) {}
