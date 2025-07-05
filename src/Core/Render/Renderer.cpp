@@ -5,44 +5,53 @@
 #include "Constants/TilemapConst.h"
 
 Renderer::Renderer(AssetManager& assets, int width, int height, Vector2& mouseVirtual)
-: assetManager(assets), virtualWidth(width), virtualHeight(height), mouseVirtual(mouseVirtual) {
+: assetManager(assets), virtualWidth(width), virtualHeight(height), mouseVirtual(mouseVirtual) 
+{
     camera.offset = {0, 0};
     camera.zoom = 1.0f;
     camera.rotation = 0.0f;
     camera.target = {0, 0};
 }
 
-Camera2D& Renderer::GetCamera() {
+Camera2D& Renderer::GetCamera() 
+{
     return camera;
 }
 
-void Renderer::updateCamera(Vector2 position) {
+void Renderer::updateCameraTarget(Vector2 position) 
+{
     camera.target = position;
 }
 
-Vector2 Renderer::getMouseVirtual() {
+Vector2 Renderer::getMouseVirtual() 
+{
     return mouseVirtual;
 }
 
 void Renderer::drawText(const std::string& text, Vector2 position,
                         float size, Color color,
                         bool isCentered, bool isNormalizedPos,
-                        const std::string& fontKey, float spacing) {
-
+                        const std::string& fontKey, float spacing) 
+{
     const Font& font = assetManager.getFont(fontKey, size);
-    if (font.texture.id == 0) {
+    if (font.texture.id == 0) 
+    {
         mycerr << "font " << fontKey << " is invalid!";
         return;
     }
 
-    if (isNormalizedPos) {
+    // if position in percents of screen or in pixels
+    if (isNormalizedPos) 
+    { 
         position.x *= virtualWidth;
         position.y *= virtualHeight;
     }
-
+    
     Vector2 dimensions = MeasureTextEx(font, text.c_str(), size, spacing);
-
-    if (isCentered) {
+    
+    // draw from position or make center of the text equal to position
+    if (isCentered) 
+    {
         position.x -= 0.5f * dimensions.x;
         position.y -= 0.5f * dimensions.y;
     }
@@ -55,15 +64,18 @@ void Renderer::drawTextGradient(const std::string& text, Vector2 position,
                                 Color colorA, Color colorB,
                                 bool isNormalizedPos, bool isCentered,
                                 float bounceSpeed, float bounceHeight,
-                                const std::string& fontKey, float spacing) {
-    
+                                const std::string& fontKey, float spacing)
+{
     const Font& font = assetManager.getFont(fontKey, size);
-    if (font.texture.id == 0) {
+    if (font.texture.id == 0) 
+    {
         mycerr << "font " << fontKey << " is invalid!";
         return;
     }
 
-    if (isNormalizedPos) {
+    // if position in percents of screen or in pixels
+    if (isNormalizedPos)
+    {
         position.x *= virtualWidth;
         position.y *= virtualHeight;
     }
@@ -71,7 +83,9 @@ void Renderer::drawTextGradient(const std::string& text, Vector2 position,
     Vector2 totalDim = MeasureTextEx(font, text.c_str(), size, spacing);
 
     Vector2 basePos = position;
-    if (isCentered) {
+    // draw from position or make center of the text equal to position
+    if (isCentered) 
+    {
         basePos.x -= 0.5f * totalDim.x;
         basePos.y -= 0.5f * totalDim.y;
     }
@@ -79,17 +93,15 @@ void Renderer::drawTextGradient(const std::string& text, Vector2 position,
     Vector2 pos = basePos;
     float time = GetTime() * speed;
 
-    for (int i = 0; i < (int)text.length(); ++i) {
+    // jumping letter
+    for (int i = 0; i < (int)text.length(); ++i) 
+    {
         char ch[2] = { text[i], 0 };
         Vector2 charDim = MeasureTextEx(font, ch, size, spacing);
 
         float t = 0.5f + 0.5f * sinf(time + i * 0.3f);
-        Color blended = {
-            (unsigned char)(colorA.r + t * (colorB.r - colorA.r)),
-            (unsigned char)(colorA.g + t * (colorB.g - colorA.g)),
-            (unsigned char)(colorA.b + t * (colorB.b - colorA.b)),
-            (unsigned char)(colorA.a + t * (colorB.a - colorA.a))
-        };
+        Color blended = { (unsigned char)(colorA.r + t * (colorB.r - colorA.r)), (unsigned char)(colorA.g + t * (colorB.g - colorA.g)),
+                          (unsigned char)(colorA.b + t * (colorB.b - colorA.b)), (unsigned char)(colorA.a + t * (colorB.a - colorA.a)) };
 
         Vector2 charPos = pos;
         charPos.y += fabsf(sinf(time * bounceSpeed + i * 0.1f)) * bounceHeight;
@@ -98,10 +110,11 @@ void Renderer::drawTextGradient(const std::string& text, Vector2 position,
     }
 }
 
-void Renderer::drawBackground() {
+void Renderer::drawBackground() 
+{
     const int pixelheight = 30;
     Texture2D& bg = getTexture("background", true);
-    bgoffset += GetFrameTime() * 100;
+    bgoffset += GetFrameTime() * 20;
 
     float scale = (float)virtualHeight / pixelheight;
     float sourceWidth = (float)virtualWidth / scale;
@@ -112,6 +125,7 @@ void Renderer::drawBackground() {
     DrawTexturePro(bg, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
 }
 
-Texture2D& Renderer::getTexture(const std::string& key, bool shouldBeWrapped) {
+Texture2D& Renderer::getTexture(const std::string& key, bool shouldBeWrapped) 
+{
     return assetManager.getTexture(key, shouldBeWrapped);
 }

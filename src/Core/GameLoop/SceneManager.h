@@ -7,8 +7,8 @@
 
 class SceneManager {
 private:
-    std::unique_ptr<Scene> currentScene;
-    Renderer& renderer;
+    std::unique_ptr<Scene> currentScene; // pointer to current scene
+    Renderer& renderer; // object that has camera
 
 public:
     SceneManager(Renderer& renderer);

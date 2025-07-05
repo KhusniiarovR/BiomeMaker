@@ -1,6 +1,6 @@
 #include "Game.h"
 
-int main()
+int main() // entry point
 {
     Game game;
     game.run();

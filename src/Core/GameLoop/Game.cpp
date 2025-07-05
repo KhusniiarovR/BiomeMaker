@@ -2,23 +2,28 @@
 #include "raylib.h"
 #include "Constants/GraphicsConst.h"
 
-Game::Game() : renderer(assetManager, virtualScreenSizeX, virtualScreenSizeY, mouseVirtual), sceneManager(renderer) {
+Game::Game() : renderer(assetManager, virtualScreenSizeX, virtualScreenSizeY, mouseVirtual), sceneManager(renderer)
+{
     init();
 }
 
-void Game::run() {
+void Game::run()
+{
     while (!WindowShouldClose()) {
+        /*          update logic            */
         float dt = GetFrameTime();
         mouseVirtual = getMouseVirtual();
-
         sceneManager.update(dt, mouseVirtual);
 
-        BeginTextureMode(virtualScreen);
+        /*          drawing logic            */
+
+        BeginTextureMode(virtualScreen); // virtual screen texture
         ClearBackground(BLACK);
         sceneManager.render();
         EndTextureMode();
     
-        BeginDrawing();
+
+        BeginDrawing(); // transporting virtual screen to real
         ClearBackground(BLACK);
 
         float scaleX = (float)GetScreenWidth() / virtualScreenSizeX;
@@ -38,25 +43,35 @@ void Game::run() {
         EndDrawing();
     }
 
-    stop();
+    stop(); // stopping program
 }
 
-void Game::init() {
-    SetTraceLogLevel(LOG_ERROR); // opengl init comments
+void Game::init()
+{
+    SetTraceLogLevel(LOG_ERROR); // turn of opengl init comments
+
+    //             vert sync         resize window               windows close, resize, hide buttons 
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);// | FLAG_WINDOW_UNDECORATED);
-    InitWindow(virtualScreenSizeX, virtualScreenSizeY, "Biome Maker");
-    SetTargetFPS(60);
     
-    ToggleBorderlessWindowed();
-    virtualScreen = LoadRenderTexture(virtualScreenSizeX, virtualScreenSizeY);
-    SetTextureFilter(virtualScreen.texture, TEXTURE_FILTER_POINT);
+    //any size can be given width        height         window name
+    InitWindow(virtualScreenSizeX, virtualScreenSizeY, "Biome Maker");
+    SetTargetFPS(60);     // fps
+    ToggleBorderlessWindowed(); // resize window
+
+    virtualScreen = LoadRenderTexture(virtualScreenSizeX, virtualScreenSizeY); // virtual screen
+
+    SetTextureFilter(virtualScreen.texture, TEXTURE_FILTER_POINT); // to avoid gpu blur
+
+    assetManager.init(); // init default assets
 }
 
-void Game::stop() {
-    CloseWindow();
+void Game::stop()
+{
+    CloseWindow(); 
 }
 
-Vector2 Game::getMouseVirtual() const {
+Vector2 Game::getMouseVirtual() const // mouse position that counts virtual screen sizes 
+{
     Vector2 mousePhys = GetMousePosition();
 
     float scaleX = (float)GetScreenWidth() / virtualScreenSizeX;
@@ -66,11 +81,6 @@ Vector2 Game::getMouseVirtual() const {
 
     int offsetX = (GetScreenWidth() - (int)(virtualScreenSizeX * scale)) / 2;
     int offsetY = (GetScreenHeight() - (int)(virtualScreenSizeY * scale)) / 2;
-
-    Vector2 mouseVirtual = {
-        (mousePhys.x - offsetX) / scale,
-        (mousePhys.y - offsetY) / scale
-    };
-
-    return mouseVirtual;
+    
+    return { (mousePhys.x - offsetX) / scale, (mousePhys.y - offsetY) / scale};
 }

@@ -1,54 +1,71 @@
 #include "SceneManager.h"
 #include "Scenes/MainMenuScene.h"
-#include "Scenes/GameScene.h"
 #include "Scenes/WorldSelectionScene.h"
+#include "Scenes/GameScene.h"
 #include "Utilities/Logger/Logger.h"
 
-SceneManager::SceneManager(Renderer& renderer) : renderer(renderer) {
+SceneManager::SceneManager(Renderer& renderer) : renderer(renderer)
+{
     loadScene(SceneType::MainMenu);
 }
 
-void SceneManager::loadScene(SceneType sceneType, const std::string& worldName) {
-    switch (sceneType) {
+void SceneManager::loadScene(SceneType sceneType, const std::string& worldName) // loading new scene and delete previous
+{
+    switch (sceneType) 
+    {
         case SceneType::MainMenu:
             currentScene = std::make_unique<MainMenuScene>(renderer);
-        break;
-        case SceneType::Game:
-            currentScene = std::make_unique<GameScene>(renderer, worldName);
-        break;
+            break;
+
         case SceneType::WorldSelection:
             currentScene = std::make_unique<WorldSelectionScene>(renderer);
-        break;
+            break;
+
+        case SceneType::Game:
+            currentScene = std::make_unique<GameScene>(renderer, worldName);
+            break;
+
         default:
             mycerr << "unknown scene";
-        break;
+            break;
     }
 }
 
-void SceneManager::update(float dt, Vector2 mouseVirtual) {
-    if (currentScene) {
-        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
-        currentScene->update(dt, mouseVirtual);
-        if (currentScene->shouldTransition()) {
+// dt = delta time for fps independency,    mouseVirtual = mouse position that was calculated in virtual screen
+void SceneManager::update(float dt, Vector2 mouseVirtual)
+{
+    if (currentScene) 
+    {
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT); // reset mouse cursor to default
+
+        currentScene->update(dt, mouseVirtual); // update scene
+
+        if (currentScene->shouldTransition()) // scene changer
+        {
+            //        next scene                    name to load correct world
             loadScene(currentScene->getNextScene(), currentScene->getWorldName());
         }
     }
-    else {
+    else 
+    {
         mycerr << "no current scene";
     }
 }
 
-void SceneManager::render() {
-    if (currentScene) {
-        BeginMode2D(renderer.GetCamera());
-        is2DModeDone = false;
-        ClearBackground(BLACK);
-        currentScene->render();
-        if (!is2DModeDone) {
-            EndMode2D();
-        }
+void SceneManager::render() // draw everything
+{
+    if (currentScene)
+    {
+        BeginMode2D(renderer.GetCamera()); // draw everything in camera
+        is2DModeDone = false; // reset camera mode flag 
+
+        ClearBackground(BLACK); // clear screen
+        currentScene->render(); // draw scene
+
+        if (!is2DModeDone) EndMode2D();
     }
-    else {
+    else
+    {
         mycerr << "no current scene";
     }
 }

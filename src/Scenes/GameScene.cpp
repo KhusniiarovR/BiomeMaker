@@ -130,5 +130,5 @@ void GameScene::updateWorld(Vector2 mouseVirtual) {
 }
 
 void GameScene::updateCamera() {
-    renderer.updateCamera(player.getPosition());
+    renderer.updateCameraTarget(player.getPosition());
 }
