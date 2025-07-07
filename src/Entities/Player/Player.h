@@ -11,19 +11,20 @@
 #include "Items/Buffs/Buffs.h"
 #include "Entities/BuffSystem/BuffSystem.h"
 #include "Constants/TilemapConst.h"
+#include "Entities/Collisions/CollisionBase.h"
 
 class Player : public Entity {
 private:
-    float speed;
+    float speed = 80.0f;
     float speedMultiplier = 1.0f;
     Inventory inventory;
     ValueBar hp;
     int index = 1;
     ActiveBuffSystem buffSystem;
-    std::function<bool(Rectangle)> collisionCallback;
+    const CollisionBase* collision;
 
 public:
-    Player(Vector2 init_pos);
+    Player(Vector2 initPos, const CollisionBase* collision);
     void update(float dt) override;
     void render(Renderer& renderer) const;
 
@@ -35,7 +36,6 @@ public:
     float getSpeedMultiplier() const { return speedMultiplier; }
     void setSpeedMultiplier(float mult) { speedMultiplier = mult; }
     Rectangle getBoundingBox() const override;
-    void setCollisionCallback(std::function<bool(Rectangle)> func) { collisionCallback = std::move(func); }
     
     void heal(float value);
     bool applyEffect(const BuffEffect& effect);

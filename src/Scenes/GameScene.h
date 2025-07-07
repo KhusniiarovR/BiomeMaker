@@ -3,14 +3,15 @@
 
 #include "Scene.h"
 #include "Entities/Player/Player.h"
-#include "Entities/Enemy/Enemy.h"
+#include "Entities/Enemy/EnemyManager.h"
 #include "World/World.h"
 
 class GameScene : public Scene {
 private:
-    Enemy enemy;
-    Player player;
     World world;
+    CollisionWorld collision;
+    Player player;
+    EnemyManager enemies;
 
 public:
     GameScene(Renderer& renderer, const std::string& worldName);

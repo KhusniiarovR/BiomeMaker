@@ -3,12 +3,12 @@
 #include "Constants/GraphicsConst.h"
 #include "Constants/TilemapConst.h"
 
-Player::Player(Vector2 init_pos) 
-      : Entity(init_pos),
-        hp{{0.01f, 0.05f}, {0.15f, 0.05f}, RED, GRAY, "HEALTH", 10},
-        buffSystem(*this)
+Player::Player(Vector2 initPos, const CollisionBase* collision)
+: Entity(initPos), 
+collision(collision),
+hp{{0.01f, 0.05f}, {0.15f, 0.05f}, RED, GRAY, "HEALTH", 10},
+buffSystem(*this)
 {
-    speed = 80.0f;
     hp.setProgress(1.0f);
 }
 
@@ -86,20 +86,20 @@ void Player::tryMove(float dx, float dy) {
     newBox.x += dx;
     newBox.y += dy;
 
-    if (!collisionCallback || !collisionCallback(newBox)) {
+    if (!collision || !collision->checkCollision(newBox)) {
         position.x += dx;
         position.y += dy;
     } 
     else {
         newBox.x = oldBox.x + dx;
         newBox.y = oldBox.y;
-        if (!collisionCallback || !collisionCallback(newBox)) {
+        if (!collision || !collision->checkCollision(newBox)) {
             position.x += dx;
         }
 
         newBox.x = oldBox.x;
         newBox.y = oldBox.y + dy;
-        if (!collisionCallback || !collisionCallback(newBox)) {
+        if (!collision || !collision->checkCollision(newBox)) {
             position.y += dy;
         }
     }

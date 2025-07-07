@@ -6,11 +6,12 @@
 #include "Items/Inventory/Inventory.h"
 #include "Items/ItemBase/ItemUseContext.h"
 
-GameScene::GameScene(Renderer& renderer, const std::string& worldName) :
-         Scene(renderer),
-         player ({worldSize * worldTileSize / 2.0f, worldSize * worldTileSize / 2.0f}),
-         enemy ({worldSize * worldTileSize / 2.0f, worldSize * worldTileSize / 2.0f}, player),
-         world(worldName)
+GameScene::GameScene(Renderer& renderer, const std::string& worldName)
+: Scene(renderer), 
+world(worldName),
+collision(world),
+player ({worldSize * worldTileSize / 2.0f, worldSize * worldTileSize / 2.0f}, &collision),
+enemies(player, &collision)
 {
     renderer.GetCamera().offset = {virtualScreenSizeX / 2.0f, virtualScreenSizeY / 2.0f};
 }
@@ -26,9 +27,10 @@ void GameScene::update(float dt, Vector2 mouseVirtual) {
 
 void GameScene::render() const {
     world.render(renderer);
-    enemy.render(renderer);
+    enemies.render(renderer);
     player.render(renderer);
     player.getInventory().render(renderer);
+    renderer.drawText("Enemy size: " + std::to_string(enemies.getEnemiesSize()), {0.88f, 0.1f}, 20, BLACK);
 }
 
 void GameScene::updateChangeScene() {
@@ -48,18 +50,6 @@ SceneType GameScene::getNextScene() const {
 }
 
 void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
-    player.setCollisionCallback([this](Rectangle rect) {
-        const auto& objects = world.getObjectsAll();
-
-        for (const Object& obj : objects) {
-            if (!obj.hasCollision()) continue;
-            Rectangle objBox = obj.getBoundingBox(worldTileSize);
-
-            if (CheckCollisionRecs(rect, objBox)) { return true; }
-        }
-        return false;
-    });
-
     player.update(dt);
 
     player.getInventory().update(mouseVirtual);
@@ -81,20 +71,7 @@ void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
 }
 
 void GameScene::updateEnemies(float dt) {
-    enemy.setCollisionCallback([this](Rectangle rect) {
-        const auto& objects = world.getObjectsAll();
-
-        for (const Object& obj : objects) {
-            if (!obj.hasCollision()) continue;
-            Rectangle objBox = obj.getBoundingBox(worldTileSize);
-
-            if (CheckCollisionRecs(rect, objBox)) {
-                return true;
-            }
-        }
-        return false;
-    });
-    enemy.update(dt);
+    enemies.update(dt);
 }
 
 void GameScene::updateObjects(Vector2 mouseVirtual) {

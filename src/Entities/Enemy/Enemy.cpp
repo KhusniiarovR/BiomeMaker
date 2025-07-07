@@ -2,17 +2,14 @@
 #include "Constants/TilemapConst.h"
 #include "Utilities/Logger/Logger.h"
 
-Enemy::Enemy(Vector2 init_pos,Player &player) : Entity(init_pos), player(player)
+Enemy::Enemy(Vector2 initPos, Player &player, const CollisionBase* collision) 
+: Entity(initPos), player(player), collision(collision)
 {
     position.x -= 200;
-    speed = 40.0f;
 }
 
 void Enemy::update(float dt) {
-    Vector2 toPlayer = {
-        player.position.x - position.x,
-        player.position.y - position.y
-    };
+    Vector2 toPlayer = { player.position.x - position.x, player.position.y - position.y};
 
     float dist = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
     if (dist < 1e-6f) return;
@@ -22,7 +19,7 @@ void Enemy::update(float dt) {
     float dy = toPlayer.y / dist * moveSpeed;
 
     tryMove(dx, dy);
-
+    
     float absX = fabsf(dx);
     float absY = fabsf(dy);
     if (absX > absY) {
@@ -33,6 +30,31 @@ void Enemy::update(float dt) {
     }
 }
 
+void Enemy::tryMove(float dx, float dy) {
+    Rectangle oldBox = getBoundingBox();
+
+    Rectangle newBox = oldBox;
+    newBox.x += dx;
+    newBox.y += dy;
+
+    if (!collision || !collision->checkCollision(newBox)) {
+        position.x += dx;
+        position.y += dy;
+    }
+    else {
+        newBox = oldBox;
+        newBox.x += dx;
+        if (!collision->checkCollision(newBox)) {
+            position.x += dx;
+        }
+
+        newBox = oldBox;
+        newBox.y += dy;
+        if (!collision->checkCollision(newBox)) {
+            position.y += dy;
+        }
+    }
+}
 
 void Enemy::render(Renderer& renderer) const {
     Texture2D& enemyTexture = renderer.getTexture("entityTilemap");
@@ -65,30 +87,4 @@ Rectangle Enemy::getBoundingBox() const {
         width,
         height
     };
-}
-
-void Enemy::tryMove(float dx, float dy) {
-    Rectangle oldBox = getBoundingBox();
-
-    Rectangle newBox = oldBox;
-    newBox.x += dx;
-    newBox.y += dy;
-
-    if (!collisionCallback || !collisionCallback(newBox)) {
-        position.x += dx;
-        position.y += dy;
-    }
-    else {
-        newBox.x = oldBox.x + dx;
-        newBox.y = oldBox.y;
-        if (!collisionCallback || !collisionCallback(newBox)) {
-            position.x += dx;
-        }
-
-        newBox.x = oldBox.x;
-        newBox.y = oldBox.y + dy;
-        if (!collisionCallback || !collisionCallback(newBox)) {
-            position.y += dy;
-        }
-    }
 }
