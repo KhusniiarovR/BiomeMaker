@@ -12,7 +12,7 @@ private:
     std::vector<Enemy> enemies;
     float spawnCooldown = 0.0f;
     const float maxCooldown = 3.0f;
-    float spawnDistance = 300.0f;
+    float spawnDistance = 400.0f;
     const int randomOffset = 200;
     int maxEnemies = 10;
 

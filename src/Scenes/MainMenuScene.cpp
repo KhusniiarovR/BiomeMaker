@@ -12,7 +12,7 @@ void MainMenuScene::update(float dt, Vector2 mouseVirtual) {
 
 void MainMenuScene::render() const {
     renderer.drawBackground();
-    renderer.drawTextGradient("Press enter to continue", {0.5f, 0.5f}, 20, 4.0f, PURPLE, RED);
+    renderer.drawTextGradient("Press enter to continue", {0.5f, 0.5f}, 40, 4.0f, PURPLE, RED);
 }
 
 void MainMenuScene::updateChangeScene() {

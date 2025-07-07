@@ -30,7 +30,7 @@ void GameScene::render() const {
     enemies.render(renderer);
     player.render(renderer);
     player.getInventory().render(renderer);
-    renderer.drawText("Enemy size: " + std::to_string(enemies.getEnemiesSize()), {0.88f, 0.1f}, 20, BLACK);
+    renderer.drawText("Enemies: " + std::to_string(enemies.getEnemiesSize()), {0.88f, 0.1f}, 20, BLACK);
 }
 
 void GameScene::updateChangeScene() {

@@ -68,7 +68,7 @@ void WorldSelector::render(Renderer& renderer) const {
         if (i == selectedIndex) bgColor = DARKGRAY;
 
         DrawRectangleRounded(worldBox, 0.15f, 12, bgColor);
-        renderer.drawText(folders[i], {textX, worldBox.y + worldBox.height / 2.0f}, 20, BLACK, true, false);
+        renderer.drawText(folders[i], {textX, worldBox.y + worldBox.height / 2.0f}, 32, BLACK, true, false);
     }
     EndScissorMode();
 }

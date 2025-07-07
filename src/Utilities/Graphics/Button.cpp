@@ -48,7 +48,7 @@ void Button::render(Renderer& renderer) const {
     }
 
     Vector2 center = { position.x + size.x / 2.0f, position.y + size.y / 2.0f };
-    float fontSize = std::min(size.y * 0.5f, size.x / (isHovered ? 4.0f : 5.0f));
+    int fontSize = size.x / (isHovered ? 4.0f : 6.4f);
 
     renderer.drawText(text, center, fontSize,
         isHovered ? YELLOW : textColor,

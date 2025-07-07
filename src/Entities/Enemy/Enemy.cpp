@@ -3,10 +3,7 @@
 #include "Utilities/Logger/Logger.h"
 
 Enemy::Enemy(Vector2 initPos, Player &player, const CollisionBase* collision) 
-: Entity(initPos), player(player), collision(collision)
-{
-    position.x -= 200;
-}
+: Entity(initPos), player(player), collision(collision) {}
 
 void Enemy::update(float dt) {
     Vector2 toPlayer = { player.position.x - position.x, player.position.y - position.y};

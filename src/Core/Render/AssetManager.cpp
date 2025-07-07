@@ -7,6 +7,7 @@ AssetManager::AssetManager() // register all assets
 {
     // fonts
     registerFont("inter", "data/Fonts/InterFont.ttf");
+    registerFont("silkscreen", "data/Fonts/Silkscreen-Regular.ttf");
 
     // textures
     registerTexture("background",   "data/Textures/Menu/background.png"); // menu scrolling background
