@@ -26,7 +26,6 @@ public:
 private:
     void updatePlayer (float dt, Vector2 mouseVirtual);
     void updateEnemies(float dt);
-    void updateObjects(Vector2 mouseVirtual);
     void updateWorld  (Vector2 mouseVirtual);
     void updateCamera ();
 };

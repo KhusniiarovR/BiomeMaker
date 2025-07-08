@@ -10,7 +10,7 @@ struct ItemStack {
 
     bool isEmpty() const { return id == ItemID::NONE || count == 0; }
 
-    const Item& getItem() const {
+    Item& getItem() const {
         return ItemRegister::get().getItem(id);
     }
 };

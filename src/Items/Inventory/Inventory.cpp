@@ -1,5 +1,6 @@
 #include "Inventory.h"
 #include "Constants/TilemapConst.h"
+#include "Items/ItemsAll/Tools/ItemToolBase.h"
 
 Inventory::Inventory() {
     for (auto& slot : slots) {
@@ -73,6 +74,28 @@ void Inventory::render(Renderer& renderer) const {
 
             DrawTexturePro(itemTilemap, src, dst, {0, 0}, 0.0f, WHITE);
 
+            const ItemToolBase* tool = dynamic_cast<const ItemToolBase*>(&item);
+            if (tool) {
+                float durability = tool->getDurabilityRatio();
+
+                Color barColor = (durability > 0.60f) ? GREEN :
+                                (durability > 0.25f) ? YELLOW : RED;
+
+                float barPadding = 2.0f;
+                float barHeight = 3.0f;
+                float barWidth = invSlotSize - barPadding * 2;
+
+                float barX = x + barPadding;
+                float barY = y + invSlotSize - barHeight - barPadding;
+
+                Rectangle backBar = { barX, barY, barWidth, barHeight };
+                Rectangle fillBar = { barX, barY, barWidth * durability, barHeight };
+
+                DrawRectangleRec(backBar, GRAY);
+                DrawRectangleRec(fillBar, barColor);
+                DrawRectangleLinesEx(backBar, 1, DARKGRAY);
+            }
+
             if (stack.count > 1) {
                 renderer.drawText(std::to_string(stack.count), {x + invSlotSize-5,  y + invSlotSize-5}, 16, BLACK, true, false);
             }
@@ -91,8 +114,7 @@ void Inventory::render(Renderer& renderer) const {
         }
     }
 }
-// todo inventory saving and block place 
-
+// todo inventory saving
 
 bool Inventory::addItem(ItemID id, uint8_t count) {
     for (auto& slot : slots) {

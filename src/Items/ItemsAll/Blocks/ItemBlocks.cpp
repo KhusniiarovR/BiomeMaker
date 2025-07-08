@@ -11,4 +11,4 @@ ItemStone::ItemStone() : ItemPlaceable(ObjectType::OBJECT_ROCK) {
     id = ItemID::STONE;
     name = "Stone";
     description = "dropped from big stone";
-}
+} 

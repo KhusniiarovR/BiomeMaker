@@ -17,6 +17,7 @@ class Player : public Entity {
 private:
     float speed = 80.0f;
     float speedMultiplier = 1.0f;
+    int handDistance = 8;
     Inventory inventory;
     ValueBar hp;
     int index = 1;
@@ -36,6 +37,7 @@ public:
     float getSpeedMultiplier() const { return speedMultiplier; }
     void setSpeedMultiplier(float mult) { speedMultiplier = mult; }
     Rectangle getBoundingBox() const override;
+    [[nodiscard]] int getHandDistance() const { return handDistance; }
     
     void heal(float value);
     bool applyEffect(const BuffEffect& effect);

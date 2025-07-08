@@ -13,6 +13,8 @@ enum class ItemID : uint16_t {
     WOOD = 1,
     STONE = 2,
     BERRY = 3,
+    AXE = 4,
+    PICKAXE = 5
 };
 
 struct Item {

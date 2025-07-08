@@ -13,9 +13,6 @@ const int chunkPixelSize = chunkSize * 16;            // 16 = worldTileSize from
 const int renderDistance = 2; // how far from player chunks will be loaded
 const int unloadMargin = 0;   // when chunks will be unloaded
 
-// player
-const int handDistance = 4;   // where player can place or destroy objects
-
 // world saving
 const int reserveSizeBiome = 40;  // reserved size for biome to not save world every time again
 const int reserveSizeObject = 80; // reserved size for biome to not save world every time again

@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include "Core/Render/Renderer.h"
 #include "ChunkSystem/ChunkSystem.h"
+#include "Items/ItemBase/Item.h"
 
 class World {
 private:
@@ -19,7 +20,7 @@ public:
     void update(Vector2 playerPos, Camera2D& camera, Vector2 mouseVirtual);
     void render(Renderer& renderer) const;
 
-    std::optional<ObjectType> removeObjectAt(int worldX, int worldY);
+    std::optional<ObjectType> removeObjectAt(int worldX, int worldY, const Item* tool);
     bool placeObjectAt(int worldX, int worldY, ObjectType type);
     std::vector<Object> getObjectsAll() const;
 

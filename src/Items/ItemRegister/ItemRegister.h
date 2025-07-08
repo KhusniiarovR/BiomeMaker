@@ -10,7 +10,7 @@ public:
     static ItemRegister& get();
 
     void registerItem(Item* item);
-    const Item& getItem(ItemID id) const;
+    Item& getItem(ItemID id) const;
 
 private:
     std::unordered_map<ItemID, std::unique_ptr<Item>> items;

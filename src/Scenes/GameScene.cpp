@@ -5,6 +5,7 @@
 #include "Items/ItemBase/ObjectToItem.h"
 #include "Items/Inventory/Inventory.h"
 #include "Items/ItemBase/ItemUseContext.h"
+#include "Items/ItemsAll/Tools/ItemToolBase.h"
 
 GameScene::GameScene(Renderer& renderer, const std::string& worldName)
 : Scene(renderer), 
@@ -14,12 +15,13 @@ player ({worldSize * worldTileSize / 2.0f, worldSize * worldTileSize / 2.0f}, &c
 enemies(player, &collision)
 {
     renderer.GetCamera().offset = {virtualScreenSizeX / 2.0f, virtualScreenSizeY / 2.0f};
+    player.getInventory().addItem(ItemID::AXE, 1);
+    player.getInventory().addItem(ItemID::PICKAXE, 1);
 }
 
 void GameScene::update(float dt, Vector2 mouseVirtual) {
     updatePlayer(dt, mouseVirtual);
-    updateEnemies(dt);
-    updateObjects(mouseVirtual);    
+    updateEnemies(dt); 
     updateWorld(mouseVirtual);
     updateCamera();
     updateChangeScene();
@@ -51,16 +53,27 @@ SceneType GameScene::getNextScene() const {
 
 void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
     player.update(dt);
-
     player.getInventory().update(mouseVirtual);
 
-    if (IsKeyPressed(KEY_R)) {
+    if (IsKeyPressed(KEY_E)) {
         ItemStack& stack = player.getInventory().getSlot(player.getInventory().selectedSlot);
         if (!stack.isEmpty()) {
-            const Item& item = stack.getItem();
+            Item& item = stack.getItem();
+
+            ItemToolBase* tool = dynamic_cast<ItemToolBase*>(&item);
 
             ItemUseContext context(world, player, mouseVirtual, renderer.GetCamera(), worldTileSize);
             bool used = item.onUse(context);
+
+            if (used && tool) { 
+                tool->damage(1);
+
+                if (tool->getDurability() == 0) {
+                    stack.id = ItemID::NONE;
+                    stack.count = 0;
+                    return;
+                }
+            }
 
             if (used && item.shouldConsumeOnUse()) {
                 if (--stack.count == 0)
@@ -70,36 +83,9 @@ void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
     }
 }
 
+
 void GameScene::updateEnemies(float dt) {
     enemies.update(dt);
-}
-
-void GameScene::updateObjects(Vector2 mouseVirtual) {
-    if (IsKeyPressed(KEY_E)) {
-        Vector2 mouseWorld = GetScreenToWorld2D(mouseVirtual, renderer.GetCamera());
-
-        int tileX = static_cast<int>(mouseWorld.x / worldTileSize);
-        int tileY = static_cast<int>(mouseWorld.y / worldTileSize);
-
-        Vector2 playerPos = player.getPosition();
-        int playerTileX = static_cast<int>(playerPos.x / worldTileSize);
-        int playerTileY = static_cast<int>(playerPos.y / worldTileSize);
-
-        int dx = tileX - playerTileX;
-        int dy = tileY - playerTileY;
-
-        if (dx * dx + dy * dy <= handDistance * handDistance) {
-            if (IsKeyPressed(KEY_E)) {
-                auto removed = world.removeObjectAt(tileX, tileY);
-                if (removed) {
-                    std::vector<ItemID> drops = generateLootForObject(*removed);
-                    for (ItemID id : drops) {
-                        player.giveItem(id, 1);
-                    }
-                }
-            }
-        }
-    }
 }
 
 void GameScene::updateWorld(Vector2 mouseVirtual) {

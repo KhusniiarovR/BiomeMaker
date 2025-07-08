@@ -1,6 +1,7 @@
 #include "World.h"
 #include "Constants/WorldConst.h"
 #include "Constants/TilemapConst.h"
+#include "Items/ItemsAll/Tools/ItemToolBase.h"
 #include <optional>
 
 World::World(const std::string &filename) : chunkSystem(chunks, filename) {}
@@ -15,7 +16,7 @@ void World::render(Renderer& renderer) const {
     chunkSystem.render(renderer);
 }
 
-std::optional<ObjectType> World::removeObjectAt(int worldX, int worldY) {
+std::optional<ObjectType> World::removeObjectAt(int worldX, int worldY, const Item* tool) {
     int chunkX = worldX / chunkSize;
     int chunkY = worldY / chunkSize;
 
@@ -32,8 +33,16 @@ std::optional<ObjectType> World::removeObjectAt(int worldX, int worldY) {
         int startX = static_cast<int>(obj.position.x / worldTileSize);
         int startY = static_cast<int>(obj.position.y / worldTileSize);
 
-        return worldX >= startX && worldX < startX + (int)size.x &&
-               worldY >= startY && worldY < startY + (int)size.y;
+        bool inBounds = worldX >= startX && worldY >= startY &&
+                        worldX < startX + (int)size.x &&
+                        worldY < startY + (int)size.y;
+
+        if (!inBounds) return false;
+
+        auto* toolItem = dynamic_cast<const ItemToolBase*>(tool);
+        if (!toolItem || !toolItem->canBreak(obj.type)) return false;
+
+        return true;
     });
 
     if (found == chunk.objects.end()) return std::nullopt;
