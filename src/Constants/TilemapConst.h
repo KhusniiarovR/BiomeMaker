@@ -13,6 +13,7 @@ const int invColumns = 10;            // number of slots in one row
 const int invRows = 2;                // number of slots in one column
 const int invSlotSize = 32;           // size of 1 slot
 const Vector2 invPosition = {120, 5}; // coord of the first slot
+const int slotCount = 20;
 
 // entity tilemap
 const int entityTileSize = 32;   // tile size in the tilemap

@@ -15,6 +15,7 @@ private:
 
 public:
     GameScene(Renderer& renderer, const std::string& worldName);
+    ~GameScene() override;
 
     void update(float dt, Vector2 mouseVirtual) override;
     void render() const override;

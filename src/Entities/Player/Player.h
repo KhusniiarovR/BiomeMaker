@@ -18,6 +18,7 @@ private:
     float speed = 80.0f;
     float speedMultiplier = 1.0f;
     int handDistance = 8;
+    std::string fileName;
     Inventory inventory;
     ValueBar hp;
     int index = 1;
@@ -25,7 +26,7 @@ private:
     const CollisionBase* collision;
 
 public:
-    Player(Vector2 initPos, const CollisionBase* collision);
+    Player(Vector2 initPos, const CollisionBase* collision, std::string fileName);
     void update(float dt) override;
     void render(Renderer& renderer) const;
 

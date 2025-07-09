@@ -11,12 +11,16 @@ GameScene::GameScene(Renderer& renderer, const std::string& worldName)
 : Scene(renderer), 
 world(worldName),
 collision(world),
-player ({worldSize * worldTileSize / 2.0f, worldSize * worldTileSize / 2.0f}, &collision),
+player ({worldSize * worldTileSize / 2.0f, worldSize * worldTileSize / 2.0f}, &collision, worldName),
 enemies(player, &collision)
 {
     renderer.GetCamera().offset = {virtualScreenSizeX / 2.0f, virtualScreenSizeY / 2.0f};
     player.getInventory().addItem(ItemID::AXE, 1);
     player.getInventory().addItem(ItemID::PICKAXE, 1);
+}
+
+GameScene::~GameScene() {
+    player.getInventory().save();
 }
 
 void GameScene::update(float dt, Vector2 mouseVirtual) {
@@ -66,11 +70,12 @@ void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
             bool used = item.onUse(context);
 
             if (used && tool) { 
-                tool->damage(1);
+                stack.damage(1);
 
-                if (tool->getDurability() == 0) {
+                if (stack.isBroken()) {
                     stack.id = ItemID::NONE;
                     stack.count = 0;
+                    stack.durability = 0;
                     return;
                 }
             }

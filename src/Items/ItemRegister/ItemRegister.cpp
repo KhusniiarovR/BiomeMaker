@@ -14,3 +14,7 @@ void ItemRegister::registerItem(Item* item) {
 Item& ItemRegister::getItem(ItemID id) const {
     return *items.at(id);
 }
+
+bool ItemRegister::hasItem(ItemID id) const {
+    return items.find(id) != items.end();
+}

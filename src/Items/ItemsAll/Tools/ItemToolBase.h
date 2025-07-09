@@ -2,20 +2,18 @@
 #define ITEMTOOL_H
 
 #include "Items/ItemBase/Item.h"
-#include "Items/ItemBase/ItemUseContext.h"
 #include "Items/ItemBase/ObjectToItem.h"
 #include "raymath.h"
 #include "Constants/TilemapConst.h"
 #include "Constants/WorldConst.h"
+#include "Items/ItemBase/ItemUseContext.h"
 
 struct ItemToolBase : public Item {
     int maxDurability;
-    int currentDurability;
 
     ItemToolBase(ItemID id, std::string name, std::string description, int durability)
         : Item(id, std::move(name), std::move(description)),
-          maxDurability(durability),
-          currentDurability(durability)
+          maxDurability(durability)
     {
         stackable = false;
         maxStack = 1;
@@ -38,32 +36,19 @@ struct ItemToolBase : public Item {
             for (ItemID id : drops) {
                 context.player.giveItem(id, 1);
             }
-
-            // currentDurability--;
-
             return true;
         }
 
         return false;
     }
 
-
-    virtual bool canBreak(ObjectType type) const {
+    bool canBreak(ObjectType type) const override {
         return false;
     }
 
     bool shouldConsumeOnUse() const override {
         return false;
     }
-
-    virtual int getDurability() const { return currentDurability; }
-    float getDurabilityRatio() const {return maxDurability > 0 ? (float)currentDurability / maxDurability : 0.0f;}
-    void damage(int amount = 1) {
-        if (currentDurability > amount) {currentDurability -= amount;}
-        else {currentDurability = 0;}
-    }
 };
-
-
 
 #endif // ITEMTOOL_H

@@ -5,6 +5,7 @@
 #include <string>
 #include "raylib.h"
 #include <functional>
+#include "World/ChunkSystem/Object.h"
 
 class ItemUseContext;
 
@@ -44,6 +45,7 @@ struct Item {
     virtual bool onUse(const ItemUseContext& context) const { return false; }
     virtual bool isPlaceable() const { return false; }
     virtual bool shouldConsumeOnUse() const { return true; }
+    virtual bool canBreak(ObjectType type) const { return false; }
 };
 
 #endif // ITEM_H

@@ -1,5 +1,6 @@
 #include "MainMenuScene.h"
 #include "raylib.h"
+#include "Utilities/Input/InputAny.h"
 
 MainMenuScene::MainMenuScene(Renderer& renderer) : Scene(renderer) {
     renderer.GetCamera().offset = {0, 0};
@@ -16,7 +17,7 @@ void MainMenuScene::render() const {
 }
 
 void MainMenuScene::updateChangeScene() {
-    if (IsKeyPressed(KEY_ENTER) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+    if (inputAny()){
         changeScene = true;
         nextScene = SceneType::WorldSelection;
     }

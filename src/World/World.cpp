@@ -1,7 +1,6 @@
 #include "World.h"
 #include "Constants/WorldConst.h"
 #include "Constants/TilemapConst.h"
-#include "Items/ItemsAll/Tools/ItemToolBase.h"
 #include <optional>
 
 World::World(const std::string &filename) : chunkSystem(chunks, filename) {}
@@ -39,8 +38,7 @@ std::optional<ObjectType> World::removeObjectAt(int worldX, int worldY, const It
 
         if (!inBounds) return false;
 
-        auto* toolItem = dynamic_cast<const ItemToolBase*>(tool);
-        if (!toolItem || !toolItem->canBreak(obj.type)) return false;
+        if (!tool->canBreak(obj.type)) return false;
 
         return true;
     });

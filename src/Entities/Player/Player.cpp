@@ -3,11 +3,13 @@
 #include "Constants/GraphicsConst.h"
 #include "Constants/TilemapConst.h"
 
-Player::Player(Vector2 initPos, const CollisionBase* collision)
+Player::Player(Vector2 initPos, const CollisionBase* collision, std::string fileName)
 : Entity(initPos), 
 collision(collision),
 hp{{0.01f, 0.05f}, {0.15f, 0.05f}, RED, GRAY, "HEALTH", 10},
-buffSystem(*this)
+buffSystem(*this),
+fileName(fileName + "/playerData"),
+inventory(fileName + "/playerData")
 {
     hp.setProgress(1.0f);
 }

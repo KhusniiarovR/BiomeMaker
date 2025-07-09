@@ -4,14 +4,15 @@
 #include <array>
 #include "Items/ItemBase/ItemStack.h"
 #include "Core/Render/Renderer.h"
+#include "Constants/TilemapConst.h"
 
 class Inventory {
 public:
-    static const int SLOT_COUNT = 20;
     int selectedSlot = 0;
     int hoveredSlot = -1; 
+    std::string fileName;
 
-    Inventory();
+    Inventory(std::string fileName);
 
     ItemStack& getSlot(int index);
     const ItemStack& getSlot(int index) const;
@@ -23,8 +24,11 @@ public:
 
     bool addItem(ItemID id, uint8_t count);
 
+    void save() const;
+    bool load();
+
 private:
-    std::array<ItemStack, SLOT_COUNT> slots;
+    std::array<ItemStack, slotCount> slots;
 };
 
 

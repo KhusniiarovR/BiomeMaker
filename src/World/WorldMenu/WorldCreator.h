@@ -48,6 +48,7 @@ private:
     void saveWorld(const std::vector<std::vector<uint8_t>>& world, const std::vector<Object>& allObjects);
     void writeObjectsChunk(std::ofstream& out, const std::vector<Object>& objects, int startTileX, int startTileY, int tileSize);
     std::vector<Object> takeObjectsInchunk(const std::vector<Object>& allObjects, int chunkX, int chunkY, int chunkSize, int tileSize);
+    void makePlayerDir();
 };
 
 #endif //WORLDCREATOR_H

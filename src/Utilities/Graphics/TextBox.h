@@ -4,12 +4,11 @@
 #include <string>
 #include <Core/Render/Renderer.h>
 #include <Constants/GraphicsConst.h>
-using namespace std;
 class TextBox
 {
     private:
         Rectangle box;
-        string text = "";
+        std::string text = "";
         bool active = false;    
         Color BGColor;
         Color lineColor;
@@ -22,6 +21,6 @@ class TextBox
         TextBox(float x, float y, float width, float height,Color BGcolor, Color lineColor, Color activeLineColor, Color textColor, int textSize);
         void update(float dt, Vector2 mouseVirtual);
         void draw(Renderer& renderer) const;
-        string returnText();
+        std::string returnText();
         void eraseText();
 };

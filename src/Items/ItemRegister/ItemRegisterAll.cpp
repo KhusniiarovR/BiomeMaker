@@ -18,6 +18,7 @@ void registerAllTools() {
 }
 
 void registerAllItems() {
+    ItemRegister::get().registerItem(new Item(ItemID::NONE, "", ""));
     registerAllFood();
     registerAllBlocks();
     registerAllTools();

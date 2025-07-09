@@ -1,12 +1,10 @@
 #include "Inventory.h"
-#include "Constants/TilemapConst.h"
+#include <fstream>
 #include "Items/ItemsAll/Tools/ItemToolBase.h"
+#include "Items/ItemRegister/ItemRegister.h"
 
-Inventory::Inventory() {
-    for (auto& slot : slots) {
-        slot.id = ItemID::NONE;
-        slot.count = 0;
-    }
+Inventory::Inventory(std::string fileName) : fileName(fileName + "/inventory.inv") {
+    load();
 }
 
 ItemStack& Inventory::getSlot(int index) {
@@ -18,7 +16,7 @@ const ItemStack& Inventory::getSlot(int index) const {
 }
 
 void Inventory::setSelectedSlot(int index) {
-    if (index >= 0 && index < SLOT_COUNT)
+    if (index >= 0 && index < slotCount)
         selectedSlot = index;
 }
     
@@ -28,7 +26,7 @@ const ItemStack& Inventory::getSelectedSlot() const {
 
 void Inventory::update(Vector2 mouseVirtual) {
     hoveredSlot = -1;
-    for (int i = 0; i < SLOT_COUNT; i++) {
+    for (int i = 0; i < slotCount; i++) {
         int col = i % invColumns;
         int row = i / invColumns;
 
@@ -50,7 +48,7 @@ void Inventory::update(Vector2 mouseVirtual) {
 void Inventory::render(Renderer& renderer) const {
     Texture2D& itemTilemap = renderer.getTexture("itemTilemap");
 
-    for (int i = 0; i < Inventory::SLOT_COUNT; ++i) {
+    for (int i = 0; i < slotCount; ++i) {
         int col = i % invColumns;
         int row = i / invColumns;
 
@@ -76,13 +74,11 @@ void Inventory::render(Renderer& renderer) const {
 
             const ItemToolBase* tool = dynamic_cast<const ItemToolBase*>(&item);
             if (tool) {
-                float durability = tool->getDurabilityRatio();
+                float durability = stack.getDurabilityRatio();
 
-                Color barColor = (durability > 0.60f) ? GREEN :
-                                (durability > 0.25f) ? YELLOW : RED;
-
+                Color barColor = (durability > 0.60f) ? GREEN : (durability > 0.25f) ? YELLOW : RED;
                 float barPadding = 2.0f;
-                float barHeight = 3.0f;
+                float barHeight = 4.0f;
                 float barWidth = invSlotSize - barPadding * 2;
 
                 float barX = x + barPadding;
@@ -114,7 +110,6 @@ void Inventory::render(Renderer& renderer) const {
         }
     }
 }
-// todo inventory saving
 
 bool Inventory::addItem(ItemID id, uint8_t count) {
     for (auto& slot : slots) {
@@ -131,9 +126,81 @@ bool Inventory::addItem(ItemID id, uint8_t count) {
         if (slot.isEmpty()) {
             slot.id = id;
             slot.count = count;
+            slot.durability = slot.getMaxDurability();
             return true;
         }
     }
 
     return false; 
+}
+
+void Inventory::save() const {
+    std::ofstream out(fileName, std::ios::binary);
+    if (!out) return;
+
+    for (int i = 0; i < slotCount; ++i) {
+        const ItemStack& stack = slots[i];
+        if (!ItemRegister::get().hasItem(stack.id)) {
+            uint16_t noneId = static_cast<uint16_t>(ItemID::NONE);
+            out.write(reinterpret_cast<const char*>(&noneId), sizeof(noneId));
+            uint8_t zeroCount = 0;
+            out.write(reinterpret_cast<const char*>(&zeroCount), sizeof(zeroCount));
+            continue;
+        }
+        uint16_t id = static_cast<uint16_t>(stack.id);
+        out.write(reinterpret_cast<const char*>(&id), sizeof(id));
+        const Item& item = ItemRegister::get().getItem(stack.id);
+        if (item.stackable) {
+            out.write(reinterpret_cast<const char*>(&stack.count), sizeof(stack.count));
+        } else {
+            out.write(reinterpret_cast<const char*>(&stack.durability), sizeof(stack.durability));
+        }
+    }
+}
+
+bool Inventory::load() {
+    std::ifstream in(fileName, std::ios::binary);
+    if (!in) return false;
+
+    for (int i = 0; i < slotCount; ++i) {
+        uint16_t idRaw = 0;
+        if (!in.read(reinterpret_cast<char*>(&idRaw), sizeof(idRaw))) {
+            for (int j = i; j < slotCount; ++j) {
+                slots[j] = ItemStack{};
+            }
+            return false;
+        }
+        ItemID id = static_cast<ItemID>(idRaw);
+        if (!ItemRegister::get().hasItem(id)) {
+            for (int j = i; j < slotCount; ++j) {
+                slots[j] = ItemStack{};
+            }
+            return false;
+        }
+        slots[i].id = id;
+        const Item& item = ItemRegister::get().getItem(id);
+
+        if (item.stackable) {
+            uint8_t count = 0;
+            if (!in.read(reinterpret_cast<char*>(&count), sizeof(count))) {
+                for (int j = i; j < slotCount; ++j) {
+                    slots[j] = ItemStack{};
+                }
+                return false;
+            }
+            slots[i].count = count;
+            slots[i].durability = 0;
+        } else {
+            uint16_t durability = 0;
+            if (!in.read(reinterpret_cast<char*>(&durability), sizeof(durability))) {
+                for (int j = i; j < slotCount; ++j) {
+                    slots[j] = ItemStack{};
+                }
+                return false;
+            }
+            slots[i].durability = durability;
+            slots[i].count = 1;
+        }
+    }
+    return true;
 }

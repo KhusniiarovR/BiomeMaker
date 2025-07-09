@@ -8,6 +8,7 @@
 #include "Constants/WorldConst.h"
 #include "Utilities/Logger/Logger.h"
 #include "Constants/TilemapConst.h"
+#include "Items/ItemBase/Item.h"
 
 WorldCreator::WorldCreator() = default;
 
@@ -155,6 +156,7 @@ void WorldCreator::generate(int seed, std::string worldName)
     }
 
     saveWorld(map, objectsList);
+    makePlayerDir();
 }
 
 int WorldCreator::dist2(int x1, int y1, int x2, int y2) {
@@ -189,12 +191,18 @@ void WorldCreator::writeBiomeChunk(std::ofstream& out,
 void WorldCreator::saveWorld(const std::vector<std::vector<uint8_t>>& biomes, 
                                   const std::vector<Object>& allObjects) {
     if (!std::filesystem::exists("saves/")) {
-        mycerr << "Recreated saves folder";
+        mycerr << "Recreated saves and worlds folder";
         std::filesystem::create_directory("saves");
+        std::filesystem::create_directory("saves/worlds");
     }
 
-    std::filesystem::create_directory("saves/" + worldName);
-    std::string filename = "saves/" + worldName + "/world.dat";
+    else if (!std::filesystem::exists("saves/worlds")) {
+        mycerr << "Recreated saves/worlds folder";
+        std::filesystem::create_directory("saves/worlds");
+    }
+
+    std::filesystem::create_directory("saves/worlds/" + worldName);
+    std::string filename = "saves/worlds/" + worldName + "/world.dat";
     std::ofstream out(filename, std::ios::binary);
 
     if (!out.is_open()) {
@@ -327,4 +335,26 @@ std::vector<Object> WorldCreator::takeObjectsInchunk(const std::vector<Object>& 
         }
     }
     return result;
+}
+
+void WorldCreator::makePlayerDir() {
+    std::string playerDir = "saves/worlds/" + worldName + "/playerData";
+    std::filesystem::create_directories(playerDir);
+
+    std::string filename = playerDir + "/inventory.inv";
+    std::ofstream out(filename, std::ios::binary);
+
+    if (!out) {
+        mycerr << "Can't create player dir in " << filename;
+        return;
+    }
+    
+    for (int i = 0; i < slotCount; ++i) {
+        uint16_t id = static_cast<uint16_t>(ItemID::NONE);
+        uint8_t count = 0;
+        uint16_t durability = 0;
+
+        out.write(reinterpret_cast<const char*>(&id), sizeof(id));
+        out.write(reinterpret_cast<const char*>(&count), sizeof(count));
+    }
 }

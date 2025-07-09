@@ -8,7 +8,7 @@
 
 class WorldSelector {
 public:
-    explicit WorldSelector(const std::string& path = "saves/");
+    explicit WorldSelector(const std::string& path = "saves/worlds/");
     void update(Vector2 mouseVirtual);
     void render(Renderer& renderer) const;
     [[nodiscard]] std::string getSelectedFolder() const;
