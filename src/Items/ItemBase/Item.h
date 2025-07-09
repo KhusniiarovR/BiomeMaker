@@ -3,9 +3,11 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 #include "raylib.h"
-#include <functional>
 #include "World/ChunkSystem/Object.h"
+#include "Constants/TilemapConst.h"
+#include "Constants/WorldConst.h"
 
 class ItemUseContext;
 
@@ -26,26 +28,18 @@ struct Item {
     uint8_t maxStack = 10;
 
     Item() = default;
-
-    Item(ItemID id, std::string name, std::string description)
-        : id(id), name(std::move(name)), description(std::move(description)) {}
+    Item(ItemID id, std::string name, std::string description);
+    virtual ~Item();
 
     static constexpr int ICON_SIZE = 8;
     static constexpr int ICONS_PER_ROW = 10;
-        
-    Rectangle getIconSourceRect() const {
-        int index = static_cast<int>(id);
-        int x = (index % ICONS_PER_ROW) * ICON_SIZE;
-        int y = (index / ICONS_PER_ROW) * ICON_SIZE;
-        return { (float)x, (float)y, (float)ICON_SIZE, (float)ICON_SIZE };
-    }
 
-    virtual ~Item() = default;
+    Rectangle getIconSourceRect() const;
 
-    virtual bool onUse(const ItemUseContext& context) const { return false; }
-    virtual bool isPlaceable() const { return false; }
-    virtual bool shouldConsumeOnUse() const { return true; }
-    virtual bool canBreak(ObjectType type) const { return false; }
+    virtual bool onUse(const ItemUseContext& context) const;
+    virtual bool isPlaceable() const;
+    virtual bool shouldConsumeOnUse() const;
+    virtual bool canBreak(const ObjectProperties& objProp) const;
 };
 
 #endif // ITEM_H

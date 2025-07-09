@@ -16,17 +16,25 @@ enum ObjectType : uint8_t {
     OBJECT_WOODEN_WALL = 5
 };
 
+enum class ToolType : uint8_t {
+    NONE,
+    AXE,
+    PICKAXE
+};
+
 struct ObjectProperties {
     Vector2 size;
     bool hasCollision;
+    ToolType requiredTool = ToolType::NONE;
+    int requiredTier = 0;
 };
 
 inline const std::unordered_map<ObjectType, ObjectProperties> objectPropertiesMap = {
-    { OBJECT_TREE,        {{2, 2}, true} },
-    { OBJECT_ROCK,        {{1, 1}, true}  },
+    { OBJECT_TREE,        {{2, 2}, true, ToolType::AXE, 1}},
+    { OBJECT_ROCK,        {{1, 1}, true, ToolType::PICKAXE, 1 }},
     { OBJECT_BUSH,        {{1, 1}, false} },
     { OBJECT_FLOWER,      {{1, 1}, false} },
-    { OBJECT_WOODEN_WALL, {{1, 1}, true}  }
+    { OBJECT_WOODEN_WALL, {{1, 1}, true, ToolType::AXE, 1}}
 };
 
 struct Object {

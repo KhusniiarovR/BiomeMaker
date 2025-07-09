@@ -38,7 +38,7 @@ std::optional<ObjectType> World::removeObjectAt(int worldX, int worldY, const It
 
         if (!inBounds) return false;
 
-        if (!tool->canBreak(obj.type)) return false;
+        if (!tool->canBreak(prop->second)) return false;
 
         return true;
     });

@@ -7,48 +7,32 @@
 #include "Constants/TilemapConst.h"
 #include "Constants/WorldConst.h"
 #include "Items/ItemBase/ItemUseContext.h"
+#include "World/ChunkSystem/Object.h"
 
 struct ItemToolBase : public Item {
     int maxDurability;
+    ToolType type = ToolType::NONE;
+    int tier = 0;
 
-    ItemToolBase(ItemID id, std::string name, std::string description, int durability)
+    ItemToolBase(ItemID id, std::string name, std::string description, ToolType type, int tier, int durability)
         : Item(id, std::move(name), std::move(description)),
-          maxDurability(durability)
+          type(type), tier(tier), maxDurability(durability)
     {
         stackable = false;
         maxStack = 1;
     }
 
-    bool onUse(const ItemUseContext& context) const override {
-        Vector2 playerPos = context.player.getPosition();
-        Vector2 playerCenter = Vector2Add(playerPos, { entityTileSize / 2.0f, entityTileSize / 2.0f });
-        Vector2 tilePos = { context.tileX * worldTileSize + worldTileSize / 2.0f,
-                            context.tileY * worldTileSize + worldTileSize / 2.0f };
-        float distSq = Vector2DistanceSqr(playerCenter, tilePos);
-        float maxDist = context.player.getHandDistance() * worldTileSize;
-        float maxDistSq = maxDist * maxDist;
-
-        if (distSq > maxDistSq) { return false; }
-
-        auto removed = context.world.removeObjectAt(context.tileX, context.tileY, this);
-        if (removed) {
-            std::vector<ItemID> drops = generateLootForObject(*removed);
-            for (ItemID id : drops) {
-                context.player.giveItem(id, 1);
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    bool canBreak(ObjectType type) const override {
-        return false;
+    bool canBreak(const ObjectProperties& objProp) const override {
+        if (objProp.requiredTool == ToolType::NONE) return true;
+        return objProp.requiredTool == type && tier >= objProp.requiredTier;
     }
 
     bool shouldConsumeOnUse() const override {
         return false;
     }
+
+    ToolType getToolType() const { return type; }
+    int getToolTier() const { return tier; }
 };
 
 #endif // ITEMTOOL_H

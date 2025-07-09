@@ -6,6 +6,7 @@
 #include "Items/Inventory/Inventory.h"
 #include "Items/ItemBase/ItemUseContext.h"
 #include "Items/ItemsAll/Tools/ItemToolBase.h"
+#include "Utilities/Logger/Logger.h"
 
 GameScene::GameScene(Renderer& renderer, const std::string& worldName)
 : Scene(renderer), 
@@ -61,29 +62,23 @@ void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
 
     if (IsKeyPressed(KEY_E)) {
         ItemStack& stack = player.getInventory().getSlot(player.getInventory().selectedSlot);
-        if (!stack.isEmpty()) {
-            Item& item = stack.getItem();
+        Item& item = stack.getItem();   
+        ItemToolBase* tool = dynamic_cast<ItemToolBase*>(&item);
+        ItemUseContext context(world, player, mouseVirtual, renderer.GetCamera(), worldTileSize);
+        bool used = item.onUse(context);
 
-            ItemToolBase* tool = dynamic_cast<ItemToolBase*>(&item);
-
-            ItemUseContext context(world, player, mouseVirtual, renderer.GetCamera(), worldTileSize);
-            bool used = item.onUse(context);
-
-            if (used && tool) { 
-                stack.damage(1);
-
-                if (stack.isBroken()) {
-                    stack.id = ItemID::NONE;
-                    stack.count = 0;
-                    stack.durability = 0;
-                    return;
-                }
+        if (used && tool) { 
+            stack.damage(1);
+            if (stack.isBroken()) {
+                stack.id = ItemID::NONE;
+                stack.count = 0;
+                stack.durability = 0;
+                return;
             }
+        }
 
-            if (used && item.shouldConsumeOnUse()) {
-                if (--stack.count == 0)
-                    stack.id = ItemID::NONE;
-            }
+        if (used && item.shouldConsumeOnUse()) {
+            if (--stack.count == 0) stack.id = ItemID::NONE;
         }
     }
 }
