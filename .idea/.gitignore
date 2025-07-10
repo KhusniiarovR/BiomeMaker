@@ -6,4 +6,8 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
-build/
+/build/
+/external/*/CMakeFiles/
+/external/*/CMakeCache.txt
+/external/*/cmake_install.cmake
+/external/*/Makefile

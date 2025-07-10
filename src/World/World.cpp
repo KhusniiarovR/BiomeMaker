@@ -2,6 +2,7 @@
 #include "Constants/WorldConst.h"
 #include "Constants/TilemapConst.h"
 #include <optional>
+#include <algorithm>
 
 World::World(const std::string &filename) : chunkSystem(chunks, filename) {}
 

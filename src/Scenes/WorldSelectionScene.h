@@ -7,6 +7,7 @@
 #include "Utilities/Graphics/Button.h"
 #include "Utilities/Graphics/TextBox.h"
 #include "Utilities/Graphics/Bar.h"
+#include <atomic>
 
 class WorldSelectionScene : public Scene {
 private:

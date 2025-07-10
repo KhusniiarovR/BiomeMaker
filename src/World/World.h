@@ -7,6 +7,7 @@
 #include "Core/Render/Renderer.h"
 #include "ChunkSystem/ChunkSystem.h"
 #include "Items/ItemBase/Item.h"
+#include <optional>
 
 class World {
 private:

@@ -9,6 +9,7 @@
 #include "Utilities/Logger/Logger.h"
 #include "Constants/TilemapConst.h"
 #include "Items/ItemBase/Item.h"
+#include <algorithm>
 
 WorldCreator::WorldCreator() = default;
 

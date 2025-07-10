@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "raylib.h"
 #include "Constants/GraphicsConst.h"
+#include <cmath>
 
 Game::Game() : renderer(assetManager, virtualScreenSizeX, virtualScreenSizeY, mouseVirtual), sceneManager(renderer)
 {

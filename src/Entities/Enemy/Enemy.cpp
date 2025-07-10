@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "Constants/TilemapConst.h"
 #include "Utilities/Logger/Logger.h"
+#include <cmath>
 
 Enemy::Enemy(Vector2 initPos, Player &player, const CollisionBase* collision) 
 : Entity(initPos), player(player), collision(collision) {}

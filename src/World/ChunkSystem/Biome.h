@@ -2,6 +2,7 @@
 #define BIOME_H
 
 #include <vector>
+#include <cstdint>
 
 struct Biome {
     uint8_t id;

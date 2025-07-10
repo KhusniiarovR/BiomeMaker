@@ -1,11 +1,12 @@
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 namespace ramir {
     class Logger {
     public:
         Logger(const char* file, int line) {
-            const char* relative = std::strstr(file, "src\\");
+            const char* relative = strstr(file, "src\\");
             if (!relative) relative = file;
             stream << relative << "::" << line << "::";
         }

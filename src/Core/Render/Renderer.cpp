@@ -3,6 +3,7 @@
 #include "Utilities/Logger/Logger.h"
 #include "Constants/WorldConst.h"
 #include "Constants/TilemapConst.h"
+#include <cmath>
 
 Renderer::Renderer(AssetManager& assets, int width, int height, Vector2& mouseVirtual)
 : assetManager(assets), virtualWidth(width), virtualHeight(height), mouseVirtual(mouseVirtual) 

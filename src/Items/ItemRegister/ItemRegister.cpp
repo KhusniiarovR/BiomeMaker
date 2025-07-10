@@ -1,4 +1,4 @@
-#include "itemRegister.h"
+#include "ItemRegister.h"
 #include "Items/ItemsAll/Blocks/ItemBlocks.h"
 #include "Items/ItemsAll/Food/ItemFood.h"
 

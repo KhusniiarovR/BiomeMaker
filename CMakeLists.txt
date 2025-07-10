@@ -7,6 +7,20 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_executable(BiomeMaker ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PRIVATE src ${CMAKE_SOURCE_DIR}/external/raylib)
-target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/external/raylib)
-target_link_libraries(${PROJECT_NAME} PRIVATE raylib winmm gdi32 opengl32)
+add_subdirectory(external/raylib)
+
+target_include_directories(BiomeMaker PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/external/raylib/src
+)
+
+target_link_libraries(BiomeMaker PRIVATE raylib)
+
+if(WIN32)
+    target_link_libraries(BiomeMaker PRIVATE winmm gdi32 opengl32)
+elseif(UNIX)
+    find_package(X11 REQUIRED)
+    target_link_libraries(BiomeMaker PRIVATE
+        m pthread dl X11::X11 GL
+    )
+endif()
