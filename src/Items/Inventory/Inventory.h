@@ -19,8 +19,8 @@ public:
     void setSelectedSlot(int index);
     const ItemStack& getSelectedSlot() const;
 
-    void update(Vector2 mouseVirtual);
-    void render(Renderer& renderer) const;
+    void update(Vector2 mouseVirtual, bool full);
+    void render(Renderer& renderer, bool full) const;
 
     bool addItem(ItemID id, uint8_t count);
 

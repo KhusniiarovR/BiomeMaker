@@ -39,6 +39,7 @@ public:
     void setSpeedMultiplier(float mult) { speedMultiplier = mult; }
     Rectangle getBoundingBox() const override;
     [[nodiscard]] int getHandDistance() const { return handDistance; }
+    const ValueBar& getHP() const { return hp; }
     
     void heal(float value);
     bool applyEffect(const BuffEffect& effect);

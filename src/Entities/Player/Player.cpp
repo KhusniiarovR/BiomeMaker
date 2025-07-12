@@ -25,7 +25,7 @@ void Player::update(float dt) {
 
     tryMove(dx, dy);
 
-    if (IsKeyDown(KEY_Q)) { hp.decrease(0.05f); }
+    if (IsKeyPressed(KEY_Q)) { hp.decrease(0.05f); }
 
     buffSystem.update(dt);
 }
@@ -48,9 +48,6 @@ void Player::render(Renderer& renderer) const {
     DrawTexturePro(playerTexture, source, dest, origin, 0.0f, WHITE);
 
     DrawCircleLinesV(position, handDistance * worldTileSize, YELLOW);
-    EndMode2D();
-    is2DModeDone = true;
-    hp.render(renderer);
 }
 
 Vector2 Player::getPosition() const {

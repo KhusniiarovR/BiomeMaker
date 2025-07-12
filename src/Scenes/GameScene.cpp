@@ -18,13 +18,19 @@ enemies(player, &collision)
     renderer.GetCamera().offset = {virtualScreenSizeX / 2.0f, virtualScreenSizeY / 2.0f};
     player.getInventory().addItem(ItemID::AXE, 1);
     player.getInventory().addItem(ItemID::PICKAXE, 1);
+    ui.setPlayer(&player);
+    pauseMenu.init([this]() { paused = false; }, 
+                   [this]() {changeScene = true; nextScene = SceneType::MainMenu;} );
 }
-
+// todo input corrections
 GameScene::~GameScene() {
     player.getInventory().save();
 }
 
 void GameScene::update(float dt, Vector2 mouseVirtual) {
+    updatePause(mouseVirtual);
+    if (paused) return;
+
     updatePlayer(dt, mouseVirtual);
     updateEnemies(dt); 
     updateWorld(mouseVirtual);
@@ -36,8 +42,12 @@ void GameScene::render() const {
     world.render(renderer);
     enemies.render(renderer);
     player.render(renderer);
-    player.getInventory().render(renderer);
-    renderer.drawText("Enemies: " + std::to_string(enemies.getEnemiesSize()), {0.88f, 0.1f}, 20, BLACK);
+    EndMode2D();
+    is2DModeDone = true;
+    ui.render(renderer);
+    //renderer.drawText("Enemies: " + std::to_string(enemies.getEnemiesSize()), {0.88f, 0.1f}, 20, BLACK);
+
+    if (paused) { pauseMenu.render(renderer); }
 }
 
 void GameScene::updateChangeScene() {
@@ -58,7 +68,7 @@ SceneType GameScene::getNextScene() const {
 
 void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
     player.update(dt);
-    player.getInventory().update(mouseVirtual);
+    ui.update(mouseVirtual);
 
     if (IsKeyPressed(KEY_E)) {
         ItemStack& stack = player.getInventory().getSlot(player.getInventory().selectedSlot);
@@ -83,7 +93,6 @@ void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
     }
 }
 
-
 void GameScene::updateEnemies(float dt) {
     enemies.update(dt);
 }
@@ -94,4 +103,14 @@ void GameScene::updateWorld(Vector2 mouseVirtual) {
 
 void GameScene::updateCamera() {
     renderer.updateCameraTarget(player.getPosition());
+}
+
+void GameScene::updatePause(Vector2 mouseVirtual) {
+    if (IsKeyPressed(KEY_X)) {
+        paused = !paused;
+    }
+
+    if (paused) {
+        pauseMenu.update(mouseVirtual);
+    }
 }

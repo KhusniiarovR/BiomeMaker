@@ -24,9 +24,12 @@ const ItemStack& Inventory::getSelectedSlot() const {
     return slots[selectedSlot];
 }
 
-void Inventory::update(Vector2 mouseVirtual) {
+void Inventory::update(Vector2 mouseVirtual, bool full) {
     hoveredSlot = -1;
-    for (int i = 0; i < slotCount; i++) {
+
+    int slotsToCheck = full ? slotCount : std::min(10, slotCount);
+
+    for (int i = 0; i < slotsToCheck; i++) {
         int col = i % invColumns;
         int row = i / invColumns;
 
@@ -45,10 +48,13 @@ void Inventory::update(Vector2 mouseVirtual) {
     }
 }
 
-void Inventory::render(Renderer& renderer) const {
+void Inventory::render(Renderer& renderer, bool full) const {
     Texture2D& itemTilemap = renderer.getTexture("itemTilemap");
 
-    for (int i = 0; i < slotCount; ++i) {
+    int slotsToDraw = full ? slotCount : std::min(10, slotCount);
+    int rowsToDraw = (slotsToDraw + invColumns - 1) / invColumns;
+
+    for (int i = 0; i < slotsToDraw; ++i) {
         int col = i % invColumns;
         int row = i / invColumns;
 
@@ -98,13 +104,13 @@ void Inventory::render(Renderer& renderer) const {
         }
     }
 
-    if (hoveredSlot != -1) {
+    if (full && hoveredSlot != -1) {
         const ItemStack& stack = getSlot(hoveredSlot);
         if (!stack.isEmpty()) {
             const Item& item = stack.getItem();
 
             float descX = invPosition.x;
-            float descY = invPosition.y + invRows * (invSlotSize + invPadding) + 5;
+            float descY = invPosition.y + rowsToDraw * (invSlotSize + invPadding) + 5;
 
             renderer.drawText(item.description, {descX, descY}, 16, DARKGRAY, false, false);
         }

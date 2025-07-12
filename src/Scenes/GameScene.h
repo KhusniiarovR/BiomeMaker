@@ -5,6 +5,8 @@
 #include "Entities/Player/Player.h"
 #include "Entities/Enemy/EnemyManager.h"
 #include "World/World.h"
+#include "Ui/GameUi.h"
+#include "GameScenePause.h"
 
 class GameScene : public Scene {
 private:
@@ -12,6 +14,9 @@ private:
     CollisionWorld collision;
     Player player;
     EnemyManager enemies;
+    GameUi ui;
+    bool paused = false;
+    PauseMenu pauseMenu;
 
 public:
     GameScene(Renderer& renderer, const std::string& worldName);
@@ -25,6 +30,7 @@ public:
     [[nodiscard]] SceneType getNextScene() const override;
 
 private:
+    void updatePause  (Vector2 mouseVirtual); 
     void updatePlayer (float dt, Vector2 mouseVirtual);
     void updateEnemies(float dt);
     void updateWorld  (Vector2 mouseVirtual);

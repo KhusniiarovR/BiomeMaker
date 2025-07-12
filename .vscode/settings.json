@@ -76,6 +76,7 @@
     "itemresources": "c",
     "item.h": "c",
     "map": "cpp",
-    "xtree": "cpp"
+    "xtree": "cpp",
+    "*.m": "cpp"
   }
 }
