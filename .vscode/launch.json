@@ -12,7 +12,7 @@
       "externalConsole": false,
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
-      "preLaunchTask": "Build with CMake",
+      "preLaunchTask": "Build Debug",
       "setupCommands": [
         {
           "description": "Enable pretty printing",
@@ -32,7 +32,7 @@
       "externalConsole": false,
       "MIMode": "gdb",
       "miDebuggerPath": "C:/mingw64/bin/gdb.exe",
-      "preLaunchTask": "Build with CMake",
+      "preLaunchTask": "Build Debug",
       "setupCommands": [
         {
           "description": "Enable pretty printing",
@@ -42,18 +42,16 @@
       ]
     },
     {
-      "name": "Debug (macOS)",
-      "type": "cppdbg",
+      "name": "Debug (Windows MSVC)",
+      "type": "cppvsdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/BiomeMaker",
+      "program": "${workspaceFolder}\\build\\Debug\\BiomeMaker.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
-      "externalConsole": false,
-      "MIMode": "lldb",
-      "miDebuggerPath": "/usr/bin/lldb",
-      "preLaunchTask": "Build with CMake",
-      "setupCommands": []
+      "environment": [],
+      "console": "externalTerminal",
+      "preLaunchTask": "Build Debug MSVC"
     }
   ]
 }

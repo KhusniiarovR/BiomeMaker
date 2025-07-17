@@ -2,27 +2,13 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build with CMake",
+      "label": "Build Debug",
       "type": "shell",
       "command": "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j 8",
-      "options": {
-        "shell": {
-          "executable": "/bin/bash",
-          "args": ["-c"]
-        }
-      },
       "linux": {
         "options": {
           "shell": {
             "executable": "/bin/bash",
-            "args": ["-c"]
-          }
-        }
-      },
-      "osx": {
-        "options": {
-          "shell": {
-            "executable": "/bin/zsh",
             "args": ["-c"]
           }
         }
@@ -36,11 +22,71 @@
           }
         }
       },
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "group": { "kind": "build", "isDefault": true },
       "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Build Debug MSVC",
+      "type": "shell",
+      "command": "cmake -S . -B build -G \"Visual Studio 17 2022\" -A x64 -DCMAKE_BUILD_TYPE=Debug && cmake --build build --config Debug",
+      "windows": {
+        "options": {
+          "shell": {
+            "executable": "C:\\Windows\\System32\\cmd.exe"
+          }
+        }
+      },
+      "group": { "kind": "build", "isDefault": false },
+      "problemMatcher": ["$msCompile"]
+    },
+    {
+      "label": "Run Game",
+      "type": "shell",
+      "linux": {
+        "command": "./build/BiomeMaker",
+        "options": {
+          "shell": {
+            "executable": "/bin/bash",
+            "args": ["-c"]
+          }
+        }
+      },
+      "windows": {
+        "command": ".\\build\\BiomeMaker.exe",
+        "options": {
+          "shell": {
+            "executable": "C:\\Windows\\System32\\cmd.exe"
+          }
+        }
+      },
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Game MSVC",
+      "type": "shell",
+      "dependsOn": ["Build Debug MSVC"],
+      "command": ".\\build\\Debug\\BiomeMaker.exe",
+      "windows": {
+        "options": {
+          "shell": {
+            "executable": "C:\\Windows\\System32\\cmd.exe"
+          }
+        }
+      },
+      "group": { "kind": "test", "isDefault": false }
+    },
+    {
+      "label": "Build and Run MinGW",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Build Debug", "Run Game"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Build and Run MSVC",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Build Debug MSVC", "Run Game MSVC"],
+      "problemMatcher": []
     }
   ]
 }

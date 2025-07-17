@@ -52,12 +52,12 @@ void Game::init()
     SetTraceLogLevel(LOG_ERROR); // turn of opengl init comments
 
     //             vert sync         resize window               windows close, resize, hide buttons 
-    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);// | FLAG_WINDOW_UNDECORATED);
+    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_UNDECORATED);
     
     //any size can be given width        height         window name
-    InitWindow(virtualScreenSizeX, virtualScreenSizeY, "Biome Maker");
+    InitWindow(GetScreenWidth(), GetScreenHeight(), "Biome Maker");
     SetTargetFPS(60);     // fps
-    ToggleBorderlessWindowed(); // resize window
+    //ToggleBorderlessWindowed(); // resize window
 
     virtualScreen = LoadRenderTexture(virtualScreenSizeX, virtualScreenSizeY); // virtual screen
 
