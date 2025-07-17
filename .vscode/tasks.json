@@ -24,7 +24,8 @@
       },
       "group": { "kind": "build", "isDefault": true },
       "problemMatcher": ["$gcc"]
-    },
+    }, // todo бахнуть ниндзю
+    /*
     {
       "label": "Build Debug MSVC",
       "type": "shell",
@@ -39,6 +40,7 @@
       "group": { "kind": "build", "isDefault": false },
       "problemMatcher": ["$msCompile"]
     },
+    */
     {
       "label": "Run Game",
       "type": "shell",
@@ -62,6 +64,7 @@
       "group": { "kind": "test", "isDefault": true },
       "problemMatcher": []
     },
+    /*
     {
       "label": "Run Game MSVC",
       "type": "shell",
@@ -75,18 +78,19 @@
         }
       },
       "group": { "kind": "test", "isDefault": false }
-    },
+    },*/
     {
       "label": "Build and Run MinGW",
       "dependsOrder": "sequence",
       "dependsOn": ["Build Debug", "Run Game"],
       "problemMatcher": []
     },
+    /*
     {
       "label": "Build and Run MSVC",
       "dependsOrder": "sequence",
       "dependsOn": ["Build Debug MSVC", "Run Game MSVC"],
       "problemMatcher": []
-    }
+    }*/
   ]
 }

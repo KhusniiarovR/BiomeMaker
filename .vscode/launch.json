@@ -40,7 +40,8 @@
           "ignoreFailures": true
         }
       ]
-    },
+    }
+    /*
     {
       "name": "Debug (Windows MSVC)",
       "type": "cppvsdbg",
@@ -52,6 +53,6 @@
       "environment": [],
       "console": "externalTerminal",
       "preLaunchTask": "Build Debug MSVC"
-    }
+    }*/
   ]
 }
