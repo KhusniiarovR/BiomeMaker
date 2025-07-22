@@ -12,6 +12,7 @@
 #include "Entities/BuffSystem/BuffSystem.h"
 #include "Constants/TilemapConst.h"
 #include "Entities/Collisions/CollisionBase.h"
+#include "Animations/Animation.h"
 
 class Player : public Entity {
 private:
@@ -21,9 +22,9 @@ private:
     std::string fileName;
     Inventory inventory;
     ValueBar hp;
-    int index = 1;
     ActiveBuffSystem buffSystem;
     const CollisionBase* collision;
+    Animation animation;
 
 public:
     Player(Vector2 initPos, const CollisionBase* collision, std::string fileName);

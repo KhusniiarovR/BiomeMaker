@@ -15,6 +15,7 @@ AssetManager::AssetManager() // register all assets
     registerTexture("worldTilemap", "data/Textures/World/worldTilemap.png"); // biome and objects
     registerTexture("itemTilemap",  "data/Textures/World/itemTilemap.png"); // items
     registerTexture("entityTilemap","data/Textures/World/entityTilemap.png"); // entities
+    registerTexture("playerTilemap","data/Textures/World/playerTilemap.png"); // player
 
     registerAllItems(); // register all items
 }

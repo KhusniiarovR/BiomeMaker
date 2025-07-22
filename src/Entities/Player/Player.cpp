@@ -9,19 +9,26 @@ collision(collision),
 hp{{0.01f, 0.05f}, {0.15f, 0.05f}, RED, GRAY, "HEALTH", 10},
 buffSystem(*this),
 fileName(fileName + "/playerData"),
-inventory(fileName + "/playerData")
+inventory(fileName + "/playerData"),
+animation(entityTileSize, entityTileSize)
 {
     hp.setProgress(1.0f);
+    animation.addAnimation({"idle", 0, 4, 0.4f, true});
+    animation.addAnimation({"walkDown", 4, 4, 0.1f, true});
 }
 
 void Player::update(float dt) {
     float moveSpeed = speed * dt * speedMultiplier;
     float dx = 0, dy = 0;
+    bool moved = false;
 
-    if (IsKeyDown(KEY_A)) { dx -= moveSpeed; index = 2; }
-    if (IsKeyDown(KEY_D)) { dx += moveSpeed; index = 3; }
-    if (IsKeyDown(KEY_W)) { dy -= moveSpeed; index = 0; }
-    if (IsKeyDown(KEY_S)) { dy += moveSpeed; index = 1; }
+    if (IsKeyDown(KEY_A)) { dx -= moveSpeed; animation.setFlip(true); animation.play("walkDown"); moved = true; } // left
+    if (IsKeyDown(KEY_D)) { dx += moveSpeed; animation.setFlip(false); animation.play("walkDown"); moved = true; } // right
+    if (IsKeyDown(KEY_W)) { dy -= moveSpeed; animation.play("walkDown"); moved = true; } // up
+    if (IsKeyDown(KEY_S)) { dy += moveSpeed; animation.play("walkDown"); moved = true; } // down
+    if (!moved) { animation.play("idle");}
+
+    animation.update(dt);
 
     tryMove(dx, dy);
 
@@ -31,21 +38,7 @@ void Player::update(float dt) {
 }
 
 void Player::render(Renderer& renderer) const {
-    Texture2D& playerTexture = renderer.getTexture("entityTilemap");
-    
-    int indexX = index % entityTilesPerRow;
-    int indexY = index / entityTilesPerRow;
-
-    Rectangle source = {
-        (float)(indexX * entityTileSize),
-        (float)(indexY * entityTileSize),
-        (float)entityTileSize,
-        (float)entityTileSize
-    };
-
-    Rectangle dest = { position.x, position.y, entityTileSize , entityTileSize};
-    Vector2 origin = { entityTileSize / 2.0f, entityTileSize / 2.0f };
-    DrawTexturePro(playerTexture, source, dest, origin, 0.0f, WHITE);
+    animation.draw(renderer.getTexture("playerTilemap"), position);
 
     DrawCircleLinesV(position, handDistance * worldTileSize, YELLOW);
 }
