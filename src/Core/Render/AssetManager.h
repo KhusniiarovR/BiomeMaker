@@ -1,6 +1,4 @@
-#ifndef ASSETMANAGER_H
-#define ASSETMANAGER_H
-
+#pragma once
 #include <unordered_map>
 #include <map>
 #include <string>
@@ -9,35 +7,32 @@
 
 class AssetManager {
 public:
-    AssetManager();
-    ~AssetManager();
+    AssetManager();  // to register every asset
     void init();
-
-    void registerTexture(const std::string& key, const std::string& path);
-    void registerFont(const std::string& key, const std::string& path);
-    void registerSound(const std::string& key, const std::string& path);
+    ~AssetManager();
+    void unloadAll(); 
 
     Texture2D& getTexture(const std::string& key, bool shouldBeWrapped = false);
     Font& getFont(const std::string& key, int size);
     Sound& getSound(const std::string& key);
     
-    void unloadAll();
-
 private:
     template<typename MapType>
     void tryRegisterPath(MapType& map, const std::string& key, const std::string& path);
-
+    
     std::unordered_map<std::string, std::string> texturePaths;  // file name to name map
     std::unordered_map<std::string, std::string> fontPaths;     // file name to name map
     std::unordered_map<std::string, std::string> soundPaths;    // file name to name map
-
+    
     std::unordered_map<std::string, Texture2D> textures;        // name to asset map
     std::unordered_map<std::string, std::map<int, Font>> fonts; // name to asset map
     std::unordered_map<std::string, Sound> sounds;              // name to asset map
-
+    
     Texture2D defaultTexture{};
     Font defaultFont{};
     Sound defaultSound{};
-};
 
-#endif //ASSETMANAGER_H
+    void registerTexture(const std::string& key, const std::string& path);
+    void registerFont(const std::string& key, const std::string& path);
+    void registerSound(const std::string& key, const std::string& path);
+};

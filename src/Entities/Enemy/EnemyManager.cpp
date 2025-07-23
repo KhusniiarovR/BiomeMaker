@@ -1,34 +1,34 @@
 #include "EnemyManager.h"
 #include "Utilities/Logger/Logger.h"
 
-EnemyManager::EnemyManager(Player& player, const CollisionBase* collision)
-: player(player), collision(collision) {}
+EnemyManager::EnemyManager(Player& player, const CollisionBase* collision) : player(player), collision(collision) {}
 
-void EnemyManager::update(float dt) {
+void EnemyManager::update(float dt)
+{
     spawnCooldown -= dt;
     
-    if (spawnCooldown <= 0.0f && enemies.size() < maxEnemies) {
+    if (spawnCooldown <= 0.0f && enemies.size() < maxEnemies) // spawn enemy
+    {
         spawn();
         spawnCooldown = maxCooldown;
     }
 
-    for (auto& enemy : enemies) {
-        enemy.update(dt);
-    }
+    for (auto& enemy : enemies) { enemy.update(dt); } // update enemies
 }
 
-void EnemyManager::render(Renderer& renderer) const {
-    for (const auto& enemy : enemies) {
-        enemy.render(renderer);
-    }
+void EnemyManager::render(Renderer& renderer) const  // draw enemies
+{
+    for (const auto& enemy : enemies) { enemy.render(renderer); }
 }
 
-void EnemyManager::spawn() {
+void EnemyManager::spawn() 
+{
     Vector2 playerPos = player.getPosition();
     Vector2 spawnPos;
-
     int side = GetRandomValue(0, 3);
-    switch (side) {
+    
+    switch (side) 
+    {
         case 0:
             spawnPos.x = playerPos.x + GetRandomValue(-randomOffset, randomOffset);
             spawnPos.y = playerPos.y - spawnDistance;

@@ -1,6 +1,4 @@
-#ifndef WORLDCONST_H
-#define WORLDCONST_H
-
+#pragma once
 #include <cstdint>
 
 // world 
@@ -26,5 +24,3 @@ struct ChunkHeader {
     uint32_t dataSizeObject;    // how much objects data takes
     uint32_t reservedSizeObject;// how much free space left
 };
-
-#endif //WORLDCONST_H

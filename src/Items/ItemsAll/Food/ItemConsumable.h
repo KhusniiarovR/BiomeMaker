@@ -2,7 +2,7 @@
 #define CONSUMABLEITEM_H
 
 #include "Items/ItemBase/Item.h"
-#include "Items/Buffs/Buffs.h"
+#include "Entities/BuffSystem/Buffs.h"
 
 struct ConsumableItem : public Item {
     BuffEffect effect;

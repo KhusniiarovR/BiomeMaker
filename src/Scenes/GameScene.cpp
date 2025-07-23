@@ -59,7 +59,6 @@ void GameScene::updateChangeScene() {
 
 bool GameScene::shouldTransition() const {
     return changeScene;
-    // TODO pause
 }
 
 SceneType GameScene::getNextScene() const {
@@ -70,11 +69,11 @@ void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
     player.update(dt);
     ui.update(mouseVirtual);
 
-    if (IsKeyPressed(KEY_E)) {
-        ItemStack& stack = player.getInventory().getSlot(player.getInventory().selectedSlot);
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        ItemStack& stack = player.getInventory().getSelectedSlot();
         Item& item = stack.getItem();   
         ItemToolBase* tool = dynamic_cast<ItemToolBase*>(&item);
-        ItemUseContext context(world, player, mouseVirtual, renderer.GetCamera(), worldTileSize);
+        ItemUseContext context(world, player, mouseVirtual, renderer.GetCamera());
         bool used = item.onUse(context);
 
         if (used && tool) { 

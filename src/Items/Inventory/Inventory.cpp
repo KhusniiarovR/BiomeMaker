@@ -3,33 +3,43 @@
 #include "Items/ItemsAll/Tools/ItemToolBase.h"
 #include "Items/ItemRegister/ItemRegister.h"
 
-Inventory::Inventory(std::string fileName) : fileName(fileName + "/inventory.inv") {
+Inventory::Inventory(std::string fileName) : fileName(fileName + "/inventory.inv") 
+{
     load();
 }
 
-ItemStack& Inventory::getSlot(int index) {
+ItemStack& Inventory::getSlot(int index) 
+{
     return slots[index];
 }
 
-const ItemStack& Inventory::getSlot(int index) const {
+const ItemStack& Inventory::getSlot(int index) const 
+{
     return slots[index];
 }
 
-void Inventory::setSelectedSlot(int index) {
-    if (index >= 0 && index < slotCount)
-        selectedSlot = index;
+void Inventory::setSelectedSlot(int index) 
+{
+    if (index >= 0 && index < slotCount) { selectedSlot = index; }
 }
     
-const ItemStack& Inventory::getSelectedSlot() const {
+const ItemStack& Inventory::getSelectedSlot() const 
+{
     return slots[selectedSlot];
 }
 
-void Inventory::update(Vector2 mouseVirtual, bool full) {
+ItemStack& Inventory::getSelectedSlot() 
+{
+    return slots[selectedSlot];
+}
+
+void Inventory::update(Vector2 mouseVirtual, bool full) 
+{
+    // mouse hovering and selection check
     hoveredSlot = -1;
-
     int slotsToCheck = full ? slotCount : std::min(10, slotCount);
-
-    for (int i = 0; i < slotsToCheck; i++) {
+    for (int i = 0; i < slotsToCheck; i++) 
+    {
         int col = i % invColumns;
         int row = i / invColumns;
 
@@ -37,10 +47,12 @@ void Inventory::update(Vector2 mouseVirtual, bool full) {
         float slotY = invPosition.y + row * (invSlotSize + invPadding);
         Rectangle slotRect = { slotX, slotY, (float)invSlotSize, (float)invSlotSize };
 
-        if (CheckCollisionPointRec(mouseVirtual, slotRect)) {
+        if (CheckCollisionPointRec(mouseVirtual, slotRect)) 
+        {
             SetMouseCursor(MOUSE_CURSOR_IBEAM);
             hoveredSlot = i;
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) 
+            {
                 setSelectedSlot(i);
                 break;
             }
@@ -48,13 +60,17 @@ void Inventory::update(Vector2 mouseVirtual, bool full) {
     }
 }
 
-void Inventory::render(Renderer& renderer, bool full) const {
+void Inventory::render(Renderer& renderer, bool full) const 
+{
+    /* draw inventory */
     Texture2D& itemTilemap = renderer.getTexture("itemTilemap");
 
-    int slotsToDraw = full ? slotCount : std::min(10, slotCount);
+    int slotsToDraw = full ? slotCount : std::min(10, slotCount); // draw full or not
     int rowsToDraw = (slotsToDraw + invColumns - 1) / invColumns;
 
-    for (int i = 0; i < slotsToDraw; ++i) {
+    // draw slot
+    for (int i = 0; i < slotsToDraw; ++i) 
+    {
         int col = i % invColumns;
         int row = i / invColumns;
 
@@ -65,6 +81,7 @@ void Inventory::render(Renderer& renderer, bool full) const {
         DrawRectangleRec(slotRect, DARKGRAY);
         DrawRectangleLinesEx(slotRect, 2, (i == selectedSlot) ? RED : LIGHTGRAY);
 
+        // draw item
         const ItemStack& stack = getSlot(i);
         if (!stack.isEmpty()) {
             const Item& item = stack.getItem();
@@ -78,6 +95,7 @@ void Inventory::render(Renderer& renderer, bool full) const {
 
             DrawTexturePro(itemTilemap, src, dst, {0, 0}, 0.0f, WHITE);
 
+            // draw durability for tools
             const ItemToolBase* tool = dynamic_cast<const ItemToolBase*>(&item);
             if (tool) {
                 float durability = stack.getDurabilityRatio();
@@ -98,12 +116,12 @@ void Inventory::render(Renderer& renderer, bool full) const {
                 DrawRectangleLinesEx(backBar, 1, DARKGRAY);
             }
 
-            if (stack.count > 1) {
-                renderer.drawText(std::to_string(stack.count), {x + invSlotSize-5,  y + invSlotSize-5}, 16, BLACK, true, false);
-            }
+            // draw items amount
+            if (stack.count > 1) { renderer.drawText(std::to_string(stack.count), {x + invSlotSize-5,  y + invSlotSize-5}, 16, BLACK, true, false); }
         }
     }
 
+    // draw item description if hovered
     if (full && hoveredSlot != -1) {
         const ItemStack& stack = getSlot(hoveredSlot);
         if (!stack.isEmpty()) {
@@ -117,8 +135,10 @@ void Inventory::render(Renderer& renderer, bool full) const {
     }
 }
 
-bool Inventory::addItem(ItemID id, uint8_t count) {
-    for (auto& slot : slots) {
+bool Inventory::addItem(ItemID id, uint8_t count) 
+{
+    for (auto& slot : slots) // check if item copy is already in inventory
+    {
         if (slot.id == id && slot.count < slot.getItem().maxStack) {
             uint8_t space = slot.getItem().maxStack - slot.count;
             uint8_t toAdd = std::min(count, space);
@@ -127,8 +147,8 @@ bool Inventory::addItem(ItemID id, uint8_t count) {
             if (count == 0) return true;
         }
     }
-
-    for (auto& slot : slots) {
+    for (auto& slot : slots) // try to find empty slot
+    {
         if (slot.isEmpty()) {
             slot.id = id;
             slot.count = count;
@@ -136,72 +156,77 @@ bool Inventory::addItem(ItemID id, uint8_t count) {
             return true;
         }
     }
-
     return false; 
 }
 
-void Inventory::save() const {
+void Inventory::save() const 
+{
+    // saving as pair id + amount(durability)
     std::ofstream out(fileName, std::ios::binary);
     if (!out) return;
 
-    for (int i = 0; i < slotCount; ++i) {
+    for (int i = 0; i < slotCount; ++i) 
+    {
         const ItemStack& stack = slots[i];
-        if (!ItemRegister::get().hasItem(stack.id)) {
+        if (!ItemRegister::get().hasItem(stack.id)) // if slot is empty
+        {
             uint16_t noneId = static_cast<uint16_t>(ItemID::NONE);
             out.write(reinterpret_cast<const char*>(&noneId), sizeof(noneId));
             uint8_t zeroCount = 0;
             out.write(reinterpret_cast<const char*>(&zeroCount), sizeof(zeroCount));
             continue;
         }
+
         uint16_t id = static_cast<uint16_t>(stack.id);
         out.write(reinterpret_cast<const char*>(&id), sizeof(id));
         const Item& item = ItemRegister::get().getItem(stack.id);
-        if (item.stackable) {
-            out.write(reinterpret_cast<const char*>(&stack.count), sizeof(stack.count));
-        } else {
-            out.write(reinterpret_cast<const char*>(&stack.durability), sizeof(stack.durability));
-        }
+        if (item.stackable) { out.write(reinterpret_cast<const char*>(&stack.count), sizeof(stack.count)); } 
+        else { out.write(reinterpret_cast<const char*>(&stack.durability), sizeof(stack.durability)); }
     }
 }
 
-bool Inventory::load() {
+bool Inventory::load() 
+{
+    // loading as pair id + amount(durability)
     std::ifstream in(fileName, std::ios::binary);
     if (!in) return false;
 
-    for (int i = 0; i < slotCount; ++i) {
+    for (int i = 0; i < slotCount; ++i) 
+    {
         uint16_t idRaw = 0;
-        if (!in.read(reinterpret_cast<char*>(&idRaw), sizeof(idRaw))) {
-            for (int j = i; j < slotCount; ++j) {
-                slots[j] = ItemStack{};
-            }
+        if (!in.read(reinterpret_cast<char*>(&idRaw), sizeof(idRaw))) // checks amount of pairs
+        {
+            for (int j = i; j < slotCount; ++j) { slots[j] = ItemStack{}; }
             return false;
         }
-        ItemID id = static_cast<ItemID>(idRaw);
-        if (!ItemRegister::get().hasItem(id)) {
-            for (int j = i; j < slotCount; ++j) {
-                slots[j] = ItemStack{};
-            }
+
+        ItemID id = static_cast<ItemID>(idRaw); // ttying to transform first number to item id
+        if (!ItemRegister::get().hasItem(id)) 
+        {
+            for (int j = i; j < slotCount; ++j) { slots[j] = ItemStack{}; }
             return false;
         }
         slots[i].id = id;
         const Item& item = ItemRegister::get().getItem(id);
 
-        if (item.stackable) {
+        // use second number as amount or durability
+        if (item.stackable) 
+        {
             uint8_t count = 0;
-            if (!in.read(reinterpret_cast<char*>(&count), sizeof(count))) {
-                for (int j = i; j < slotCount; ++j) {
-                    slots[j] = ItemStack{};
-                }
+            if (!in.read(reinterpret_cast<char*>(&count), sizeof(count))) 
+            {
+                for (int j = i; j < slotCount; ++j) { slots[j] = ItemStack{}; }
                 return false;
             }
             slots[i].count = count;
             slots[i].durability = 0;
-        } else {
+        } 
+        else 
+        {
             uint16_t durability = 0;
-            if (!in.read(reinterpret_cast<char*>(&durability), sizeof(durability))) {
-                for (int j = i; j < slotCount; ++j) {
-                    slots[j] = ItemStack{};
-                }
+            if (!in.read(reinterpret_cast<char*>(&durability), sizeof(durability))) 
+            {
+                for (int j = i; j < slotCount; ++j) { slots[j] = ItemStack{}; }
                 return false;
             }
             slots[i].durability = durability;

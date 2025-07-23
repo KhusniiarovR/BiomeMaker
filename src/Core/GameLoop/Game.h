@@ -1,6 +1,4 @@
-#ifndef GAME_H
-#define GAME_H
-
+#pragma once
 #include "SceneManager.h"
 #include "Core/Render/AssetManager.h"
 #include "Core/Render/Renderer.h"
@@ -26,5 +24,3 @@ private:
     void stop();
     Vector2 getMouseVirtual() const;
 };
-
-#endif //GAME_H

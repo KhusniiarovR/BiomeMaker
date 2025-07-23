@@ -17,7 +17,9 @@ animation(entityTileSize, entityTileSize)
     animation.addAnimation({"walkDown", 4, 4, 0.1f, true});
 }
 
-void Player::update(float dt) {
+void Player::update(float dt) 
+{
+    /* movement */
     float moveSpeed = speed * dt * speedMultiplier;
     float dx = 0, dy = 0;
     bool moved = false;
@@ -26,73 +28,74 @@ void Player::update(float dt) {
     if (IsKeyDown(KEY_D)) { dx += moveSpeed; animation.setFlip(false); animation.play("walkDown"); moved = true; } // right
     if (IsKeyDown(KEY_W)) { dy -= moveSpeed; animation.play("walkDown"); moved = true; } // up
     if (IsKeyDown(KEY_S)) { dy += moveSpeed; animation.play("walkDown"); moved = true; } // down
-    if (!moved) { animation.play("idle");}
-
+    if (!moved) { animation.play("idle"); }
     animation.update(dt);
-
     tryMove(dx, dy);
 
-    if (IsKeyPressed(KEY_Q)) { hp.decrease(0.05f); }
-
+    /* buffs */
     buffSystem.update(dt);
+
+    /* others */
+    if (IsKeyPressed(KEY_Q)) { hp.decrease(0.05f); } 
+    // TODO enemy damage
 }
 
-void Player::render(Renderer& renderer) const {
+void Player::render(Renderer& renderer) const 
+{
     animation.draw(renderer.getTexture("playerTilemap"), position);
 
-    DrawCircleLinesV(position, handDistance * worldTileSize, YELLOW);
+    DrawCircleLinesV(position, handDistance * worldTileSize, YELLOW); // yellow area where items work
 }
 
-Vector2 Player::getPosition() const {
+Vector2 Player::getPosition() const 
+{
     return position;
 }
 
-void Player::giveItem(ItemID id, uint8_t count) {
+void Player::giveItem(ItemID id, uint8_t count) 
+{
     inventory.addItem(id, count);
 }
 
-void Player::heal(float value) {
+void Player::heal(float value) 
+{
     hp.increase(value);
 }
 
-bool Player::applyEffect(const BuffEffect& effect) {
+bool Player::applyEffect(const BuffEffect& effect) 
+{
     buffSystem.addBuff(effect);
     return true;
 }
 
-Rectangle Player::getBoundingBox() const {
+Rectangle Player::getBoundingBox() const 
+{
     float width = 0.45f * entityTileSize;
     float height = 0.9f * entityTileSize;
-    return {
-        position.x - width / 2.0f,
-        position.y - height / 2.0f,
-        width,
-        height
-    };
+    return { position.x - width / 2.0f, position.y - height / 2.0f, width, height};
 }
 
-void Player::tryMove(float dx, float dy) {
+void Player::tryMove(float dx, float dy) 
+{
     Rectangle oldBox = getBoundingBox();
 
     Rectangle newBox = oldBox;
     newBox.x += dx;
     newBox.y += dy;
 
-    if (!collision || !collision->checkCollision(newBox)) {
+    if (!collision || !collision->checkCollision(newBox)) 
+    {
         position.x += dx;
         position.y += dy;
     } 
-    else {
+    else 
+    {
         newBox.x = oldBox.x + dx;
         newBox.y = oldBox.y;
-        if (!collision || !collision->checkCollision(newBox)) {
-            position.x += dx;
-        }
+        if (!collision || !collision->checkCollision(newBox)) { position.x += dx; }
 
         newBox.x = oldBox.x;
         newBox.y = oldBox.y + dy;
-        if (!collision || !collision->checkCollision(newBox)) {
-            position.y += dy;
-        }
+        if (!collision || !collision->checkCollision(newBox)) { position.y += dy; }
     }
 }

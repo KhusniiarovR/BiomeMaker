@@ -1,33 +1,29 @@
-#ifndef BUFFSYSTEM_H
-#define BUFFSYSTEM_H
-
+#pragma once
 #include <vector>
-#include "Items/Buffs/Buffs.h"
+#include "Buffs.h"
 
-class Player;
+class Player; // forward declaration
 
 struct ActiveBuff {
-    BuffEffect effect;
+    BuffEffect effect; 
     float remainingTime;
-
     ActiveBuff(const BuffEffect& effect);
 };
 
-class ActiveBuffSystem {
+class BuffSystem {
 private:
-    std::vector<ActiveBuff> buffs;
-    Player& player;
+    std::vector<ActiveBuff> buffs; // all buffs in this vector
+    Player& player; // reference to entity
+    // TODO not only for player buffs
 
 public:
-    explicit ActiveBuffSystem(Player& playerRef);
-
-    void addBuff(const BuffEffect& effect);
+    explicit BuffSystem(Player& playerRef);
     void update(float dt);
 
+    void addBuff(const BuffEffect& effect);
+    
 private:
-    void applyEffectImmediate(const BuffEffect& effect);
-    void applyEffectStart(const BuffEffect& effect);
-    void removeEffect(const BuffEffect& effect);
+    void applyEffectImmediate(const BuffEffect& effect); // instant
+    void applyEffectStart(const BuffEffect& effect); // with duration
+    void removeEffect(const BuffEffect& effect); // remove from vector
 };
-
-#endif // BUFFSYSTEM_H

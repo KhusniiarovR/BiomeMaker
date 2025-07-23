@@ -1,5 +1,4 @@
-#ifndef TILEMAP_CONST_H
-#define TILEMAP_CONST_H
+#pragma once
 
 // world tilemap
 const int worldTileSize = 16;       // every tile in the world
@@ -18,5 +17,3 @@ const int slotCount = 30;
 // entity tilemap
 const int entityTileSize = 32;   // tile size in the tilemap
 const int entityTilesPerRow = 4; // number of tiles in one row
-
-#endif // TILEMAP_CONST_H
