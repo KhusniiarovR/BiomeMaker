@@ -31,7 +31,7 @@
       "cwd": "${workspaceFolder}",
       "externalConsole": false,
       "MIMode": "gdb",
-      "miDebuggerPath": "C:/mingw64/bin/gdb.exe",
+      "miDebuggerPath": "gdb.exe",
       "preLaunchTask": "Build Debug",
       "setupCommands": [
         {
@@ -41,18 +41,5 @@
         }
       ]
     }
-    /*
-    {
-      "name": "Debug (Windows MSVC)",
-      "type": "cppvsdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}\\build\\Debug\\BiomeMaker.exe",
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "console": "externalTerminal",
-      "preLaunchTask": "Build Debug MSVC"
-    }*/
   ]
 }

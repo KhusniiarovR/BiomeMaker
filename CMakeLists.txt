@@ -7,6 +7,10 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_executable(BiomeMaker ${SOURCES})
 
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_compile_options(-O3 -march=native -mtune=native)
+endif()
+
 # === [ Установка Raylib по платформе ] ===
 if(WIN32)
     set(RAYLIB_DIR "${CMAKE_SOURCE_DIR}/external/raylib/windows")

@@ -14,33 +14,15 @@
         }
       },
       "windows": {
-        "command": "cmake -S . -B build -G \"MinGW Makefiles\" -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j 8",
-        "options": {
-          "shell": {
-            "executable": "C:\\Program Files\\Git\\bin\\bash.exe",
-            "args": ["-c"]
-          }
-        }
+        "command": "powershell",
+        "args": [
+          "-Command",
+          "cmake -S . -B build -G \"MinGW Makefiles\" -DCMAKE_BUILD_TYPE=Debug; cmake --build build"
+        ]
       },
       "group": { "kind": "build", "isDefault": true },
       "problemMatcher": ["$gcc"]
-    }, // todo бахнуть ниндзю
-    /*
-    {
-      "label": "Build Debug MSVC",
-      "type": "shell",
-      "command": "cmake -S . -B build -G \"Visual Studio 17 2022\" -A x64 -DCMAKE_BUILD_TYPE=Debug && cmake --build build --config Debug",
-      "windows": {
-        "options": {
-          "shell": {
-            "executable": "C:\\Windows\\System32\\cmd.exe"
-          }
-        }
-      },
-      "group": { "kind": "build", "isDefault": false },
-      "problemMatcher": ["$msCompile"]
-    },
-    */
+    }, // TODO бахнуть ниндзю
     {
       "label": "Run Game",
       "type": "shell",
@@ -54,43 +36,23 @@
         }
       },
       "windows": {
-        "command": ".\\build\\BiomeMaker.exe",
+        "command": "cmd.exe",
+        "args": ["/c", ".\\build\\BiomeMaker.exe"],
         "options": {
           "shell": {
-            "executable": "C:\\Windows\\System32\\cmd.exe"
+            "executable": "cmd.exe",
+            "args": ["/d", "/c"]
           }
         }
       },
       "group": { "kind": "test", "isDefault": true },
       "problemMatcher": []
     },
-    /*
-    {
-      "label": "Run Game MSVC",
-      "type": "shell",
-      "dependsOn": ["Build Debug MSVC"],
-      "command": ".\\build\\Debug\\BiomeMaker.exe",
-      "windows": {
-        "options": {
-          "shell": {
-            "executable": "C:\\Windows\\System32\\cmd.exe"
-          }
-        }
-      },
-      "group": { "kind": "test", "isDefault": false }
-    },*/
     {
       "label": "Build and Run MinGW",
       "dependsOrder": "sequence",
       "dependsOn": ["Build Debug", "Run Game"],
       "problemMatcher": []
-    },
-    /*
-    {
-      "label": "Build and Run MSVC",
-      "dependsOrder": "sequence",
-      "dependsOn": ["Build Debug MSVC", "Run Game MSVC"],
-      "problemMatcher": []
-    }*/
+    }
   ]
 }
