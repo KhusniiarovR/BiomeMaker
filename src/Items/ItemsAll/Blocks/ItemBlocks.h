@@ -1,15 +1,8 @@
-#ifndef ITEMBLOCKS_H
-#define ITEMBLOCKS_H
-
+#pragma once
 #include "Items/ItemBase/Item.h"
 #include "ItemPlaceable.h"
 
-struct ItemWood : public ItemPlaceable {
-    ItemWood();
-};
+// TODO item namespaces
 
-struct ItemStone : public ItemPlaceable {
-    ItemStone();
-};
- 
-#endif // ITEMBLOCKS_H
+struct ItemWood : public ItemPlaceable { ItemWood(); };
+struct ItemStone : public ItemPlaceable { ItemStone(); };

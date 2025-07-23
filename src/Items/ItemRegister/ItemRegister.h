@@ -1,6 +1,4 @@
-#ifndef ITEMREGISTER_H
-#define ITEMREGISTER_H
-
+#pragma once
 #include <unordered_map>
 #include <memory>
 #include "Items/ItemBase/Item.h"
@@ -16,7 +14,3 @@ public:
 private:
     std::unordered_map<ItemID, std::unique_ptr<Item>> items;
 };
-
-void registerAllItems();
-
-#endif // ITEMREGISTER_H

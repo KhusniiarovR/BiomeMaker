@@ -51,7 +51,6 @@ void WorldSelector::update(Vector2 mouseVirtual) {
 
 void WorldSelector::render(Renderer& renderer) const {
     renderer.drawTextGradient("Choose world: ", {0.5, 0.1}, 20, 4.0f, BLACK, RED, true, true, 0.0f, 0.0f);
-    // TODO dynamic text size everywhere
 
     BeginScissorMode(worldBox.x, worldBox.y, worldBox.width, listAreaHeight);
     for (int i = 0; i < folders.size(); ++i) {

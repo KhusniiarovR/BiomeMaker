@@ -36,14 +36,11 @@
         }
       },
       "windows": {
-        "command": "cmd.exe",
-        "args": ["/c", ".\\build\\BiomeMaker.exe"],
-        "options": {
-          "shell": {
-            "executable": "cmd.exe",
-            "args": ["/d", "/c"]
-          }
-        }
+        "command": "powershell",
+        "args": [
+          "-Command",
+          "& './build/BiomeMaker.exe'"
+        ]
       },
       "group": { "kind": "test", "isDefault": true },
       "problemMatcher": []

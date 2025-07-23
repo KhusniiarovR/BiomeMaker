@@ -3,23 +3,27 @@
 #include "Items/ItemsAll/Food/ItemFood.h"
 #include "Items/ItemsAll/Tools/ItemTools.h"
 
-void registerAllFood() {
+void registerAllFood() 
+{
     ItemRegister::get().registerItem(new ItemBerry());
 }
 
-void registerAllBlocks() {
+void registerAllBlocks() 
+{
     ItemRegister::get().registerItem(new ItemWood());
     ItemRegister::get().registerItem(new ItemStone());
 }
 
-void registerAllTools() {
+void registerAllTools()
+{
     ItemRegister::get().registerItem(new ItemAxe());
     ItemRegister::get().registerItem(new ItemPickaxe());
 }
 
-void registerAllItems() {
-    ItemRegister::get().registerItem(new Item(ItemID::NONE, "", ""));
-    registerAllFood();
-    registerAllBlocks();
-    registerAllTools();
+void registerAllItems() // register items in assetmanager
+{
+    ItemRegister::get().registerItem(new Item(ItemID::NONE, "", "")); // empty
+    registerAllFood();  // food
+    registerAllBlocks(); // blocks
+    registerAllTools(); // tools
 }

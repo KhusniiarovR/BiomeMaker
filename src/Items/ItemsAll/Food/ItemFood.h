@@ -1,10 +1,4 @@
-#ifndef ITEMFOOD_H
-#define ITEMFOOD_H
-
+#pragma once
 #include "ItemConsumable.h"
 
-struct ItemBerry : public ConsumableItem {
-    ItemBerry();
-};
-
-#endif // ITEMFOOD_H
+struct ItemBerry : public ConsumableItem { ItemBerry(); };

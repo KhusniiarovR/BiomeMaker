@@ -16,6 +16,7 @@ public:
     void setSelectedSlot(int index);
     const ItemStack& getSelectedSlot() const;
     ItemStack& getSelectedSlot();
+    int getHoveredSlot();
     bool addItem(ItemID id, uint8_t count);
 
     /* save and load from file */

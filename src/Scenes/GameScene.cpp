@@ -69,7 +69,7 @@ void GameScene::updatePlayer(float dt, Vector2 mouseVirtual) {
     player.update(dt);
     ui.update(mouseVirtual);
 
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && player.getInventory().getHoveredSlot() == -1) { // to ignore click if mouse is in the inventory
         ItemStack& stack = player.getInventory().getSelectedSlot();
         Item& item = stack.getItem();   
         ItemToolBase* tool = dynamic_cast<ItemToolBase*>(&item);

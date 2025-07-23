@@ -33,6 +33,10 @@ ItemStack& Inventory::getSelectedSlot()
     return slots[selectedSlot];
 }
 
+int Inventory::getHoveredSlot() {
+    return hoveredSlot;
+}
+
 void Inventory::update(Vector2 mouseVirtual, bool full) 
 {
     // mouse hovering and selection check
