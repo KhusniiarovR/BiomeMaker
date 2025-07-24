@@ -1,5 +1,6 @@
 #include "WorldSelectionScene.h"
 #include <thread>
+#include "Notifications/NotificationManager.h"
 
 WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
     : Scene(renderer),
@@ -17,6 +18,7 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
             changeScene = true;
             nextScene = SceneType::Game;
         }
+        else { NotificationManager::getInstance().show("Choose world to play!", NotificationType::Warning, 6.0f); }
     });
     createNewButton.setOnClick([this]() {
         firstPage = false;
@@ -28,7 +30,10 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
 
     createButton.setOnClick([this]() 
     {
-        if(enterName.returnText().empty()) return;
+        if(enterName.returnText().empty()) {
+            NotificationManager::getInstance().show("World name must be not empty", NotificationType::Warning); 
+            return;
+        }
 
         generationStage = true;
         generationFinished = false;

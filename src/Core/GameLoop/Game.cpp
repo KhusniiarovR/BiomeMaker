@@ -63,11 +63,13 @@ void Game::init()
 
     SetTextureFilter(virtualScreen.texture, TEXTURE_FILTER_POINT); // to avoid gpu blur
 
+    InitAudioDevice(); // raylib sounds init
     assetManager.init(); // init default assets
 }
 
 void Game::stop()
 {
+    CloseAudioDevice();
     CloseWindow(); 
 }
 

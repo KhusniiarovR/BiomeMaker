@@ -2,6 +2,7 @@
 #include "Utilities/Logger/Logger.h"
 #include "Items/ItemRegister/ItemRegisterAll.h"
 #include <filesystem>
+#include "Notifications/NotificationManager.h"
 
 AssetManager::AssetManager() // register all assets
 {
@@ -17,7 +18,11 @@ AssetManager::AssetManager() // register all assets
     registerTexture("entityTilemap","data/Textures/World/entityTilemap.png"); // entities
     registerTexture("playerTilemap","data/Textures/World/playerTilemap.png"); // player
 
-    registerAllItems(); // register all items
+    // sounds
+    registerSound("notification", "data/Sounds/notification.wav");
+
+     // register all items
+    registerAllItems();
 }
 
 AssetManager::~AssetManager() 

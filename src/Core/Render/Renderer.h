@@ -23,6 +23,8 @@ public:
     Camera2D& GetCamera();
     Vector2 getMouseVirtual();
     Texture2D& getTexture(const std::string& key, bool shouldBeWrapped = false); // get texture from asset manager
+    Font& getFont(const std::string& key, const int size);
+    Sound& getSound(const std::string& key);
 
     // draw text
     void drawText(const std::string& text, Vector2 position = {0.5f, 0.5f},

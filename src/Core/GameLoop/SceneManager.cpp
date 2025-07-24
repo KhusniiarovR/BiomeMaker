@@ -3,6 +3,7 @@
 #include "Scenes/WorldSelectionScene.h"
 #include "Scenes/GameScene.h"
 #include "Utilities/Logger/Logger.h"
+#include "Notifications/NotificationManager.h"
 
 SceneManager::SceneManager(Renderer& renderer) : renderer(renderer)
 {
@@ -37,8 +38,8 @@ void SceneManager::update(float dt, Vector2 mouseVirtual)
     if (currentScene) 
     {
         SetMouseCursor(MOUSE_CURSOR_DEFAULT); // reset mouse cursor to default
-
         currentScene->update(dt, mouseVirtual); // update scene
+        NotificationManager::getInstance().update(dt); // update notifications
 
         if (currentScene->shouldTransition()) // scene changer
         {
@@ -46,10 +47,7 @@ void SceneManager::update(float dt, Vector2 mouseVirtual)
             loadScene(currentScene->getNextScene(), currentScene->getWorldName());
         }
     }
-    else 
-    {
-        mycerr << "no current scene";
-    }
+    else { mycerr << "no current scene"; }
 }
 
 void SceneManager::render() // draw everything
@@ -63,9 +61,8 @@ void SceneManager::render() // draw everything
         currentScene->render(); // draw scene
 
         if (!is2DModeDone) EndMode2D();
+
+        NotificationManager::getInstance().render(renderer); // draw notifications above everything
     }
-    else
-    {
-        mycerr << "no current scene";
-    }
+    else { mycerr << "no current scene"; }
 }

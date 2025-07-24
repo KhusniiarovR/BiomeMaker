@@ -11,10 +11,15 @@ public:
     void init();
     ~AssetManager();
     void unloadAll(); 
-
+    
     Texture2D& getTexture(const std::string& key, bool shouldBeWrapped = false);
     Font& getFont(const std::string& key, int size);
     Sound& getSound(const std::string& key);
+    
+    static AssetManager& instance() {
+        static AssetManager inst;
+        return inst;
+    }
     
 private:
     template<typename MapType>
@@ -31,7 +36,7 @@ private:
     Texture2D defaultTexture{};
     Font defaultFont{};
     Sound defaultSound{};
-
+    
     void registerTexture(const std::string& key, const std::string& path);
     void registerFont(const std::string& key, const std::string& path);
     void registerSound(const std::string& key, const std::string& path);

@@ -130,3 +130,11 @@ Texture2D& Renderer::getTexture(const std::string& key, bool shouldBeWrapped)
 {
     return assetManager.getTexture(key, shouldBeWrapped);
 }
+
+Font& Renderer::getFont(const std::string& key, const int size) {
+    return assetManager.getFont(key, size);
+}
+
+Sound& Renderer::getSound(const std::string& key) {
+    return assetManager.getSound(key);
+}
