@@ -8,6 +8,7 @@
 #include "Utilities/Graphics/TextBox.h"
 #include "Utilities/Graphics/Bar.h"
 #include <atomic>
+#include "Settings/Settings.h"
 
 class WorldSelectionScene : public Scene {
 private:
@@ -29,6 +30,7 @@ private:
     bool generationStage = false;
 
     std::atomic<bool> generationFinished = false;
+    Settings settings;
 
 public:
     explicit WorldSelectionScene(Renderer& renderer);

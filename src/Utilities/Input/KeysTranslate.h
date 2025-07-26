@@ -1,7 +1,7 @@
 #include <string>
 #include <raylib.h>
 
-std::string GetKeyName(int key) 
+inline std::string GetKeyName(int key) 
 {
     // A-Z
     if (key >= KEY_A && key <= KEY_Z) { return std::string(1, 'A' + (key - KEY_A)); }
@@ -37,7 +37,7 @@ std::string GetKeyName(int key)
     return "UNKNOWN";
 }
 
-int GetKeyFromName(const std::string& name) 
+inline int GetKeyFromName(const std::string& name) 
 {
     std::string upper;
     for (char c : name) { upper += std::toupper(c);}

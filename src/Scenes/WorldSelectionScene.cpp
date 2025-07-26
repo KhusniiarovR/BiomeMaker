@@ -1,6 +1,7 @@
 #include "WorldSelectionScene.h"
 #include <thread>
 #include "Notifications/NotificationManager.h"
+#include "Settings/InputManager.h"
 
 WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
     : Scene(renderer),
@@ -73,6 +74,12 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
 }
 
 void WorldSelectionScene::update(float dt, Vector2 mouseVirtual) {
+    if (InputManager::GetInstance().IsActionJustPressed(Action::INTERACT)) settings.setActive(!settings.isActive());
+    if (settings.isActive()) {
+        settings.Update(dt, mouseVirtual);
+        return;
+    }
+
     if (firstPage) {
         worldSelector.update(mouseVirtual);
         playButton.update(mouseVirtual);
@@ -95,12 +102,16 @@ void WorldSelectionScene::update(float dt, Vector2 mouseVirtual) {
             }
         }   
     }
-
     updateChangeScene();
 }
 
 void WorldSelectionScene::render() const {
     renderer.drawBackground();
+
+    if (settings.isActive()) {
+        settings.Render();
+        return;
+    }
 
     if (firstPage) {
         worldSelector.render(renderer);
@@ -124,7 +135,7 @@ void WorldSelectionScene::render() const {
 }
 
 void WorldSelectionScene::updateChangeScene() {
-    if (IsKeyPressed(KEY_ENTER) && !generationStage) {
+    if (InputManager::GetInstance().IsActionJustPressed(Action::MOVE_LEFT) && !generationStage) {
         if (!worldSelector.getSelectedFolder().empty()) {
             changeScene = true;
             nextScene = SceneType::Game;

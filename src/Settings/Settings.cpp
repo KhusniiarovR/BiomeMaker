@@ -13,64 +13,106 @@ Settings::~Settings() {
     Save();
 }
 
-
 void Settings::Load() {
+    sections.clear();
+    actionKeyList.clear();
+    
     std::ifstream file(configPath);
     std::string line;
+    int lineNumber = 0;
+    
     while (std::getline(file, line)) {
-        if (line.empty() || line[0] == '#') continue;
-        ParseLine(line);
+        lineNumber++;
+        if (line.empty()) continue;
+        
+        if (line[0] == '#') {
+            ConfigSection section;
+            section.title = line;
+            section.startLine = lineNumber;
+            sections.push_back(section);
+            continue;
+        }
+        
+        ParseLine(line, lineNumber);
+    }
+    
+    // Initialize action list from InputManager
+    auto& input = InputManager::GetInstance();
+    for (int i = 0; i < static_cast<int>(Action::COUNT); i++) {
+        Action action = static_cast<Action>(i);
+        actionKeyList.emplace_back(action, input.GetKeyBinding(action));
     }
 }
 
-void Settings::ParseLine(const std::string& line) {
+void Settings::ParseLine(const std::string& line, int lineNumber) {
     size_t eq = line.find('=');
     if (eq == std::string::npos) return;
+    
     std::string key = line.substr(0, eq);
     std::string val = line.substr(eq + 1);
-
-    if (key == "window_width") windowWidth = std::stoi(val);
-    else if (key == "window_height") windowHeight = std::stoi(val);
-    else if (key == "max_fps") maxFPS = std::stoi(val);
+    
+    if (key == "window_width") {
+        windowWidth = std::stoi(val);
+    }
+    else if (key == "window_height") {
+        windowHeight = std::stoi(val);
+    }
+    else if (key == "max_fps") {
+        maxFPS = std::stoi(val);
+    }
     else {
-        int keyCode = GetKeyFromName(val.c_str());
-        if (keyCode > 0) {
-            actionKeyList.emplace_back(key, keyCode);
-            actionKeyMap[key] = keyCode;
+        Action action = InputManager::GetActionFromName(key.c_str());
+        if (action != Action::COUNT) {
+            int keyCode = GetKeyFromName(val.c_str());
+            if (keyCode > 0) {
+                InputManager::GetInstance().SetKeyBinding(action, keyCode);
+            }
         }
     }
 }
 
 void Settings::Save() {
     std::ofstream file(configPath);
+    
+    // Write sections
     file << "#screen\n";
     file << "window_width=" << windowWidth << "\n";
     file << "window_height=" << windowHeight << "\n\n";
-
+    
     file << "#fps\n";
     file << "max_fps=" << maxFPS << "\n\n";
-
+    
     file << "#keybinds\n";
-    for (const auto& [action, key] : actionKeyList) {
-        file << action << "=" << GetKeyName(key) << "\n";
+    auto& input = InputManager::GetInstance();
+    for (int i = 0; i < static_cast<int>(Action::COUNT); i++) {
+        Action action = static_cast<Action>(i);
+        file << InputManager::GetActionName(action) << "=" 
+             << GetKeyName(input.GetKeyBinding(action)) << "\n";
     }
 
     SetWindowSize(windowWidth, windowHeight);
     SetTargetFPS(maxFPS);
 }
 
-void Settings::update(float dt, Vector2 mouseVirtual) {
+void Settings::Update(float dt, Vector2 mouseVirtual) {
     float wheel = GetMouseWheelMove();
     scrollOffset -= wheel * SCROLL_SPEED;
-    scrollOffset = std::max(scrollOffset, 0.0f); 
-    int totalHeight = INITIAL_Y + 3 * LINE_HEIGHT + LINE_HEIGHT + (int)actionKeyList.size() * LINE_HEIGHT;
+    scrollOffset = std::max(scrollOffset, 0.0f);
+    
+    int totalHeight = CalculateTotalHeight();
     int maxScroll = std::max(0, totalHeight - virtualScreenSizeY);
     scrollOffset = std::min(scrollOffset, (float)maxScroll);
 
     if (waitingForKey) {
         for (int k = 32; k < 349; ++k) {
             if (IsKeyPressed(k)) {
-                actionKeyMap[currentBinding] = k;
+                InputManager::GetInstance().SetKeyBinding(currentBinding, k);
+                for (auto& pair : actionKeyList) {
+                    if (pair.first == currentBinding) {
+                        pair.second = k;
+                        break;
+                    }
+                }
                 waitingForKey = false;
                 break;
             }
@@ -78,24 +120,44 @@ void Settings::update(float dt, Vector2 mouseVirtual) {
         return;
     }
 
-    int y = INITIAL_Y;
-
-    UpdateIntField("windowWidth", windowWidth, virtualScreenSizeX, 9999, y, mouseVirtual); y += LINE_HEIGHT;
-    UpdateIntField("windowHeight", windowHeight, virtualScreenSizeY, 9999, y, mouseVirtual); y += LINE_HEIGHT;
-    UpdateIntField("maxFPS", maxFPS, 30, 1000, y, mouseVirtual); y += LINE_HEIGHT + 10;
-
-    y += LINE_HEIGHT;
-
-    for (const auto& [action, _] : actionKeyList) {
-        Rectangle btn = {LABEL_WIDTH, (float)y, 100, FIELD_HEIGHT};
-        Rectangle visibleBtn = btn;
-        visibleBtn.y -= scrollOffset;
-
-        if (CheckCollisionPointRec(mouseVirtual, visibleBtn) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            waitingForKey = true;
-            currentBinding = action;
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !editingField.empty()) {
+        bool clickedOnField = false;
+        
+        if (!clickedOnField) {
+            editingField = "";
+            inputBuffer = "";
         }
-        y += LINE_HEIGHT;
+    }
+
+    for (size_t i = 0; i < sections.size(); ++i) {
+        int sectionY = GetSectionContentYPosition(i) - static_cast<int>(scrollOffset);
+        const auto& section = sections[i];
+        
+        if (section.title.find("#screen") != std::string::npos) {
+            UpdateIntField("windowWidth", windowWidth, virtualScreenSizeX, 9999, 
+                         GetSectionContentYPosition(i), mouseVirtual);
+            
+            UpdateIntField("windowHeight", windowHeight, virtualScreenSizeY, 9999, 
+                         GetSectionContentYPosition(i) + LINE_HEIGHT, mouseVirtual);
+        }
+        else if (section.title.find("#fps") != std::string::npos) {
+            UpdateIntField("maxFPS", maxFPS, 30, 1000, 
+                         GetSectionContentYPosition(i), mouseVirtual);
+        }
+        else if (section.title.find("#keybinds") != std::string::npos) {
+            int keybindY = GetSectionContentYPosition(i) - static_cast<int>(scrollOffset);
+            for (const auto& [action, _] : actionKeyList) {
+                if (keybindY >= 0 && keybindY <= virtualScreenSizeY - FIELD_HEIGHT) {
+                    Rectangle btn = {LABEL_WIDTH, (float)keybindY, 100, FIELD_HEIGHT};
+                    if (CheckCollisionPointRec(mouseVirtual, btn) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                        waitingForKey = true;
+                        currentBinding = action;
+                        break;
+                    }
+                }
+                keybindY += LINE_HEIGHT;
+            }
+        }
     }
 
     if (IsKeyPressed(KEY_Q)) {
@@ -103,41 +165,60 @@ void Settings::update(float dt, Vector2 mouseVirtual) {
     }
 }
 
-void Settings::render() const {
+void Settings::Render() const {
     BeginScissorMode(0, 0, virtualScreenSizeX, virtualScreenSizeY);
 
-    int y = INITIAL_Y - (int)scrollOffset;
+    int y = INITIAL_Y - static_cast<int>(scrollOffset);
     
-    DrawText("Screen: ", 20, y - LINE_HEIGHT, TEXT_SIZE, COLOR_TEXT_GROUP);
-
-    RenderIntField("Window Width", "windowWidth", windowWidth, y); y += LINE_HEIGHT;
-    RenderIntField("Window Height", "windowHeight", windowHeight, y); y += LINE_HEIGHT;
-    RenderIntField("Max FPS", "maxFPS", maxFPS, y); y += LINE_HEIGHT + 10;
-
-    DrawText("Keybindings:", 20, y, TEXT_SIZE, COLOR_TEXT_GROUP); y += LINE_HEIGHT;
-
-    for (const auto& [action, _] : actionKeyMap) {
-        DrawKeyBind(action, y);
-        y += LINE_HEIGHT;
+    for (size_t i = 0; i < sections.size(); ++i) {
+        int sectionY = GetSectionStartYPosition(i) - static_cast<int>(scrollOffset);
+        if (sectionY + SECTION_TITLE_SIZE >= 0 && sectionY <= virtualScreenSizeY) {
+            const auto& section = sections[i];
+            
+            if (section.title.find("#screen") != std::string::npos) {
+                DrawSectionTitle("Screen Settings", sectionY);
+                sectionY = GetSectionContentYPosition(i) - static_cast<int>(scrollOffset);
+                
+                RenderIntField("Window Width", "windowWidth", windowWidth, sectionY); 
+                sectionY += LINE_HEIGHT;
+                RenderIntField("Window Height", "windowHeight", windowHeight, sectionY);
+            }
+            else if (section.title.find("#fps") != std::string::npos) {
+                DrawSectionTitle("Performance", sectionY);
+                sectionY = GetSectionContentYPosition(i) - static_cast<int>(scrollOffset);
+                
+                RenderIntField("Max FPS", "maxFPS", maxFPS, sectionY);
+            }
+            else if (section.title.find("#keybinds") != std::string::npos) {
+                DrawSectionTitle("Key Bindings", sectionY);
+                sectionY = GetSectionContentYPosition(i) - static_cast<int>(scrollOffset);
+                
+                for (const auto& [action, _] : actionKeyList) {
+                    DrawKeyBind(action, sectionY);
+                    sectionY += LINE_HEIGHT;
+                }
+            }
+        }
     }
 
     EndScissorMode();
 }
 
-void Settings::DrawKeyBind(const std::string& action, int y) const {
-    DrawText(action.c_str(), 20, y, TEXT_SIZE, COLOR_TEXT);
+void Settings::DrawSectionTitle(const std::string& title, int& y) const {
+    DrawText(title.c_str(), 20, y, SECTION_TITLE_SIZE, COLOR_SECTION_TITLE);
+    y += LINE_HEIGHT;
+}
+
+void Settings::DrawKeyBind(Action action, int y) const {
+    DrawText(InputManager::GetActionName(action), 20, y, TEXT_SIZE, COLOR_TEXT);
 
     Rectangle btn = {LABEL_WIDTH, (float)y, 100, FIELD_HEIGHT};
     DrawRectangleRec(btn, COLOR_KEYBIND_BTN);
 
-    std::string keyName = (waitingForKey && currentBinding == action) ? "..." : GetKeyName(actionKeyMap.at(action));
+    std::string keyName = (waitingForKey && currentBinding == action) ? "..." : 
+        GetKeyName(InputManager::GetInstance().GetKeyBinding(action));
 
-    DrawText(keyName.c_str(),  btn.x + 10, btn.y + 5, TEXT_SIZE, COLOR_TEXT);
-}
-
-bool Settings::IsActionPressed(const std::string& action) const {
-    auto it = actionKeyMap.find(action);
-    return it != actionKeyMap.end() ? IsKeyDown(it->second) : false;
+    DrawText(keyName.c_str(), btn.x + 10, btn.y + 5, TEXT_SIZE, COLOR_TEXT);
 }
 
 bool Settings::IsEditingField(const std::string& name) const {
@@ -145,11 +226,14 @@ bool Settings::IsEditingField(const std::string& name) const {
 }
 
 void Settings::UpdateIntField(const std::string& fieldName, int& value, int min, int max, int y, Vector2 mouseVirtual) {
-    Rectangle fieldRect = {LABEL_WIDTH, (float)y, FIELD_WIDTH, FIELD_HEIGHT};
-    Rectangle visibleRect = fieldRect;
-    visibleRect.y -= scrollOffset;
+    float visibleY = y - scrollOffset;
+    
+    if (visibleY + FIELD_HEIGHT < 0 || visibleY > virtualScreenSizeY) {
+        return;
+    }
+    Rectangle fieldRect = {LABEL_WIDTH, visibleY, FIELD_WIDTH, FIELD_HEIGHT};
 
-    if (CheckCollisionPointRec(mouseVirtual, visibleRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    if (CheckCollisionPointRec(mouseVirtual, fieldRect) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         editingField = fieldName;
         inputBuffer = std::to_string(value);
     }
@@ -204,4 +288,60 @@ void Settings::RenderIntField(const char* label, const std::string& fieldName, i
     DrawRectangle(fieldRect.x + FIELD_WIDTH + BUTTON_SPACING * 2 + BUTTON_WIDTH, y, BUTTON_WIDTH, FIELD_HEIGHT, COLOR_PLUS_MINUS_BTN);
     DrawText("+", fieldRect.x + FIELD_WIDTH + BUTTON_SPACING + 8, y + 5, TEXT_SIZE, COLOR_TEXT);
     DrawText("-", fieldRect.x + FIELD_WIDTH + BUTTON_SPACING * 2 + BUTTON_WIDTH + 8, y + 5, TEXT_SIZE, COLOR_TEXT);
+}
+
+bool Settings::isActive() const {
+    return settingsActive;
+}
+
+void Settings::setActive(bool active) {
+    settingsActive = active;
+}
+
+int Settings::CalculateTotalHeight() const {
+    if (sections.empty()) return INITIAL_Y;
+    return GetSectionStartYPosition(sections.size() - 1) + 
+           GetSectionHeight(sections.size() - 1);
+}
+
+int Settings::GetSectionHeight(int sectionIndex) const {
+    const auto& section = sections[sectionIndex];
+    if (section.title.find("#screen") != std::string::npos) {
+        return SECTION_TITLE_SIZE + 2 * LINE_HEIGHT;
+    }
+    else if (section.title.find("#fps") != std::string::npos) {
+        return SECTION_TITLE_SIZE + LINE_HEIGHT;
+    }
+    else if (section.title.find("#keybinds") != std::string::npos) {
+        return SECTION_TITLE_SIZE + 
+               static_cast<int>(actionKeyList.size()) * LINE_HEIGHT;
+    }
+    return 0;
+}
+
+int Settings::GetSectionContentYPosition(int sectionIndex) const {
+    int y = GetSectionStartYPosition(sectionIndex);
+    if (sectionIndex < sections.size()) {
+        y += SECTION_TITLE_SIZE;
+    }
+    return y;
+}
+
+int Settings::GetSectionStartYPosition(int sectionIndex) const {
+    int y = INITIAL_Y;
+    
+    for (int i = 0; i < sectionIndex; ++i) {
+        if (sections[i].title.find("#screen") != std::string::npos) {
+            y += SECTION_TITLE_SIZE + 2 * LINE_HEIGHT;
+        }
+        else if (sections[i].title.find("#fps") != std::string::npos) {
+            y += SECTION_SPACING + SECTION_TITLE_SIZE + LINE_HEIGHT;
+        }
+        else if (sections[i].title.find("#keybinds") != std::string::npos) {
+            y += SECTION_SPACING + SECTION_TITLE_SIZE + 
+                static_cast<int>(actionKeyList.size()) * LINE_HEIGHT;
+        }
+    }
+    
+    return y;
 }
