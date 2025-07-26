@@ -30,7 +30,7 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
 
     createButton.setOnClick([this]() 
     {
-        if(enterName.returnText().empty()) {
+        if(enterName.getText().empty()) {
             NotificationManager::getInstance().show("World name must be not empty", NotificationType::Warning); 
             return;
         }
@@ -41,7 +41,7 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
         std::thread([this]() 
         {
             {
-                worldCreator.generate(enterName.returnText());
+                worldCreator.generate(enterName.getText());
                 worldSelector.loadFolders();
                 firstPage = true;
                 generationStage = false;

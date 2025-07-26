@@ -55,7 +55,7 @@ void TextBox::draw(Renderer& renderer) const
         DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, lineColor);
     renderer.drawText(text.c_str(), {box.x, box.y}, textSize, textColor, false, false, "silkscreen", 0.3f);
 }
-std::string TextBox::returnText()
+std::string TextBox::getText()
 {
     return text;
 }
@@ -63,4 +63,27 @@ std::string TextBox::returnText()
 void TextBox::eraseText() 
 {
     text.clear();
+}
+
+void TextBox::setBox(float x, float y, float width, float height)
+{
+    box.x = x;
+    box.y = y;
+    box.width = width;
+    box.height = height;
+}
+
+Rectangle TextBox::getBox() 
+{
+    return box;
+}
+
+void TextBox::setActive(bool act) 
+{
+    active = act;
+}
+
+bool TextBox::getActive() 
+{
+    return active;
 }
