@@ -9,6 +9,7 @@
 class Settings {
 public:
     Settings(const std::string& configPath = "data/Settings/Settings.cfg");
+    ~Settings();
     void Load();
     void Save();
 
@@ -20,21 +21,23 @@ public:
 private:
     std::string configPath;
     float scrollOffset = 0.0f;
-    float scrollSpeed = 20.0f;
 
-    int windowWidth = 1280;
-    int windowHeight = 720;
+    int windowWidth = virtualScreenSizeX;
+    int windowHeight = virtualScreenSizeY;
     int maxFPS = 60;
 
     std::vector<std::pair<std::string, int>> actionKeyList;
     std::unordered_map<std::string, int> actionKeyMap; 
+    std::string editingField = "";
+    std::string inputBuffer = ""; 
 
-    bool showSettings = true;
     bool waitingForKey = false;
     std::string currentBinding;
 
-    void DrawIntField(const char* label, int value, int y) const;
     void DrawKeyBind(const std::string& action, int y) const;
 
     void ParseLine(const std::string& line);
+    bool IsEditingField(const std::string& name) const;
+    void UpdateIntField(const std::string& fieldName, int& value, int min, int max, int y, Vector2 mouseVirtual);
+    void RenderIntField(const char* label, const std::string& fieldName, int value, int y) const;
 };
