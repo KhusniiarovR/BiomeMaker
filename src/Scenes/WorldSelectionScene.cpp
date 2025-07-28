@@ -123,14 +123,14 @@ void WorldSelectionScene::render() const {
 }
 
 void WorldSelectionScene::updateChangeScene() {
-    if (InputManager::GetInstance().IsActionJustPressed(Action::ENTER) && !generationStage) {
+    if (InputManager::GetInstance().IsActionPressed(Action::ENTER) && !generationStage) {
         if (!worldSelector.getSelectedFolder().empty()) {
             changeScene = true;
             nextScene = SceneType::Game;
         }
     }
 
-    if (InputManager::GetInstance().IsActionJustPressed(Action::ESCAPE) && !generationStage) {
+    if (InputManager::GetInstance().IsActionPressed(Action::ESCAPE) && !generationStage) {
         changeScene = true;
         nextScene = SceneType::Menu;
     } // todo back button

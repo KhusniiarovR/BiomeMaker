@@ -1,8 +1,9 @@
 #include "GameUi.h"
 #include "raylib.h"
+#include "Settings/InputManager.h"
 
 void GameUi::update(Vector2 mouseVirtual) {
-    if (IsKeyPressed(KEY_Z)) { changeState(); }
+    if (InputManager::GetInstance().IsActionPressed(Action::INVENTORY)) { changeState(); }
     
     bool isFull = (state == UIState::Full);
     player->getInventory().update(mouseVirtual, isFull);

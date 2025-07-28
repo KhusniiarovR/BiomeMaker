@@ -7,6 +7,7 @@
 #include "Items/ItemBase/ItemUseContext.h"
 #include "Items/ItemsAll/Tools/ItemToolBase.h"
 #include "Utilities/Logger/Logger.h"
+#include "Settings/InputManager.h"
 
 GameScene::GameScene(Renderer& renderer, const std::string& worldName)
 : Scene(renderer), 
@@ -21,14 +22,13 @@ enemies(player, &collision)
     ui.setPlayer(&player);
     pauseMenu.init([this]() { paused = false; }, 
                    [this]() {changeScene = true; nextScene = SceneType::Menu;} );
-}\
-GameScene::~GameScene() {
-    player.getInventory().save();
 }
+
+GameScene::~GameScene() {}
 
 void GameScene::update(float dt, Vector2 mouseVirtual) {
     updatePause(mouseVirtual);
-    if (paused) return;
+    if (paused) { return; }
 
     updatePlayer(dt, mouseVirtual);
     updateEnemies(dt); 
@@ -49,12 +49,7 @@ void GameScene::render() const {
     if (paused) { pauseMenu.render(renderer); }
 }
 
-void GameScene::updateChangeScene() {
-    if (IsKeyPressed(KEY_SPACE)) {
-        changeScene = true;
-        nextScene = SceneType::Menu;
-    }
-}
+void GameScene::updateChangeScene() {}
 
 bool GameScene::shouldTransition() const {
     return changeScene;
@@ -104,7 +99,7 @@ void GameScene::updateCamera() {
 }
 
 void GameScene::updatePause(Vector2 mouseVirtual) {
-    if (IsKeyPressed(KEY_X)) {
+    if (InputManager::GetInstance().IsActionPressed(Action::ESCAPE)) {
         paused = !paused;
     }
 

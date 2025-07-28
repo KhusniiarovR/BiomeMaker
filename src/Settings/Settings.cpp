@@ -74,10 +74,10 @@ void Settings::load()
         else // for key bing widgets
         {
             Action action = InputManager::GetActionFromName(key.c_str());
-            if (action != Action::COUNT) 
+            if (action != Action::ActionSize) 
             {
                 int keyCode = GetKeyFromName(val.c_str());
-                InputManager::GetInstance().SetKeyBinding(action, keyCode);
+                InputManager::GetInstance().SetKeyBind(action, keyCode);
                 widgets.push_back(std::make_unique<KeyBindField>(action));
             }
         }
@@ -95,10 +95,10 @@ void Settings::save()
     file << "max_fps=" << data.maxFPS << "\n\n";
 
     file << "#keybinds\n";
-    for (int i = 0; i < static_cast<int>(Action::COUNT); i++) 
+    for (int i = 0; i < static_cast<int>(Action::ActionSize); i++) 
     {
         Action action = static_cast<Action>(i);
-        file << InputManager::GetActionName(action) << "=" << GetKeyName(InputManager::GetInstance().GetKeyBinding(action)) << "\n";
+        file << InputManager::GetNameFromAction(action) << "=" << GetNameFromKey(InputManager::GetInstance().GetKeyBind(action)) << "\n";
     }
 
     apply();
@@ -112,6 +112,8 @@ void Settings::update(float dt, Vector2 mouseVirtual)
     quitButton.update(mouseVirtual);
 
     // scroll
+    if (IsKeyDown(KEY_DOWN)) scrollOffset += SCROLL_SPEED;
+    if (IsKeyDown(KEY_UP)) scrollOffset -= SCROLL_SPEED;
     float wheel = GetMouseWheelMove();
     scrollOffset -= wheel * SCROLL_SPEED;
     scrollOffset = std::max(scrollOffset, 0.0f);
@@ -189,6 +191,6 @@ void Settings::loadDefault()
 
     SettingsData d;
     data = d;
-    InputManager::GetInstance().LoadDefaultBindings();
+    InputManager::GetInstance().LoadDefaultBinds();
     save();
 }

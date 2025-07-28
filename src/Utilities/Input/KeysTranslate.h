@@ -2,7 +2,7 @@
 #include <raylib.h>
 #include "Utilities/Logger/Logger.h"
 
-inline std::string GetKeyName(int key) 
+inline std::string GetNameFromKey(int key) 
 {
     // A-Z
     if (key >= KEY_A && key <= KEY_Z) { return std::string(1, 'A' + (key - KEY_A)); }
@@ -14,7 +14,8 @@ inline std::string GetKeyName(int key)
     if (key >= KEY_F1 && key <= KEY_F12) { return "F" + std::to_string(key - KEY_F1 + 1); }
 
     // special
-    switch (key) {
+    switch (key) 
+    {
         case KEY_SPACE: return "SPACE";
         case KEY_ENTER: return "ENTER";
         case KEY_TAB: return "TAB";
@@ -40,9 +41,7 @@ inline std::string GetKeyName(int key)
 
 inline int GetKeyFromName(const std::string& name) 
 {
-    if (name.empty()) {
-        mycerr << "empty key";
-    }
+    if (name.empty()) { mycerr << "empty key"; }
 
     std::string upper;
     for (char c : name) { upper += std::toupper(c);}
@@ -61,24 +60,24 @@ inline int GetKeyFromName(const std::string& name)
     }
 
     // special
-    if (upper == "SPACE") return KEY_SPACE;
-    if (upper == "ENTER") return KEY_ENTER;
-    if (upper == "TAB") return KEY_TAB;
-    if (upper == "ESCAPE") return KEY_ESCAPE;
+    if (upper == "SPACE")     return KEY_SPACE;
+    if (upper == "ENTER")     return KEY_ENTER;
+    if (upper == "TAB")       return KEY_TAB;
+    if (upper == "ESCAPE")    return KEY_ESCAPE;
     if (upper == "BACKSPACE") return KEY_BACKSPACE;
-    if (upper == "DELETE") return KEY_DELETE;
+    if (upper == "DELETE")    return KEY_DELETE;
 
-    if (upper == "LEFT") return KEY_LEFT;
-    if (upper == "RIGHT") return KEY_RIGHT;
-    if (upper == "UP") return KEY_UP;
-    if (upper == "DOWN") return KEY_DOWN;
+    if (upper == "LEFT")      return KEY_LEFT;
+    if (upper == "RIGHT")     return KEY_RIGHT;
+    if (upper == "UP")        return KEY_UP;
+    if (upper == "DOWN")      return KEY_DOWN;
 
-    if (upper == "LEFT_SHIFT") return KEY_LEFT_SHIFT;
-    if (upper == "RIGHT_SHIFT") return KEY_RIGHT_SHIFT;
-    if (upper == "LEFT_CONTROL") return KEY_LEFT_CONTROL;
+    if (upper == "LEFT_SHIFT")    return KEY_LEFT_SHIFT;
+    if (upper == "RIGHT_SHIFT")   return KEY_RIGHT_SHIFT;
+    if (upper == "LEFT_CONTROL")  return KEY_LEFT_CONTROL;
     if (upper == "RIGHT_CONTROL") return KEY_RIGHT_CONTROL;
-    if (upper == "LEFT_ALT") return KEY_LEFT_ALT;
-    if (upper == "RIGHT_ALT") return KEY_RIGHT_ALT;
+    if (upper == "LEFT_ALT")      return KEY_LEFT_ALT;
+    if (upper == "RIGHT_ALT")     return KEY_RIGHT_ALT;
 
     return 0; // KEY_NULL
 }

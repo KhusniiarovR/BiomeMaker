@@ -1,50 +1,56 @@
 #include "InputManager.h"
 #include "Utilities/Input/KeysTranslate.h"
 
-InputManager& InputManager::GetInstance() {
+InputManager& InputManager::GetInstance() 
+{
     static InputManager instance;
     return instance;
 }
 
-InputManager::InputManager() {
-    LoadDefaultBindings();
+InputManager::InputManager() 
+{
+    LoadDefaultBinds();
 }
 
-void InputManager::LoadDefaultBindings() {
+void InputManager::LoadDefaultBinds()
+{
     keyBindings[Action::MOVE_LEFT] = KEY_A;
-    keyBindings[Action::MOVE_RIGHT] = KEY_D;
     keyBindings[Action::MOVE_UP] = KEY_W;
     keyBindings[Action::MOVE_DOWN] = KEY_S;
-    keyBindings[Action::INTERACT] = KEY_E;
+    keyBindings[Action::MOVE_RIGHT] = KEY_D;
     keyBindings[Action::INVENTORY] = KEY_TAB;
     keyBindings[Action::ENTER] = KEY_ENTER;
     keyBindings[Action::ESCAPE] = KEY_ESCAPE;
 }
 
-void InputManager::SetKeyBinding(Action action, int key) {
+void InputManager::SetKeyBind(Action action, int key) 
+{
     keyBindings[action] = key;
 }
 
-int InputManager::GetKeyBinding(Action action) const {
+int InputManager::GetKeyBind(Action action) const 
+{
     auto it = keyBindings.find(action);
     return it != keyBindings.end() ? it->second : 0;
 }
 
-bool InputManager::IsActionPressed(Action action) const {
-    return IsKeyDown(GetKeyBinding(action));
+bool InputManager::IsActionDown(Action action) const 
+{
+    return IsKeyDown(GetKeyBind(action));
 }
 
-bool InputManager::IsActionJustPressed(Action action) const {
-    return IsKeyPressed(GetKeyBinding(action));
+bool InputManager::IsActionPressed(Action action) const 
+{
+    return IsKeyPressed(GetKeyBind(action));
 }
 
-const char* InputManager::GetActionName(Action action) {
+const char* InputManager::GetNameFromAction(Action action) 
+{
     static const char* names[] = {
         "move_left",
-        "move_right",
         "move_up",
         "move_down",
-        "interact",
+        "move_right",
         "inventory",
         "enter",
         "back"
@@ -52,18 +58,18 @@ const char* InputManager::GetActionName(Action action) {
     return names[static_cast<int>(action)];
 }
 
-Action InputManager::GetActionFromName(const char* name) {
+Action InputManager::GetActionFromName(const char* name) 
+{
     static std::unordered_map<std::string, Action> actionMap = {
         {"move_left", Action::MOVE_LEFT},
-        {"move_right", Action::MOVE_RIGHT},
         {"move_up", Action::MOVE_UP},
         {"move_down", Action::MOVE_DOWN},
-        {"interact", Action::INTERACT},
+        {"move_right", Action::MOVE_RIGHT},
         {"inventory", Action::INVENTORY},
         {"enter", Action::ENTER},
         {"back", Action::ESCAPE}
     };
     
     auto it = actionMap.find(name);
-    return it != actionMap.end() ? it->second : Action::COUNT;
+    return it != actionMap.end() ? it->second : Action::ActionSize;
 }

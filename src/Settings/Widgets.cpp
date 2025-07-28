@@ -95,7 +95,7 @@ void KeyBindField::update(Vector2 mouseVirtual, float y)
         {
             if (IsKeyPressed(k)) 
             {
-                InputManager::GetInstance().SetKeyBinding(action, k);
+                InputManager::GetInstance().SetKeyBind(action, k);
                 waitingForKey = false;
                 break;
             }
@@ -105,12 +105,12 @@ void KeyBindField::update(Vector2 mouseVirtual, float y)
 
 void KeyBindField::render(Renderer& renderer, float y) const 
 {
-    renderer.drawText(InputManager::GetActionName(action), {20.0f, y}, TEXT_SIZE + 5, COLOR_TEXT, false, false, "silkscreen", 1.0f);
+    renderer.drawText(InputManager::GetNameFromAction(action), {20.0f, y}, TEXT_SIZE + 5, COLOR_TEXT, false, false, "silkscreen", 1.0f);
 
     Rectangle btn = { LABEL_WIDTH, y, width, FIELD_HEIGHT };
     DrawRectangleRec(btn, COLOR_KEYBIND_BTN);
 
-    std::string keyName = waitingForKey ? "..." : GetKeyName(InputManager::GetInstance().GetKeyBinding(action));
+    std::string keyName = waitingForKey ? "..." : GetNameFromKey(InputManager::GetInstance().GetKeyBind(action));
     renderer.drawText(keyName.c_str(), {btn.x + 5.0f, btn.y}, TEXT_SIZE+10, COLOR_TEXT, false, false);
 }
 

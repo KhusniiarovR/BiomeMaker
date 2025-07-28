@@ -2,6 +2,7 @@
 #include "Constants/WorldConst.h"
 #include "Constants/GraphicsConst.h"
 #include "Constants/TilemapConst.h"
+#include "Settings/InputManager.h"
 
 Player::Player(Vector2 initPos, const CollisionBase* collision, std::string fileName)
 : Entity(initPos), 
@@ -24,10 +25,10 @@ void Player::update(float dt)
     float dx = 0, dy = 0;
     bool moved = false;
 
-    if (IsKeyDown(KEY_A)) { dx -= moveSpeed; animation.setFlip(true); animation.play("walkDown"); moved = true; } // left
-    if (IsKeyDown(KEY_D)) { dx += moveSpeed; animation.setFlip(false); animation.play("walkDown"); moved = true; } // right
-    if (IsKeyDown(KEY_W)) { dy -= moveSpeed; animation.play("walkDown"); moved = true; } // up
-    if (IsKeyDown(KEY_S)) { dy += moveSpeed; animation.play("walkDown"); moved = true; } // down
+    if (InputManager::GetInstance().IsActionDown(Action::MOVE_LEFT)) { dx -= moveSpeed; animation.setFlip(true); animation.play("walkDown"); moved = true; } // left
+    if (InputManager::GetInstance().IsActionDown(Action::MOVE_RIGHT)) { dx += moveSpeed; animation.setFlip(false); animation.play("walkDown"); moved = true; } // right
+    if (InputManager::GetInstance().IsActionDown(Action::MOVE_UP)) { dy -= moveSpeed; animation.play("walkDown"); moved = true; } // up
+    if (InputManager::GetInstance().IsActionDown(Action::MOVE_DOWN)) { dy += moveSpeed; animation.play("walkDown"); moved = true; } // down
     if (!moved) { animation.play("idle"); }
     animation.update(dt);
     tryMove(dx, dy);

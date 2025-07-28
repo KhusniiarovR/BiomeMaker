@@ -61,7 +61,7 @@ void MenuScene::render() const
 }
 
 void MenuScene::updateChangeScene() {
-    if (InputManager::GetInstance().IsActionJustPressed(Action::ESCAPE)) {
+    if (InputManager::GetInstance().IsActionPressed(Action::ESCAPE)) {
         shouldExit = true; 
     }
 }

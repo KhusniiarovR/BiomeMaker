@@ -1,6 +1,4 @@
-#ifndef GAMESCENE_H
-#define GAMESCENE_H
-
+#pragma once
 #include "Scene.h"
 #include "Entities/Player/Player.h"
 #include "Entities/Enemy/EnemyManager.h"
@@ -10,13 +8,16 @@
 
 class GameScene : public Scene {
 private:
-    World world;
-    CollisionWorld collision;
-    Player player;
-    EnemyManager enemies;
-    GameUi ui;
-    bool paused = false;
-    PauseMenu pauseMenu;
+    World world;             // world (chunks(tiles, objects))
+    CollisionWorld collision;// easy access to world objects
+
+    Player player;           // player and inventory
+    GameUi ui;               // shows user interface (must be drawn last)
+
+    EnemyManager enemies;    // vector with enemies
+
+    bool paused = false;     // pause
+    PauseMenu pauseMenu;     // pause
 
 public:
     GameScene(Renderer& renderer, const std::string& worldName);
@@ -30,11 +31,10 @@ public:
     [[nodiscard]] SceneType getNextScene() const override;
 
 private:
+    // separate update into several functions
     void updatePause  (Vector2 mouseVirtual); 
     void updatePlayer (float dt, Vector2 mouseVirtual);
     void updateEnemies(float dt);
     void updateWorld  (Vector2 mouseVirtual);
     void updateCamera ();
 };
-
-#endif //GAMESCENE_H

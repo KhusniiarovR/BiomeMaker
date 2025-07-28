@@ -36,6 +36,7 @@ public:
 
 private:
     void init(); // init
+    
     // save and load
     void save();
     void load();
