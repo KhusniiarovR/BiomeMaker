@@ -3,9 +3,10 @@
 
 enum class SceneType {
     None,
-    MainMenu,
-    Game,
-    WorldSelection
+    Start,
+    Menu,
+    WorldSelection,
+    Game
 };
 
 #endif //SCENETYPE_H

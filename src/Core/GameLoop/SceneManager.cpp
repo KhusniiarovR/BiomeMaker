@@ -1,5 +1,6 @@
 #include "SceneManager.h"
-#include "Scenes/MainMenuScene.h"
+#include "Scenes/StartingScene.h"
+#include "Scenes/MenuScene.h"
 #include "Scenes/WorldSelectionScene.h"
 #include "Scenes/GameScene.h"
 #include "Utilities/Logger/Logger.h"
@@ -7,15 +8,19 @@
 
 SceneManager::SceneManager(Renderer& renderer) : renderer(renderer)
 {
-    loadScene(SceneType::MainMenu);
+    loadScene(SceneType::Start);
 }
 
 void SceneManager::loadScene(SceneType sceneType, const std::string& worldName) // loading new scene and delete previous
 {
     switch (sceneType) 
     {
-        case SceneType::MainMenu:
-            currentScene = std::make_unique<MainMenuScene>(renderer);
+        case SceneType::Start:
+            currentScene = std::make_unique<StartingScene>(renderer);
+            break;
+
+        case SceneType::Menu:
+            currentScene = std::make_unique<MenuScene>(renderer);
             break;
 
         case SceneType::WorldSelection:

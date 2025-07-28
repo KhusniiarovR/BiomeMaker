@@ -4,7 +4,7 @@
 // sizes
 constexpr int FIELD_HEIGHT       = 30;
 constexpr int FIELD_WIDTH        = 80;
-constexpr int LABEL_WIDTH        = 180;
+constexpr int LABEL_WIDTH        = 200;
 constexpr int BUTTON_WIDTH       = 30;
 constexpr int BUTTON_SPACING     = 10;
 constexpr int FIELD_SPACING      = 10;

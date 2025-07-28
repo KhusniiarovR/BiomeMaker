@@ -48,7 +48,7 @@ void Button::render(Renderer& renderer) const {
     }
 
     Vector2 center = { position.x + size.x / 2.0f, position.y + size.y / 2.0f };
-    int fontSize = size.x / (isHovered ? 4.0f : 6.4f);
+    int fontSize = size.x / (isHovered ? 5.0f : 6.4f);
 
     renderer.drawText(text, center, fontSize,
         isHovered ? YELLOW : textColor,

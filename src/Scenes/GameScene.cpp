@@ -20,9 +20,8 @@ enemies(player, &collision)
     player.getInventory().addItem(ItemID::PICKAXE, 1);
     ui.setPlayer(&player);
     pauseMenu.init([this]() { paused = false; }, 
-                   [this]() {changeScene = true; nextScene = SceneType::MainMenu;} );
-}
-// todo input corrections
+                   [this]() {changeScene = true; nextScene = SceneType::Menu;} );
+}\
 GameScene::~GameScene() {
     player.getInventory().save();
 }
@@ -53,7 +52,7 @@ void GameScene::render() const {
 void GameScene::updateChangeScene() {
     if (IsKeyPressed(KEY_SPACE)) {
         changeScene = true;
-        nextScene = SceneType::MainMenu;
+        nextScene = SceneType::Menu;
     }
 }
 

@@ -1,11 +1,9 @@
-#ifndef MAINMENUSCENE_H
-#define MAINMENUSCENE_H
-
+#pragma once
 #include "Scene.h"
 
-class MainMenuScene : public Scene {
+class StartingScene : public Scene { // first scene that only say hello and wait for input
 public:
-    MainMenuScene(Renderer& renderer);
+    StartingScene(Renderer& renderer);
 
     void update(float dt, Vector2 mouseVirtual) override;
     void render() const override;
@@ -14,5 +12,3 @@ public:
     [[nodiscard]] bool shouldTransition() const override;
     [[nodiscard]] SceneType getNextScene() const override;
 };
-
-#endif //MAINMENUSCENE_H

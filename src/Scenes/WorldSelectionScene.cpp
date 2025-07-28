@@ -74,12 +74,6 @@ WorldSelectionScene::WorldSelectionScene(Renderer &renderer)
 }
 
 void WorldSelectionScene::update(float dt, Vector2 mouseVirtual) {
-    if (InputManager::GetInstance().IsActionJustPressed(Action::INTERACT)) settings.setActive(!settings.isActive());
-    if (settings.isActive()) {
-        settings.Update(dt, mouseVirtual);
-        return;
-    }
-
     if (firstPage) {
         worldSelector.update(mouseVirtual);
         playButton.update(mouseVirtual);
@@ -107,12 +101,6 @@ void WorldSelectionScene::update(float dt, Vector2 mouseVirtual) {
 
 void WorldSelectionScene::render() const {
     renderer.drawBackground();
-
-    if (settings.isActive()) {
-        settings.Render();
-        return;
-    }
-
     if (firstPage) {
         worldSelector.render(renderer);
         playButton.render(renderer);
@@ -135,17 +123,17 @@ void WorldSelectionScene::render() const {
 }
 
 void WorldSelectionScene::updateChangeScene() {
-    if (InputManager::GetInstance().IsActionJustPressed(Action::MOVE_LEFT) && !generationStage) {
+    if (InputManager::GetInstance().IsActionJustPressed(Action::ENTER) && !generationStage) {
         if (!worldSelector.getSelectedFolder().empty()) {
             changeScene = true;
             nextScene = SceneType::Game;
         }
     }
 
-    if (IsKeyPressed(KEY_SPACE)  && !generationStage) {
+    if (InputManager::GetInstance().IsActionJustPressed(Action::ESCAPE) && !generationStage) {
         changeScene = true;
-        nextScene = SceneType::MainMenu;
-    }
+        nextScene = SceneType::Menu;
+    } // todo back button
 }
 
 bool WorldSelectionScene::shouldTransition() const {

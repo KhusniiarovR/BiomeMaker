@@ -15,9 +15,10 @@ void InputManager::LoadDefaultBindings() {
     keyBindings[Action::MOVE_RIGHT] = KEY_D;
     keyBindings[Action::MOVE_UP] = KEY_W;
     keyBindings[Action::MOVE_DOWN] = KEY_S;
-    keyBindings[Action::DASH] = KEY_SPACE;
     keyBindings[Action::INTERACT] = KEY_E;
-    keyBindings[Action::OPEN_INVENTORY] = KEY_TAB;
+    keyBindings[Action::INVENTORY] = KEY_TAB;
+    keyBindings[Action::ENTER] = KEY_ENTER;
+    keyBindings[Action::ESCAPE] = KEY_ESCAPE;
 }
 
 void InputManager::SetKeyBinding(Action action, int key) {
@@ -43,9 +44,10 @@ const char* InputManager::GetActionName(Action action) {
         "move_right",
         "move_up",
         "move_down",
-        "dash",
         "interact",
-        "open_inventory"
+        "inventory",
+        "enter",
+        "back"
     };
     return names[static_cast<int>(action)];
 }
@@ -56,9 +58,10 @@ Action InputManager::GetActionFromName(const char* name) {
         {"move_right", Action::MOVE_RIGHT},
         {"move_up", Action::MOVE_UP},
         {"move_down", Action::MOVE_DOWN},
-        {"dash", Action::DASH},
         {"interact", Action::INTERACT},
-        {"open_inventory", Action::OPEN_INVENTORY}
+        {"inventory", Action::INVENTORY},
+        {"enter", Action::ENTER},
+        {"back", Action::ESCAPE}
     };
     
     auto it = actionMap.find(name);

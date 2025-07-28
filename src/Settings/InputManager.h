@@ -7,9 +7,10 @@ enum class Action {
     MOVE_RIGHT,
     MOVE_UP,
     MOVE_DOWN,
-    DASH,
     INTERACT,
-    OPEN_INVENTORY,
+    INVENTORY,
+    ENTER,
+    ESCAPE,
     COUNT
 };
 
@@ -25,10 +26,10 @@ public:
     
     static const char* GetActionName(Action action);
     static Action GetActionFromName(const char* name);
+    void LoadDefaultBindings();
 
 private:
     InputManager();
-    void LoadDefaultBindings();
     
     std::unordered_map<Action, int> keyBindings;
 };

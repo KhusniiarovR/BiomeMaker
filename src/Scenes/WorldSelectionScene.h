@@ -30,7 +30,6 @@ private:
     bool generationStage = false;
 
     std::atomic<bool> generationFinished = false;
-    Settings settings;
 
 public:
     explicit WorldSelectionScene(Renderer& renderer);

@@ -1,5 +1,6 @@
 #include <string>
 #include <raylib.h>
+#include "Utilities/Logger/Logger.h"
 
 inline std::string GetKeyName(int key) 
 {
@@ -39,6 +40,10 @@ inline std::string GetKeyName(int key)
 
 inline int GetKeyFromName(const std::string& name) 
 {
+    if (name.empty()) {
+        mycerr << "empty key";
+    }
+
     std::string upper;
     for (char c : name) { upper += std::toupper(c);}
 

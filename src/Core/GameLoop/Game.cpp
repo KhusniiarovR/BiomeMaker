@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "Constants/GraphicsConst.h"
 #include <cmath>
+#include "Settings/Settings.h"
 
 Game::Game() : renderer(assetManager, virtualScreenSizeX, virtualScreenSizeY, mouseVirtual), sceneManager(renderer)
 {
@@ -10,7 +11,7 @@ Game::Game() : renderer(assetManager, virtualScreenSizeX, virtualScreenSizeY, mo
 
 void Game::run()
 {
-    while (!WindowShouldClose()) {
+    while (!WindowShouldClose() && !shouldExit) {
         /*          update logic            */
         float dt = GetFrameTime();
         mouseVirtual = getMouseVirtual();
@@ -53,11 +54,16 @@ void Game::init()
 
     //             vert sync         resize window               windows close, resize, hide buttons 
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_UNDECORATED);
-    
+
     //any size can be given width        height         window name
-    InitWindow(GetScreenWidth(), GetScreenHeight(), "Biome Maker");
-    SetTargetFPS(60);     // fps
-    //ToggleBorderlessWindowed(); // resize window
+    InitWindow(virtualScreenSizeX, virtualScreenSizeY, "Biome Maker");
+
+    Settings settings; // load settings from config file
+    const SettingsData& data = settings.GetData();
+
+    SetWindowSize(data.windowWidth, data.windowHeight); // to init settings correctly resize window instead of init it with correct size
+    SetTargetFPS(data.maxFPS);     // fps
+    SetExitKey(KEY_NULL); // turn off escape
 
     virtualScreen = LoadRenderTexture(virtualScreenSizeX, virtualScreenSizeY); // virtual screen
 
