@@ -1,7 +1,7 @@
 #include "Items/ItemBase/Item.h"
 #include "ItemFood.h"
 
-ItemBerry::ItemBerry() : ConsumableItem(BuffEffect(BuffType::Heal, 0.1f)) 
+ItemBerry::ItemBerry() : ConsumableItem({BuffType::Heal, 0.1f, 0.0f}) // type of buff + how strong + duration 
 {
     id = ItemID::BERRY;
     name = "Berry";

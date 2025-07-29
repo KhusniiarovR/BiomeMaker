@@ -1,6 +1,4 @@
-#ifndef GAMEUI_H
-#define GAMEUI_H
-
+#pragma once
 #include "Core/Render/Renderer.h"
 #include "Entities/Player/Player.h"
 
@@ -9,7 +7,7 @@ enum class UIState {
     Full
 };
 
-class GameUi {
+class GameUi { // in game states (inventory)
 private:
     UIState state = UIState::Compact;
     Player* player = nullptr;
@@ -19,8 +17,6 @@ public:
     void render(Renderer& renderer) const;
     void setPlayer(Player* p) { player = p; }
     
-private:    
+private:
     void changeState();
 };
-
-#endif // GAMEUI_H

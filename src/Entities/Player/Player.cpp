@@ -43,7 +43,7 @@ void Player::update(float dt)
 
 void Player::render(Renderer& renderer) const 
 {
-    animation.draw(renderer.getTexture("playerTilemap"), position);
+    animation.render(renderer.getTexture("playerTilemap"), position);
 
     DrawCircleLinesV(position, handDistance * worldTileSize, YELLOW); // yellow area where items work
 }

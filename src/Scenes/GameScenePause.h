@@ -1,10 +1,8 @@
-#ifndef GAMESCENEPAUSE_H
-#define GAMESCENEPAUSE_H
-
+#pragma once
 #include "Utilities/Graphics/Button.h"
 #include "Core/Render/Renderer.h"
 
-class PauseMenu {
+class PauseMenu { // in game mini menu
 private:    
     Button resumeButton;
     Button exitButton;
@@ -16,5 +14,3 @@ public:
     void update(Vector2 mouseVirtual);
     void render(Renderer& renderer) const;
 };
-
-#endif // GAMESCENEPAUSE_H

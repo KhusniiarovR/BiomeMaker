@@ -6,7 +6,7 @@
 
 enum class NotificationType { Info, Warning, Error };
 
-class NotificationManager {
+class NotificationManager { // class that is higher than everything (used for error showing)
 public:
     struct Notification {
         std::string text;
@@ -16,18 +16,20 @@ public:
         Notification(const std::string& msg, NotificationType type, float durationSec = 3.0f) : text(msg), type(type), timer(durationSec), duration(durationSec) {}
     };
     
+    // singleton
     static NotificationManager& getInstance();
     NotificationManager(const NotificationManager&) = delete;
     void operator=(const NotificationManager&) = delete;
-    void show(const std::string& message, NotificationType type, float duration = 8.0f);
-
+    
+    void show(const std::string& message, NotificationType type, float duration = 8.0f); // to make notification
     void update(float dt);
     void render(Renderer& renderer) const;
     
 private:
     NotificationManager() = default;
-    
-    std::vector<Notification> notifications;
+    std::vector<Notification> notifications; // queue if there are a lot of notifications
+
+    // size parameters
     const int padding = 8;
     const int spacing = 6;
     const int minWidth = 100;

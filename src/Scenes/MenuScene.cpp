@@ -60,16 +60,17 @@ void MenuScene::render() const
     quitButton.render(renderer);
 }
 
-void MenuScene::updateChangeScene() {
-    if (InputManager::GetInstance().IsActionPressed(Action::ESCAPE)) {
-        shouldExit = true; 
-    }
+void MenuScene::updateChangeScene() 
+{
+    if (InputManager::GetInstance().IsActionPressed(Action::ESCAPE)) { shouldExit = true; }
 }
 
-bool MenuScene::shouldTransition() const {
+bool MenuScene::shouldTransition() const 
+{
     return changeScene;
 }
 
-SceneType MenuScene::getNextScene() const {
+SceneType MenuScene::getNextScene() const 
+{
     return nextScene;
 }

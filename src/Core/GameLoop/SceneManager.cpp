@@ -55,19 +55,19 @@ void SceneManager::update(float dt, Vector2 mouseVirtual)
     else { mycerr << "no current scene"; }
 }
 
-void SceneManager::render() // draw everything
+void SceneManager::render() // render everything
 {
     if (currentScene)
     {
-        BeginMode2D(renderer.GetCamera()); // draw everything in camera
+        BeginMode2D(renderer.GetCamera()); // render everything in camera
         is2DModeDone = false; // reset camera mode flag 
 
         ClearBackground(BLACK); // clear screen
-        currentScene->render(); // draw scene
+        currentScene->render(); // render scene
 
         if (!is2DModeDone) EndMode2D();
 
-        NotificationManager::getInstance().render(renderer); // draw notifications above everything
+        NotificationManager::getInstance().render(renderer); // render notifications above everything
     }
     else { mycerr << "no current scene"; }
 }

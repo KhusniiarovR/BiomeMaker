@@ -6,9 +6,10 @@
 class Game {
 private:
     AssetManager assetManager; // for loading and unloading textures, sounds and fonts
-    Renderer renderer; // to draw textures, sounds and fonts
+    Renderer renderer; // to render textures, sounds and fonts
     SceneManager sceneManager; // manage scenes
     Vector2 mouseVirtual; // mouse for virtual screen
+    Camera2D camera; // camera
 
 public:
     Game();

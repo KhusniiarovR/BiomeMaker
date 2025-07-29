@@ -4,7 +4,7 @@
 #include <cmath>
 #include "Settings/Settings.h"
 
-Game::Game() : renderer(assetManager, virtualScreenSizeX, virtualScreenSizeY, mouseVirtual), sceneManager(renderer)
+Game::Game() : renderer(assetManager, camera,virtualScreenSizeX, virtualScreenSizeY, mouseVirtual), sceneManager(renderer)
 {
     init();
 }
@@ -71,6 +71,12 @@ void Game::init()
 
     InitAudioDevice(); // raylib sounds init
     assetManager.init(); // init default assets
+
+    // camera
+    camera.offset = {0, 0};
+    camera.zoom = 1.0f;
+    camera.rotation = 0.0f;
+    camera.target = {0, 0};
 }
 
 void Game::stop()

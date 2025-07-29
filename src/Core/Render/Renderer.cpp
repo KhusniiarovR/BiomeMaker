@@ -5,14 +5,12 @@
 #include "Constants/TilemapConst.h"
 #include <cmath>
 
-Renderer::Renderer(AssetManager& assets, int width, int height, Vector2& mouseVirtual)
-: assetManager(assets), virtualWidth(width), virtualHeight(height), mouseVirtual(mouseVirtual) 
-{
-    camera.offset = {0, 0};
-    camera.zoom = 1.0f;
-    camera.rotation = 0.0f;
-    camera.target = {0, 0};
-}
+Renderer::Renderer(AssetManager& assets, Camera2D& camera, int width, int height, Vector2& mouseVirtual)
+: assetManager(assets), 
+camera(camera),
+virtualWidth(width), 
+virtualHeight(height), 
+mouseVirtual(mouseVirtual) {}
 
 Camera2D& Renderer::GetCamera() 
 {
@@ -50,7 +48,7 @@ void Renderer::drawText(const std::string& text, Vector2 position,
     
     Vector2 dimensions = MeasureTextEx(font, text.c_str(), size, spacing);
     
-    // draw from position or make center of the text equal to position
+    // render from position or make center of the text equal to position
     if (isCentered) 
     {
         position.x -= 0.5f * dimensions.x;
@@ -84,7 +82,7 @@ void Renderer::drawTextGradient(const std::string& text, Vector2 position,
     Vector2 totalDim = MeasureTextEx(font, text.c_str(), size, spacing);
 
     Vector2 basePos = position;
-    // draw from position or make center of the text equal to position
+    // render from position or make center of the text equal to position
     if (isCentered) 
     {
         basePos.x -= 0.5f * totalDim.x;

@@ -1,6 +1,13 @@
 #pragma once
 
-enum class BuffType { // list of buffs(debuffs)
+/*
+to make new buff
+1. add it to enum BuffType
+2. in BuffSystem.cpp initEffects() make logic
+3. if this is food then make food item items/ItemsAll/Food/ItemFood.cpp
+*/
+
+enum class BuffType { // list of buffs
     Heal,
     Speed
 };

@@ -18,6 +18,7 @@ void NotificationManager::show(const std::string& message, NotificationType type
         case NotificationType::Info:    PlaySound(AssetManager::instance().getSound("notification")); break;
         case NotificationType::Warning: PlaySound(AssetManager::instance().getSound("notification")); break;
         case NotificationType::Error:   PlaySound(AssetManager::instance().getSound("notification")); break;
+        // todo different sounds
     }
 }
 
@@ -38,25 +39,25 @@ void NotificationManager::render(Renderer& renderer) const
 
         Color textColor = Fade(DARKGRAY, alpha);
         Color bgColor;
-        //std::string prefix; TODO prefix icons
+        std::string prefix; //TODO prefix icons
         switch (n.type) 
         {
             case NotificationType::Info:
                 bgColor = Fade(BLUE, alpha);
-                //prefix = "ℹ️ ";
+                prefix = ":) ";
                 break;
             case NotificationType::Warning: 
                 bgColor = Fade(ORANGE,alpha);
-                //prefix = "⚠️ ";
+                prefix = "! ";
                 break;
             case NotificationType::Error:
                 bgColor = Fade(RED, alpha);
-                //prefix = "❌ ";
+                prefix = "X ";
                 break;
         }
 
         Font& font = renderer.getFont("silkscreen", textSize);
-        auto lines = separateText(n.text, font, textSize, maxWidth - padding * 2);
+        auto lines = separateText(prefix + n.text, font, textSize, maxWidth - padding * 2);
         int lineHeight = static_cast<int>(textSize * 1.1f);
 
         float maxLineWidth = 0.0f;

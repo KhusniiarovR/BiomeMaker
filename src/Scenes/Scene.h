@@ -4,7 +4,7 @@
 
 class Scene {
 protected:
-    Renderer& renderer; // to draw everything in scenes
+    Renderer& renderer; // to render everything in scenes
 
     bool changeScene = false; // change scene logic
     SceneType nextScene = SceneType::None; // change scene logic

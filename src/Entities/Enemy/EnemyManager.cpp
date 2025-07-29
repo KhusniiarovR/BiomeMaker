@@ -16,7 +16,7 @@ void EnemyManager::update(float dt)
     for (auto& enemy : enemies) { enemy.update(dt); } // update enemies
 }
 
-void EnemyManager::render(Renderer& renderer) const  // draw enemies
+void EnemyManager::render(Renderer& renderer) const  // render enemies
 {
     for (const auto& enemy : enemies) { enemy.render(renderer); }
 }

@@ -3,12 +3,10 @@
 #include <string>
 #include "AssetManager.h"
 
-// TODO make camera higher than renderer
-
 class Renderer {
 private:
     AssetManager& assetManager; // to take assets
-    Camera2D camera; // camera 
+    Camera2D& camera; // camera 
     
     int virtualWidth; // virtual screen X
     int virtualHeight;// virtual screen Y
@@ -17,7 +15,7 @@ private:
     float bgoffset = 0.0f; // for main menu background
 
 public:
-    Renderer(AssetManager& assetManager, int width, int height, Vector2& mouseVirtual);
+    Renderer(AssetManager& assetManager, Camera2D& camera, int width, int height, Vector2& mouseVirtual);
     
     void updateCameraTarget(Vector2 position);
     Camera2D& GetCamera();

@@ -6,18 +6,22 @@
 #include "Ui/GameUi.h"
 #include "GameScenePause.h"
 
-class GameScene : public Scene {
+class GameScene : public Scene { // Game
 private:
-    World world;             // world (chunks(tiles, objects))
-    CollisionWorld collision;// easy access to world objects
+    // world
+    World world;             // (chunks(tiles, objects))
+    CollisionWorld collision;// easy access to world objects collisions
 
+    // player
     Player player;           // player and inventory
     GameUi ui;               // shows user interface (must be drawn last)
 
-    EnemyManager enemies;    // vector with enemies
+    // vector with enemies
+    EnemyManager enemies;
 
-    bool paused = false;     // pause
-    PauseMenu pauseMenu;     // pause
+    // pause
+    bool paused = false;
+    PauseMenu pauseMenu;
 
 public:
     GameScene(Renderer& renderer, const std::string& worldName);

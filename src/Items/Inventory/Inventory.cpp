@@ -42,13 +42,13 @@ void Inventory::update(Vector2 mouseVirtual, bool full)
 
 void Inventory::render(Renderer& renderer, bool full) const 
 {
-    /* draw inventory */
+    /* render inventory */
     Texture2D& itemTilemap = renderer.getTexture("itemTilemap");
     
-    int slotsToDraw = full ? slotCount : std::min(10, slotCount); // draw full or not
+    int slotsToDraw = full ? slotCount : std::min(10, slotCount); // render full or not
     int rowsToDraw = (slotsToDraw + invColumns - 1) / invColumns;
     
-    // draw slot
+    // render slot
     for (int i = 0; i < slotsToDraw; ++i) 
     {
         int col = i % invColumns;
@@ -61,7 +61,7 @@ void Inventory::render(Renderer& renderer, bool full) const
         DrawRectangleRec(slotRect, DARKGRAY);
         DrawRectangleLinesEx(slotRect, 2, (i == selectedSlot) ? RED : LIGHTGRAY);
         
-        // draw item
+        // render item
         const ItemStack& stack = getSlot(i);
         if (!stack.isEmpty()) 
         {
@@ -76,7 +76,7 @@ void Inventory::render(Renderer& renderer, bool full) const
             
             DrawTexturePro(itemTilemap, src, dst, {0, 0}, 0.0f, WHITE);
             
-            // draw durability for tools
+            // render durability for tools
             const ItemToolBase* tool = dynamic_cast<const ItemToolBase*>(&item);
             if (tool) 
             {
@@ -98,12 +98,12 @@ void Inventory::render(Renderer& renderer, bool full) const
                 DrawRectangleLinesEx(backBar, 1, DARKGRAY);
             }
             
-            // draw items amount
+            // render items amount
             if (stack.count > 1) { renderer.drawText(std::to_string(stack.count), {x + invSlotSize-5,  y + invSlotSize-5}, 16, BLACK, true, false); }
         }
     }
     
-    // draw item description if hovered
+    // render item description if hovered
     if (full && hoveredSlot != -1) 
     {
         const ItemStack& stack = getSlot(hoveredSlot);

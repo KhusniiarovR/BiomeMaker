@@ -3,16 +3,19 @@
 
 ActiveBuff::ActiveBuff(const BuffEffect& effect) : effect(effect), remainingTime(effect.duration) {}
 
-BuffSystem::BuffSystem(Player& playerRef) : player(playerRef) {}
+BuffSystem::BuffSystem(Player& playerRef) : player(playerRef) 
+{
+    initEffects();
+}
 
 void BuffSystem::addBuff(const BuffEffect& effect) 
 {
     if (effect.duration <= 0.0f) 
     {
-        applyEffectImmediate(effect);
+        applyEffectInstant(effect);
         return;
     }
-    applyEffectStart(effect);
+    applyEffectTimed(effect);
     buffs.emplace_back(effect);
 }
 
@@ -26,46 +29,40 @@ void BuffSystem::update(float dt)
 
         if (buff.remainingTime <= 0.0f) 
         {
-            removeEffect(buff.effect);
+            removeEffectTimed(buff.effect);
             buffs.erase(buffs.begin() + i);
         } 
         else { ++i; }
     }
 }
 
-void BuffSystem::applyEffectImmediate(const BuffEffect& effect) 
+void BuffSystem::applyEffectInstant(const BuffEffect& effect) 
 {
-    switch (effect.type) 
-    {
-        case BuffType::Heal:
-            player.heal(effect.value);
-        break;
-        default:
-        break;
-    }
+    auto it = instantEffects.find(effect.type);
+    if (it != instantEffects.end()) { it->second(effect.value); }
 }
 
-void BuffSystem::applyEffectStart(const BuffEffect& effect) 
+void BuffSystem::applyEffectTimed(const BuffEffect& effect) 
 {
-    // TODO merge switch
-    switch (effect.type) // everything here must be duplicated in removeEffect
-    {
-        case BuffType::Speed:
-            player.setSpeedMultiplier(player.getSpeedMultiplier() + effect.value);
-        break;
-        default:
-        break;
-    }
+    auto it = timedEffects.find(effect.type);
+    if (it != timedEffects.end()) { it->second.apply(effect.value); }
 }
 
-void BuffSystem::removeEffect(const BuffEffect& effect) 
+void BuffSystem::removeEffectTimed(const BuffEffect& effect) 
 {
-    switch (effect.type) // everything here must be duplicated in applyEffectStart
-    {
-        case BuffType::Speed:
-            player.setSpeedMultiplier(player.getSpeedMultiplier() - effect.value);
-        break;
-        default:
-        break;
-    }
+    auto it = timedEffects.find(effect.type);
+    if (it != timedEffects.end()) { it->second.remove(effect.value); }
+}
+
+void BuffSystem::initEffects() {
+    // Instant buffs
+    instantEffects[BuffType::Heal] = [this](float value) {
+        player.heal(value);
+    };
+
+    // Timed buffs
+    timedEffects[BuffType::Speed] = {
+        [this](float value) { player.setSpeedMultiplier(player.getSpeedMultiplier() + value); },  // apply
+        [this](float value) { player.setSpeedMultiplier(player.getSpeedMultiplier() - value); }   // remove
+    };
 }

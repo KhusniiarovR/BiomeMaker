@@ -4,85 +4,89 @@
 #include <cmath>
 
 Enemy::Enemy(Vector2 initPos, Player &player, const CollisionBase* collision) 
-: Entity(initPos), player(player), collision(collision) {}
-
-void Enemy::update(float dt) {
-    Vector2 toPlayer = { player.position.x - position.x, player.position.y - position.y};
-
-    float dist = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
-    if (dist < 1e-6f) return;
-
-    float moveSpeed = speed * dt;
-    float dx = toPlayer.x / dist * moveSpeed;
-    float dy = toPlayer.y / dist * moveSpeed;
-
-    tryMove(dx, dy);
-    
-    float absX = fabsf(dx);
-    float absY = fabsf(dy);
-    if (absX > absY) {
-        index = (dx > 0) ? 3 : 2;
-    } 
-    else {
-        index = (dy > 0) ? 1 : 0;
-    }
+: Entity(initPos), 
+player(player), 
+collision(collision),
+animation(entityTileSize, entityTileSize) 
+{
+    animation.addAnimation({"idle", 0, 4, 0.4f, true});
+    animation.addAnimation({"walkDown", 4, 4, 0.1f, true}); // todo not player textures
 }
 
-void Enemy::tryMove(float dx, float dy) {
-    Rectangle oldBox = getBoundingBox();
+void Enemy::update(float dt) 
+{
+    // movement
+    Vector2 toPlayer = { player.position.x - position.x, player.position.y - position.y};
+    float dist = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
+    
+    if (dist < 1.0f) { animation.play("idle"); animation.update(dt); return; } // inside player
 
+    float moveSpeed = speed * dt * speedMultiplier;
+    float dx = toPlayer.x / dist * moveSpeed; 
+    float dy = toPlayer.y / dist * moveSpeed;
+
+    bool moved = tryMove(dx, dy);
+    if (moved)
+    {   
+        float absX = fabsf(dx); 
+        float absY = fabsf(dy);
+
+        if (absX > absY) // horizontally
+        { 
+            animation.play("walkDown");
+            animation.setFlip(dx < 0); // left or right
+        } 
+        else // vertically
+        { 
+            if (dy < 0) { animation.play("walkDown"); } // up
+            else { animation.play("walkDown"); } // down
+        }
+    }
+    else { animation.play("idle"); }
+
+    animation.update(dt);
+}
+
+void Enemy::render(Renderer& renderer) const 
+{
+    animation.render(renderer.getTexture("playerTilemap"), position);
+}
+
+Vector2 Enemy::getPosition() const 
+{
+    return position;
+}
+
+Rectangle Enemy::getBoundingBox() const 
+{
+    float width = 0.45f * entityTileSize;
+    float height = 0.9f * entityTileSize;
+    return { position.x - width / 2.0f, position.y - height / 2.0f, width, height };
+}
+
+bool Enemy::tryMove(float dx, float dy) 
+{
+    bool moved = false;
+    Rectangle oldBox = getBoundingBox();
     Rectangle newBox = oldBox;
     newBox.x += dx;
     newBox.y += dy;
 
-    if (!collision || !collision->checkCollision(newBox)) {
+    if (!collision || !collision->checkCollision(newBox)) 
+    {
         position.x += dx;
         position.y += dy;
+        moved = true;
     }
-    else {
+    else 
+    {
         newBox = oldBox;
         newBox.x += dx;
-        if (!collision->checkCollision(newBox)) {
-            position.x += dx;
-        }
+        if (!collision->checkCollision(newBox)) { position.x += dx; moved = true; }
 
         newBox = oldBox;
         newBox.y += dy;
-        if (!collision->checkCollision(newBox)) {
-            position.y += dy;
-        }
+        if (!collision->checkCollision(newBox)) { position.y += dy; moved = true; }
     }
-}
-
-void Enemy::render(Renderer& renderer) const {
-    Texture2D& enemyTexture = renderer.getTexture("entityTilemap");
-
-    int indexX = (index + tilemapOffset) % entityTilesPerRow;
-    int indexY = (index + tilemapOffset) / entityTilesPerRow;
-
-    Rectangle source = {
-        (float)(indexX * entityTileSize),
-        (float)(indexY * entityTileSize),
-        (float)entityTileSize,
-        (float)entityTileSize
-    };
-
-    Rectangle dest = { position.x, position.y, entityTileSize , entityTileSize};
-    Vector2 origin = { entityTileSize / 2.0f, entityTileSize / 2.0f };
-    DrawTexturePro(enemyTexture, source, dest, origin, 0.0f, WHITE);
-}
-
-Vector2 Enemy::getPosition() const {
-    return position;
-}
-
-Rectangle Enemy::getBoundingBox() const {
-    float width = 0.45f * entityTileSize;
-    float height = 0.9f * entityTileSize;
-    return {
-        position.x - width / 2.0f,
-        position.y - height / 2.0f,
-        width,
-        height
-    };
+    return moved;
 }
