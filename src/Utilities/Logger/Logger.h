@@ -3,28 +3,33 @@
 #include <cstring>
 
 namespace ramir {
-    class Logger {
-    public:
-        Logger(const char* file, int line) {
-            const char* relative = strstr(file, "src\\");
-            if (!relative) relative = file;
-            stream << relative << "::" << line << "::";
-        }
 
-        template<typename T>
-        Logger& operator<<(const T& value) {
-            stream << value;
-            return *this;
-        }
+class Logger { // prints info with file name and line
+public:
+    Logger(const char* file, int line) 
+    {
+        const char* relative = strstr(file, "src\\");
+        if (!relative) { relative = file; }
+        stream << relative << "::" << line << "::";
+    }
 
-        ~Logger() {
-            stream << "\n";
-            std::cerr << stream.str();
-        }
+    template<typename T>
+    Logger& operator<<(const T& value) 
+    {
+        stream << value;
+        return *this;
+    }
 
-    private:
-        std::ostringstream stream;
-    };
+    ~Logger() 
+    {
+        stream << "\n";
+        std::cerr << stream.str();
+    }
+
+private:
+    std::ostringstream stream;
+};
+
 }
 
 #define mycerr ramir::Logger(__FILE__, __LINE__)

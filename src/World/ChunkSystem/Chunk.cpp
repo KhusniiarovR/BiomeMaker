@@ -4,15 +4,19 @@
 #include "Constants/TilemapConst.h"
 #include "Object.h"
 
-Chunk::Chunk(int cx, int cy, const std::vector<ChunkHeader>& headers, std::ifstream& file) : x(cx), y(cy) {
-    Generate(headers, file);
+Chunk::Chunk(int cx, int cy, const std::vector<ChunkHeader>& headers, std::ifstream& file) : x(cx), y(cy)
+{
+    generate(headers, file);
 }
 
-void Chunk::Generate(const std::vector<ChunkHeader>& headers, std::ifstream& file)  {
-    if (x < 0 || x >= numberOfChunks || y < 0 || y >= numberOfChunks) {
-        for (int ty = 0; ty < chunkSize; ++ty)
-            for (int tx = 0; tx < chunkSize; ++tx)
-                tiles[ty][tx] = 0;
+void Chunk::generate(const std::vector<ChunkHeader>& headers, std::ifstream& file)
+{
+    if (x < 0 || x >= numberOfChunks || y < 0 || y >= numberOfChunks) 
+    {
+        for (int ty = 0; ty < chunkSize; ++ty) 
+        {
+            for (int tx = 0; tx < chunkSize; ++tx) { tiles[ty][tx] = 0; }
+        }
         return;
     }
 
@@ -24,7 +28,8 @@ void Chunk::Generate(const std::vector<ChunkHeader>& headers, std::ifstream& fil
         int tx = 0, ty = 0;
         std::streampos biome_end = header.offsetBiome + header.dataSizeBiome;
 
-        while (file.tellg() < biome_end) {
+        while (file.tellg() < biome_end) 
+        {
             unsigned char count;
             uint8_t biomeId;
 
@@ -33,17 +38,19 @@ void Chunk::Generate(const std::vector<ChunkHeader>& headers, std::ifstream& fil
 
             const Biome* biome = (biomeId < BIOMES.size()) ? &BIOMES[biomeId] : &BIOMES[0];
 
-            for (int i = 0; i < count; ++i) {
+            for (int i = 0; i < count; ++i) // different look tiles system
+            {
                 if (ty >= chunkSize) break;
 
                 int worldX = this->x * chunkSize + tx;
                 int worldY = this->y * chunkSize + ty;
                 uint32_t hash = worldX * 73856093u ^ worldY * 19349663u;
 
-                tiles[ty][tx] = ChooseTileIndex(biome, hash);
+                tiles[ty][tx] = chooseTileIndex(biome, hash);
 
                 tx++;
-                if (tx >= chunkSize) {
+                if (tx >= chunkSize) 
+                {
                     tx = 0;
                     ty++;
                 }
@@ -59,7 +66,8 @@ void Chunk::Generate(const std::vector<ChunkHeader>& headers, std::ifstream& fil
         objects.clear();
         objects.reserve(count);
 
-        for (uint16_t i = 0; i < count; ++i) {
+        for (uint16_t i = 0; i < count; ++i) 
+        {
             FileObject fobj;
             file.read(reinterpret_cast<char*>(&fobj), sizeof(fobj));
 
@@ -77,12 +85,15 @@ void Chunk::Generate(const std::vector<ChunkHeader>& headers, std::ifstream& fil
     }
 }
 
-void Chunk::DrawTiles(Texture2D& tilemap) const {
+void Chunk::renderTiles(Texture2D& tilemap) const 
+{
     const int chunkX = this->x * chunkSize;
     const int chunkY = this->y * chunkSize;
 
-    for (int y = 0; y < chunkSize; y++) {
-        for (int x = 0; x < chunkSize; x++) {
+    for (int y = 0; y < chunkSize; y++) 
+    {
+        for (int x = 0; x < chunkSize; x++) 
+        {
             int worldX = (chunkX + x) * worldTileSize;
             int worldY = (chunkY + y) * worldTileSize;
 
@@ -99,9 +110,11 @@ void Chunk::DrawTiles(Texture2D& tilemap) const {
     }
 }
 
-void Chunk::DrawObjects(Texture2D& tilemap) const {
-    for (const Object& obj : objects) {
-        if (obj.type == ObjectType::OBJECT_NONE) continue;
+void Chunk::renderObjects(Texture2D& tilemap) const 
+{
+    for (const Object& obj : objects) 
+    {
+        if (obj.type == ObjectType::OBJECT_NONE)  { continue; }
 
         int objectTileIndex = objectTypeToTile(obj.type);
         int objTileX = (objectTileIndex % worldTilesPerRow) * worldSourceTileSize;
@@ -112,7 +125,8 @@ void Chunk::DrawObjects(Texture2D& tilemap) const {
         auto it = objectPropertiesMap.find(obj.type);
         float widthPx = worldTileSize;
         float heightPx = worldTileSize;
-        if (it != objectPropertiesMap.end()) {
+        if (it != objectPropertiesMap.end()) 
+        {
             widthPx = it->second.size.x * worldTileSize;
             heightPx = it->second.size.y * worldTileSize;
         }
@@ -122,20 +136,22 @@ void Chunk::DrawObjects(Texture2D& tilemap) const {
     }
 }
 
-uint8_t Chunk::ChooseTileIndex(const Biome* biome, uint32_t seed) {
+uint8_t Chunk::chooseTileIndex(const Biome* biome, uint32_t seed) 
+{
     float roll = (seed % 10000) / 10000.0f;
     float cumulative = 0.0f;
     
-    for (const auto& [index, chance] : biome->tileVariants) {
+    for (const auto& [index, chance] : biome->tileVariants) 
+    {
         cumulative += chance;
-        if (roll < cumulative)
-            return index;
+        if (roll < cumulative) { return index; }
     }
 
     return biome->tileVariants.front().first;
 }
 
-int Chunk::objectTypeToTile(ObjectType objectType) const {
+int Chunk::objectTypeToTile(ObjectType objectType) const 
+{
     auto it = objectTileMap.find(objectType);
     return (it != objectTileMap.end()) ? it->second : 0;
 }

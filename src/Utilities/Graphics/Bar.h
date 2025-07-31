@@ -1,11 +1,9 @@
-#ifndef BAR_H
-#define BAR_H
-
+#pragma once
 #include "raylib.h"
 #include <string>
 #include "Core/Render/Renderer.h"
 
-class BaseBar {
+class BaseBar { // basic bar class
 protected:
     Rectangle barBack;
     Color backColor = GRAY;
@@ -20,11 +18,12 @@ public:
             std::string name = "", int fontSize = 20, bool showPercent = false);
     virtual void update(float dt) = 0;
     virtual void render(Renderer& renderer) const;
+
     void setProgress(float value);
     float getProgress() const;
 };
 
-class TimerBar : public BaseBar {
+class TimerBar : public BaseBar { // bar with timer
 private:
     float speed;
     bool increasing;
@@ -34,20 +33,16 @@ public:
              Color fill = GREEN, Color back = GRAY,
              std::string name = "", int fontSize = 20, bool showPercent = false);
     void update(float dt) override;
-    void setIncreasing(bool inc);
+
+    void setIncreasing(bool inc); // go up or down
 };
 
-class ValueBar : public BaseBar {
+class ValueBar : public BaseBar { // bar with value
 public:
     ValueBar(Vector2 position, Vector2 size, Color fill = GREEN, Color back = GRAY,
              std::string name = "", int fontSize = 20, bool showPercent = false);
     void update(float dt) override {}
+
     void increase(float amount);
     void decrease(float amount);
 };
-
-
-
-
-
-#endif // BAR_H

@@ -1,6 +1,4 @@
-#ifndef OBJECT_H
-#define OBJECT_H
-
+#pragma once
 #include <cstdint>
 #include <unordered_map>
 #include <vector>
@@ -41,22 +39,22 @@ struct Object {
     ObjectType type = OBJECT_NONE;
     Vector2 position = {0, 0};
 
-    Rectangle getBoundingBox(float tileSize) const {
+    Rectangle getBoundingBox(float tileSize) const 
+    {
         auto it = objectPropertiesMap.find(type);
-        if (it == objectPropertiesMap.end()) return {0, 0, 0, 0};
+        if (it == objectPropertiesMap.end()) { return {0, 0, 0, 0}; }
 
         Vector2 size = { it->second.size.x * tileSize, it->second.size.y * tileSize };
         return { position.x, position.y, size.x, size.y };
     }
 
-    bool hasCollision() const {
+    bool hasCollision() const 
+    {
         auto it = objectPropertiesMap.find(type);
         return (it != objectPropertiesMap.end()) ? it->second.hasCollision : false;
     }
 
-    bool isValid() const {
-        return type != OBJECT_NONE;
-    }
+    bool isValid() const { return type != OBJECT_NONE; }
 };
 
 struct ObjectRule {
@@ -86,5 +84,3 @@ struct FileObject {
     uint8_t localY;
 };
 #pragma pack(pop)
-
-#endif // OBJECT_H

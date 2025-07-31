@@ -3,54 +3,53 @@
 #include <Constants/GraphicsConst.h>
 
 Button::Button(Vector2 pos, Vector2 size, std::string text, Color textColor, float rounding, Color buttonColor)
-    : position({pos.x * virtualScreenSizeX, pos.y * virtualScreenSizeY}),
-    size({size.x * virtualScreenSizeX, size.y * virtualScreenSizeY}),
-    text(std::move(text)),
-    textColor(textColor),
-    rounding(rounding),
-    buttonColor(buttonColor) {}
+: position({pos.x * virtualScreenSizeX, pos.y * virtualScreenSizeY}),
+size({size.x * virtualScreenSizeX, size.y * virtualScreenSizeY}),
+text(std::move(text)),
+textColor(textColor),
+rounding(rounding),
+buttonColor(buttonColor) {}
 
-void Button::setTexture(Texture2D& tex) {
+void Button::setTexture(Texture2D& tex) 
+{
     texture = tex;
     hasTexture = true;
 }
 
-void Button::setOnClick(std::function<void()> handler) {
+void Button::setOnClick(std::function<void()> handler) 
+{
     onClickHandler = std::move(handler);
 }
 
-void Button::update(Vector2 mouseVirtual) {
+void Button::update(Vector2 mouseVirtual) 
+{
     Rectangle rect = { position.x, position.y, size.x, size.y };
-    if (CheckCollisionPointRec(mouseVirtual, rect)) {
+    if (CheckCollisionPointRec(mouseVirtual, rect)) 
+    {
         isHovered = true;
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            if (onClickHandler) onClickHandler();
-        }
+
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) { if (onClickHandler) { onClickHandler(); } }
     } 
-    else {
-        isHovered = false;
-    }
+    else { isHovered = false; }
 }
 
-void Button::render(Renderer& renderer) const {
+void Button::render(Renderer& renderer) const 
+{
     Rectangle rect = { position.x, position.y, size.x, size.y };
 
-    if (hasTexture) {
+    if (hasTexture) 
+    {
         Rectangle source;
-        source.width = (float)texture.width / 2;
+        source.width = (float)texture.width / 2; // for hovered and unhovered states
         source.height = (float)texture.height;
         source.x = isHovered ? source.width : 0;
         source.y = 0;
         DrawTexturePro(texture, source, rect, {0, 0}, 0.0f, WHITE);
     } 
-    else {
-        DrawRectangleRounded(rect, rounding, 10, isHovered ? DARKGRAY : buttonColor);
-    }
+    else { DrawRectangleRounded(rect, rounding, 10, isHovered ? DARKGRAY : buttonColor); }
 
     Vector2 center = { position.x + size.x / 2.0f, position.y + size.y / 2.0f };
     int fontSize = size.x / (isHovered ? 5.0f : 6.4f);
 
-    renderer.drawText(text, center, fontSize,
-        isHovered ? YELLOW : textColor,
-        true, false);
+    renderer.drawText(text, center, fontSize, isHovered ? YELLOW : textColor, true, false);
 }

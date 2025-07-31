@@ -1,6 +1,4 @@
-#ifndef CHUNK_H
-#define CHUNK_H
-
+#pragma once
 #include "Biome.h"
 #include "Object.h"
 #include <fstream>
@@ -11,20 +9,27 @@
 #include "Constants/WorldConst.h"
 
 class Chunk {
-public:
+private:
     int x, y;
+    bool isModified = false;
     std::vector<std::vector<uint8_t>> tiles{chunkSize, std::vector<uint8_t>(chunkSize)};
     std::vector<Object> objects;
-    bool isModified = false;
 
+public:
     Chunk(int cx, int cy, const std::vector<ChunkHeader>& headers, std::ifstream& file);
-    void Generate(const std::vector<ChunkHeader>& headers, std::ifstream& file);
-    void DrawTiles(Texture2D& tilemap) const;
-    void DrawObjects(Texture2D& tilemap) const;
+    void generate(const std::vector<ChunkHeader>& headers, std::ifstream& file);
+    void renderTiles(Texture2D& tilemap) const;
+    void renderObjects(Texture2D& tilemap) const;
+
+    // getters and setters
+    bool getModified() const { return isModified; }
+    void setModified(bool mod) { isModified = mod; }
+    const std::vector<std::vector<uint8_t>>& getTiles() const { return tiles; }
+    std::vector<std::vector<uint8_t>>& getTiles() { return tiles; }
+    const std::vector<Object>& getObjects() const { return objects; }
+    std::vector<Object>& getObjects() { return objects; }
 
 private:
-    uint8_t ChooseTileIndex(const Biome* biome, uint32_t seed);
+    uint8_t chooseTileIndex(const Biome* biome, uint32_t seed);
     int objectTypeToTile(ObjectType objectType) const;
 };
-
-#endif //CHUNK_H

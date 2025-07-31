@@ -2,6 +2,8 @@
 #include <raylib.h>
 #include "Utilities/Logger/Logger.h"
 
+// functionы to translate raylib keys to string and vice versa
+
 inline std::string GetNameFromKey(int key) 
 {
     // A-Z
@@ -60,17 +62,17 @@ inline int GetKeyFromName(const std::string& name)
     }
 
     // special
-    if (upper == "SPACE")     return KEY_SPACE;
-    if (upper == "ENTER")     return KEY_ENTER;
-    if (upper == "TAB")       return KEY_TAB;
-    if (upper == "ESCAPE")    return KEY_ESCAPE;
-    if (upper == "BACKSPACE") return KEY_BACKSPACE;
-    if (upper == "DELETE")    return KEY_DELETE;
+    if (upper == "SPACE")         return KEY_SPACE;
+    if (upper == "ENTER")         return KEY_ENTER;
+    if (upper == "TAB")           return KEY_TAB;
+    if (upper == "ESCAPE")        return KEY_ESCAPE;
+    if (upper == "BACKSPACE")     return KEY_BACKSPACE;
+    if (upper == "DELETE")        return KEY_DELETE;
 
-    if (upper == "LEFT")      return KEY_LEFT;
-    if (upper == "RIGHT")     return KEY_RIGHT;
-    if (upper == "UP")        return KEY_UP;
-    if (upper == "DOWN")      return KEY_DOWN;
+    if (upper == "LEFT")          return KEY_LEFT;
+    if (upper == "RIGHT")         return KEY_RIGHT;
+    if (upper == "UP")            return KEY_UP;
+    if (upper == "DOWN")          return KEY_DOWN;
 
     if (upper == "LEFT_SHIFT")    return KEY_LEFT_SHIFT;
     if (upper == "RIGHT_SHIFT")   return KEY_RIGHT_SHIFT;

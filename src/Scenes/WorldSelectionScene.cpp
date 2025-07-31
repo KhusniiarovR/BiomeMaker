@@ -17,7 +17,7 @@ timer           ({0.2f, 0.2f} , {0.6f, 0.3f}, 1.0f/3.0f, true, GREEN, GRAY, "", 
     // first page buttons
     playButton.setOnClick([this]() { play(); });
     createNewButton.setOnClick([this]() { firstPage = false; worldName.eraseText(); });
-    deleteButton.setOnClick([this]() { worldSelector.deleteCurrent(); });
+    deleteButton.setOnClick([this]() { worldSelector.deleteSelected(); });
 
     // second page buttons
     createButton.setOnClick([this]() { createWorld(true); });

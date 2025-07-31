@@ -1,25 +1,20 @@
 #include "TextBox.h"
 
-TextBox::TextBox(float x, float y, float width, float height, Color BGcolor, Color lineColor, Color activeLineColor, Color textColor, int textSize) :
-box{ virtualScreenSizeX*x, virtualScreenSizeY*y, virtualScreenSizeX*width, virtualScreenSizeY*height }, 
+TextBox::TextBox(float x, float y, float width, float height, Color BGcolor, Color lineColor, Color activeLineColor, Color textColor, int textSize)
+: box{ virtualScreenSizeX*x, virtualScreenSizeY*y, virtualScreenSizeX*width, virtualScreenSizeY*height }, 
 BGColor{BGcolor}, lineColor{lineColor},
 textColor{textColor}, textSize(textSize) {}
 
 void TextBox::update(float dt, Vector2 mouseVirtual)
 {
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-    {
-        active = CheckCollisionPointRec(mouseVirtual, box);
-    }
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) { active = CheckCollisionPointRec(mouseVirtual, box); }
+
     if (active)
     {
         int key = GetCharPressed();
         while (key > 0)
         {
-            if ((key >= 32) && (key <= 125))
-            {
-                text += (char)key;
-            }
+            if ((key >= 32) && (key <= 125)) { text += (char)key; }
             key = GetCharPressed();
         }
         if (IsKeyPressed(KEY_BACKSPACE) && !text.empty())
@@ -36,23 +31,17 @@ void TextBox::update(float dt, Vector2 mouseVirtual)
                 backspaceTimer = 0.05f; // задержка в последующие
             }
         }
-        else
-        {
-            backspaceTimer = 0.0f; 
-        }
+        else { backspaceTimer = 0.0f; }
     }
-    if(CheckCollisionPointRec(mouseVirtual, box))
-    {
-        SetMouseCursor(MOUSE_CURSOR_IBEAM);
-    }
+    if(CheckCollisionPointRec(mouseVirtual, box)) { SetMouseCursor(MOUSE_CURSOR_IBEAM); }
 }
 void TextBox::draw(Renderer& renderer) const
 {
     DrawRectangleRec(box,BGColor);
-    if(active)
-        DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, activeLineColor);
-    else
-        DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, lineColor);
+
+    if(active) { DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, activeLineColor); }
+    else { DrawRectangleLines((int)box.x, (int)box.y, (int)box.width, (int)box.height, lineColor); }
+
     renderer.drawText(text.c_str(), {box.x, box.y}, textSize, textColor, false, false, "silkscreen", 0.3f);
 }
 std::string TextBox::getText()
@@ -67,10 +56,7 @@ void TextBox::eraseText()
 
 void TextBox::setBox(float x, float y, float width, float height)
 {
-    box.x = x;
-    box.y = y;
-    box.width = width;
-    box.height = height;
+    box = {x, y, width, height};
 }
 
 Rectangle TextBox::getBox() 

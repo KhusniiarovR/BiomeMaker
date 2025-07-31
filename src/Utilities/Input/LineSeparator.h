@@ -3,6 +3,7 @@
 #include <string>
 #include "raylib.h"
 
+// divide text into several parts based on container width
 inline std::vector<std::string> separateText(const std::string& text, Font& font, float fontSize, float maxWidth) 
 {
     std::vector<std::string> lines;

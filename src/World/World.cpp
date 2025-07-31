@@ -8,15 +8,19 @@ World::World(const std::string &filename) : chunkSystem(chunks, filename) {}
 
 World::~World() = default;
 
-void World::update(Vector2 playerPos, Camera2D& camera, Vector2 mouseVirtual) {
+void World::update(Vector2 playerPos, Camera2D& camera, Vector2 mouseVirtual) 
+{
     chunkSystem.update(playerPos);
 }
 
-void World::render(Renderer& renderer) const {
+void World::render(Renderer& renderer) const 
+{
     chunkSystem.render(renderer);
 }
 
-std::optional<ObjectType> World::removeObjectAt(int worldX, int worldY, const Item* tool) {
+std::optional<ObjectType> World::removeObjectAt(int worldX, int worldY, const Item* tool) 
+{
+    // finding chunk
     int chunkX = worldX / chunkSize;
     int chunkY = worldY / chunkSize;
 
@@ -25,36 +29,45 @@ std::optional<ObjectType> World::removeObjectAt(int worldX, int worldY, const It
 
     Chunk& chunk = it->second;
 
-    auto found = std::find_if(chunk.objects.begin(), chunk.objects.end(), [&](const Object& obj) {
-        auto prop = objectPropertiesMap.find(obj.type);
-        if (prop == objectPropertiesMap.end()) return false;
+    // finding object
+    auto found = std::find_if(chunk.getObjects().begin(), chunk.getObjects().end(), [&](const Object& obj) 
+    {
+        auto propertiesIt = objectPropertiesMap.find(obj.type);
+        if (propertiesIt == objectPropertiesMap.end()) { return false; }
 
-        Vector2 size = prop->second.size;
-        int startX = static_cast<int>(obj.position.x / worldTileSize);
-        int startY = static_cast<int>(obj.position.y / worldTileSize);
+        const ObjectProperties& properties = propertiesIt->second;
 
-        bool inBounds = worldX >= startX && worldY >= startY &&
-                        worldX < startX + (int)size.x &&
-                        worldY < startY + (int)size.y;
+        // is player hitting object
+        int objStartX = static_cast<int>(obj.position.x / worldTileSize);
+        int objStartY = static_cast<int>(obj.position.y / worldTileSize);
+        int objEndX = objStartX + static_cast<int>(properties.size.x);
+        int objEndY = objStartY + static_cast<int>(properties.size.y);
 
-        if (!inBounds) return false;
+        bool inBounds = worldX >= objStartX && worldX < objEndX && worldY >= objStartY && worldY < objEndY;
 
-        if (!tool->canBreak(prop->second)) return false;
-
-        return true;
+        if (!inBounds) { return false; }
+        return tool->canBreak(properties);
     });
 
-    if (found == chunk.objects.end()) return std::nullopt;
+    
+    if (found == chunk.getObjects().end()) { return std::nullopt; }
 
+    // erase if find
     ObjectType removedType = found->type;
-    chunk.objects.erase(found);
-    chunk.isModified = true;
+    chunk.getObjects().erase(found);
+    chunk.setModified(true);
+
     return removedType;
 }
 
-bool World::placeObjectAt(int worldX, int worldY, ObjectType type) {
-    if (type == ObjectType::OBJECT_NONE)
-        return false;
+bool World::placeObjectAt(int worldX, int worldY, ObjectType type) 
+{
+    if (type == ObjectType::OBJECT_NONE) { return false; }
+
+    auto propertiesIt = objectPropertiesMap.find(type);
+    if (propertiesIt == objectPropertiesMap.end()) return false;
+
+    const ObjectProperties& properties = propertiesIt->second;
 
     int chunkX = worldX / chunkSize;
     int chunkY = worldY / chunkSize;
@@ -62,58 +75,45 @@ bool World::placeObjectAt(int worldX, int worldY, ObjectType type) {
     int localX = worldX % chunkSize;
     int localY = worldY % chunkSize;
 
+    // is object inside chunk
+    if (localX + static_cast<int>(properties.size.x) > chunkSize || localY + static_cast<int>(properties.size.y) > chunkSize) { return false; }
+
+    // finding chunk
     auto it = chunks.find({chunkX, chunkY});
-    if (it == chunks.end()) return false;
+    if (it == chunks.end()) { return false; }
 
     Chunk& chunk = it->second;
 
-    auto propIt = objectPropertiesMap.find(type);
-    if (propIt == objectPropertiesMap.end()) return false;
-
-    int w = static_cast<int>(propIt->second.size.x);
-    int h = static_cast<int>(propIt->second.size.y);
-
-    if (localX + w > chunkSize || localY + h > chunkSize)
-        return false;
-
-    for (const Object& obj : chunk.objects) {
+    // check if object already placed here
+    for (const Object& obj : chunk.getObjects()) 
+    {
         auto otherPropIt = objectPropertiesMap.find(obj.type);
-        if (otherPropIt == objectPropertiesMap.end()) continue;
+        if (otherPropIt == objectPropertiesMap.end()) { continue; }
 
-        int objTileX = static_cast<int>(obj.position.x / worldTileSize);
-        int objTileY = static_cast<int>(obj.position.y / worldTileSize);
+        const ObjectProperties& otherProp = otherPropIt->second;
 
-        int objLocalX = objTileX - chunkX * chunkSize;
-        int objLocalY = objTileY - chunkY * chunkSize;
+        int otherX = static_cast<int>(obj.position.x / worldTileSize);
+        int otherY = static_cast<int>(obj.position.y / worldTileSize);
 
-        int ow = static_cast<int>(otherPropIt->second.size.x);
-        int oh = static_cast<int>(otherPropIt->second.size.y);
+        bool overlap = !(worldX + static_cast<int>(properties.size.x) <= otherX ||
+                         worldX >= otherX + static_cast<int>(otherProp.size.x) ||
+                         worldY + static_cast<int>(properties.size.y) <= otherY ||
+                         worldY >= otherY + static_cast<int>(otherProp.size.y));
 
-        bool overlap = !(localX + w <= objLocalX ||    
-                         localX >= objLocalX + ow ||   
-                         localY + h <= objLocalY ||    
-                         localY >= objLocalY + oh); 
-
-        if (overlap)
-            return false;
+        if (overlap) { return false; }
     }
 
-    Object newObj;
-    newObj.type = type;
-    newObj.position = { static_cast<float>(chunkX * chunkSize + localX) * worldTileSize,
-                        static_cast<float>(chunkY * chunkSize + localY) * worldTileSize };
+    Object newObj = {type, {static_cast<float>(worldX) * worldTileSize, static_cast<float>(worldY) * worldTileSize}};
+    chunk.getObjects().push_back(newObj);
+    chunk.setModified(true);
 
-    chunk.objects.push_back(newObj);
-    chunk.isModified = true;
     return true;
 }
 
-std::vector<Object> World::getObjectsAll() const {
+std::vector<Object> World::getObjectsAll() const 
+{
     std::vector<Object> result;
-
-    for (const auto& [pos, chunk] : chunks) {
-        result.insert(result.end(), chunk.objects.begin(), chunk.objects.end());
-    }
+    for (const auto& [pos, chunk] : chunks) { result.insert(result.end(), chunk.getObjects().begin(), chunk.getObjects().end()); }
 
     return result;
 }

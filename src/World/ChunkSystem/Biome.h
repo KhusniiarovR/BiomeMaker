@@ -1,6 +1,4 @@
-#ifndef BIOME_H
-#define BIOME_H
-
+#pragma once
 #include <vector>
 #include <cstdint>
 
@@ -21,7 +19,8 @@ constexpr uint8_t BIOME_BEACH = 8;
 constexpr uint8_t BIOME_CRYSTAL = 9;
 constexpr uint8_t BIOME_MOUNTAIN = 10;
 
-const std::vector<Biome> BIOMES = {
+const std::vector<Biome> BIOMES = 
+{
     {
         BIOME_UNKNOWN,
         {
@@ -103,7 +102,3 @@ const std::vector<Biome> BIOMES = {
         }
     },
 };
-
-
-
-#endif //BIOME_H
