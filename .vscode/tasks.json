@@ -17,7 +17,7 @@
         "command": "powershell",
         "args": [
           "-Command",
-          "cmake -S . -B build -G \"MinGW Makefiles\" -DCMAKE_BUILD_TYPE=Debug; cmake --build build"
+          "cmake -S . -B build -G \"MinGW Makefiles\" -DCMAKE_BUILD_TYPE=Debug; cmake --build build -j 8"
         ]
       },
       "group": { "kind": "build", "isDefault": true },
