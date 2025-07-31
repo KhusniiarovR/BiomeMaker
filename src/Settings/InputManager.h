@@ -9,7 +9,7 @@ how add new action
 2. LoadDefaultBinds()  add it there
 3. GetNameFromAction() add it there
 4. GetActionFromName() add it there
-5. data/Settings/Settings.cfg add it there example:
+5. data/Settings/settings.cfg add it there example:
 
 (jump=E) 
 first part (jump) must be equal to GetNameFromAction and GetActionFromName

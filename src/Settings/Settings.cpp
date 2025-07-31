@@ -12,8 +12,9 @@ applyButton  ({0.7f, 0.6f}, {0.2f, 0.1f}, "apply", BLACK, 0.5f),
 quitButton   ({0.7f, 0.8f}, {0.2f, 0.1f}, "quit", BLACK, 0.5f)
 {
     init();
-    RegisterHandlers();
+    registerHandlers();
     load();
+    apply();
 }
 
 void Settings::init() 
@@ -35,11 +36,49 @@ void Settings::init()
     quitButton.setTexture(AssetManager::instance().getTexture("button1"));
 }
 
-void Settings::load() 
+void Settings::load()
+{
+    std::ifstream file(configPath);
+    if (!file.is_open())
+    {
+        loadDefault();
+        save();
+        return;
+    }
+    loadFromFile();
+}
+
+void Settings::save() 
+{
+    std::ofstream file(configPath);
+    file << "#screen\n";
+    file << "window_width=" << data.windowWidth << "\n";
+    file << "window_height=" << data.windowHeight << "\n\n";
+
+    file << "#fps\n";
+    file << "max_fps=" << data.maxFPS << "\n\n";
+
+    file << "#keybinds\n";
+    for (int i = 0; i < static_cast<int>(Action::ActionSize); i++) 
+    {
+        Action action = static_cast<Action>(i);
+        file << InputManager::GetNameFromAction(action) << "=" << GetNameFromKey(InputManager::GetInstance().GetKeyBind(action)) << "\n";
+    }
+
+    apply();
+}
+
+void Settings::loadFromFile()
 {
     widgets.clear();
 
     std::ifstream file(configPath);
+    if (!file.is_open()) 
+    {
+        mycerr << "Failed to open config file for reading: " << configPath;
+        return;
+    }
+
     std::string line;
     while (std::getline(file, line)) 
     {
@@ -82,26 +121,6 @@ void Settings::load()
             }
         }
     }
-}
-
-void Settings::save() 
-{
-    std::ofstream file(configPath);
-    file << "#screen\n";
-    file << "window_width=" << data.windowWidth << "\n";
-    file << "window_height=" << data.windowHeight << "\n\n";
-
-    file << "#fps\n";
-    file << "max_fps=" << data.maxFPS << "\n\n";
-
-    file << "#keybinds\n";
-    for (int i = 0; i < static_cast<int>(Action::ActionSize); i++) 
-    {
-        Action action = static_cast<Action>(i);
-        file << InputManager::GetNameFromAction(action) << "=" << GetNameFromKey(InputManager::GetInstance().GetKeyBind(action)) << "\n";
-    }
-
-    apply();
 }
 
 void Settings::update(float dt, Vector2 mouseVirtual) 
@@ -158,7 +177,7 @@ void Settings::render(Renderer& renderer) const
     EndScissorMode();
 }
 
-void Settings::RegisterHandlers() // for int fields
+void Settings::registerHandlers() // for int fields
 {
     settingHandlers["window_width"] = [&](const std::string& val) 
     {
@@ -187,10 +206,6 @@ void Settings::apply() const
 
 void Settings::loadDefault() 
 {
-    std::ofstream file(configPath);
-
-    SettingsData d;
-    data = d;
+    data = SettingsData();
     InputManager::GetInstance().LoadDefaultBinds();
-    save();
 }

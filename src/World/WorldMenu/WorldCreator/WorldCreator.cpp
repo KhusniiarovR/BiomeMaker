@@ -11,6 +11,7 @@
 #include "Items/ItemBase/Item.h"
 #include <algorithm>
 #include "Utilities/World/Dist.h"
+#include "Constants/Path.h"
 
 void WorldCreator::generate() 
 {
@@ -191,23 +192,18 @@ std::string WorldCreator::generateWorldName() // generate Name if world name is 
 void WorldCreator::createWorld(const std::vector<std::vector<uint8_t>>& biomes, const std::vector<Object>& objects) 
 {
     // check for files
-    if (!std::filesystem::exists("saves/")) 
+    const std::filesystem::path worldDir = std::filesystem::path(path::worlds) / worldName;
+    const std::filesystem::path worldFile = worldDir / "world.dat";
+
+    std::error_code ec;
+    std::filesystem::create_directories(worldDir, ec);
+    if (ec) 
     {
-        mycerr << "Recreated saves and worlds folder";
-        std::filesystem::create_directory("saves");
-        std::filesystem::create_directory("saves/worlds");
+        mycerr << "Failed to create directories: " << ec.message();
+        return;
     }
-
-    else if (!std::filesystem::exists("saves/worlds")) 
-    {
-        mycerr << "Recreated saves/worlds folder";
-        std::filesystem::create_directory("saves/worlds");
-    }
-
-    std::filesystem::create_directory("saves/worlds/" + worldName);
-    std::string filename = "saves/worlds/" + worldName + "/world.dat";
-    std::ofstream out(filename, std::ios::binary);
-
+    
+    std::ofstream out(worldFile, std::ios::binary);
     if (!out.is_open()) 
     {
         mycerr << "can't open world.dat";
@@ -321,15 +317,20 @@ std::vector<Object> WorldCreator::takeObjectsInchunk(const std::vector<Object>& 
 
 void WorldCreator::createPlayerDir() 
 {
-    std::string playerPath = "saves/worlds/" + worldName + "/playerData";
-    std::filesystem::create_directories(playerPath);
-
-    std::string inventoryPath = playerPath + "/inventory.inv";
-    std::ofstream out(inventoryPath, std::ios::binary);
-
-    if (!out) 
+    const std::filesystem::path playerDir = std::filesystem::path(path::worlds) / worldName / "playerData";
+    std::error_code ec;
+    std::filesystem::create_directories(playerDir, ec);
+    if (ec) 
     {
-        mycerr << "Can't create player dir in " << inventoryPath;
+        mycerr << "Failed to create player directory: " << ec.message();
+        return;
+    }
+
+    const std::filesystem::path inventoryFile = playerDir / "inventory.inv";
+
+    std::ofstream out(inventoryFile, std::ios::binary);
+    if (!out) {
+        mycerr << "Can't create inventory file at " << inventoryFile.string();
         return;
     }
     

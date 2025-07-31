@@ -4,6 +4,7 @@
 #include <vector>
 #include <Core/Render/Renderer.h>
 #include "Constants/GraphicsConst.h"
+#include "Constants/Path.h"
 
 class WorldSelector { 
 private:
@@ -26,7 +27,7 @@ private:
     float totalContentHeight;
 
 public:
-    explicit WorldSelector(const std::string& path = "saves/worlds/");
+    explicit WorldSelector(const std::string& path = path::worlds);
     void update(Vector2 mouseVirtual);
     void render(Renderer& renderer) const;
 

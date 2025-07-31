@@ -3,6 +3,7 @@
 #include "Constants/GraphicsConst.h"
 #include <cmath>
 #include "Settings/Settings.h"
+#include "Utilities/Path/InitPaths.h"
 
 Game::Game() : renderer(assetManager, camera,virtualScreenSizeX, virtualScreenSizeY, mouseVirtual), sceneManager(renderer)
 {
@@ -50,8 +51,9 @@ void Game::run()
 
 void Game::init()
 {
+    initPaths("BiomeMaker"); // paths
     SetTraceLogLevel(LOG_ERROR); // turn of opengl init comments
-
+    
     //             vert sync         resize window               windows close, resize, hide buttons 
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_UNDECORATED);
 
@@ -59,7 +61,7 @@ void Game::init()
     InitWindow(virtualScreenSizeX, virtualScreenSizeY, "Biome Maker");
 
     Settings settings; // load settings from config file
-    const SettingsData& data = settings.GetData();
+    const SettingsData& data = settings.getData();
 
     SetWindowSize(data.windowWidth, data.windowHeight); // to init settings correctly resize window instead of init it with correct size
     SetTargetFPS(data.maxFPS);     // fps
