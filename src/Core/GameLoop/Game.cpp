@@ -4,6 +4,7 @@
 #include <cmath>
 #include "Settings/Settings.h"
 #include "Utilities/Path/InitPaths.h"
+#include "Utilities/Windows/WindowPos.h"
 
 Game::Game() : renderer(assetManager, camera,virtualScreenSizeX, virtualScreenSizeY, mouseVirtual), sceneManager(renderer)
 {
@@ -64,6 +65,7 @@ void Game::init()
     const SettingsData& data = settings.getData();
 
     SetWindowSize(data.windowWidth, data.windowHeight); // to init settings correctly resize window instead of init it with correct size
+    SetWindowPosition(0, 0);
     SetTargetFPS(data.maxFPS);     // fps
     SetExitKey(KEY_NULL); // turn off escape
 

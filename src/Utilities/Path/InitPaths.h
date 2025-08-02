@@ -5,8 +5,7 @@
 #include "Constants/Path.h"
 
 #if defined(_WIN32)
-    #include <windows.h>
-    #include <shlobj.h>
+    #include "Utilities/Windows/WindowsPaths.h"
 #elif defined(__linux__)
     #include <unistd.h>
     #include <pwd.h>
@@ -17,9 +16,7 @@ inline void initPaths(const std::string& appName)
     std::string base;
 
 #if defined(_WIN32)
-    char appdata[MAX_PATH];
-    SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, appdata);
-    base = std::string(appdata);
+    base = GetAppDataPath();
 
 #elif defined(__linux__)
     const char* home = std::getenv("HOME");

@@ -201,6 +201,7 @@ void Settings::registerHandlers() // for int fields
 void Settings::apply() const
 {
     SetWindowSize(data.windowWidth, data.windowHeight);
+    SetWindowPosition(0, 0);
     SetTargetFPS(data.maxFPS);
 }
 
