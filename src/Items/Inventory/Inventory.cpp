@@ -15,6 +15,21 @@ Inventory::~Inventory()
 
 void Inventory::update(Vector2 mouseVirtual, bool full) 
 {
+    // select slot with number keys
+    for (int i = 0; i < std::min(9, invColumns); i++) { if (IsKeyPressed(KEY_ONE + i)) { setSelectedSlot(i); } }
+    // 10th slot check
+    if (10 >= invColumns && IsKeyPressed(KEY_ZERO)) { setSelectedSlot(9); }
+
+    // select slot with mouse scroll
+    float wheel = GetMouseWheelMove();
+    if (wheel != 0) 
+    {
+        int maxSlots = full ? slotCount : std::min(10, slotCount);
+        selectedSlot -= static_cast<int>(wheel);
+        if (selectedSlot < 0) { selectedSlot = maxSlots - 1; }
+        if (selectedSlot >= maxSlots) { selectedSlot = 0; }
+    }
+
     // mouse hovering and selection check
     hoveredSlot = -1;
     int slotsToCheck = full ? slotCount : std::min(10, slotCount);

@@ -32,4 +32,5 @@ public:
 private:
     uint8_t chooseTileIndex(const Biome* biome, uint32_t seed);
     int objectTypeToTile(ObjectType objectType) const;
+    int getTileRotation(int globalX, int globalY) const;
 };

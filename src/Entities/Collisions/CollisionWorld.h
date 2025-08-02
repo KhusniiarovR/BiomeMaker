@@ -16,7 +16,7 @@ public:
         for (const Object& obj : objects) 
         {
             if (!obj.hasCollision()) continue;
-            Rectangle objBox = obj.getBoundingBox(worldTileSize);
+            Rectangle objBox = obj.getHitbox(worldTileSize);
             if (CheckCollisionRecs(rect, objBox)) return true;
         }
         return false;

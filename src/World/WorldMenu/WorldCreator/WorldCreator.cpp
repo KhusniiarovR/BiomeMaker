@@ -118,8 +118,8 @@ std::vector<Object> WorldCreator::generateObjects(const std::vector<std::vector<
                 auto propIt = objectPropertiesMap.find(type);
                 if (propIt == objectPropertiesMap.end()) { continue; }
 
-                int w = static_cast<int>(propIt->second.size.x);
-                int h = static_cast<int>(propIt->second.size.y);
+                int w = static_cast<int>(propIt->second.visualSize.x);
+                int h = static_cast<int>(propIt->second.visualSize.y);
 
                 if (x + w > worldSize || y + h > worldSize) { continue; }
 
@@ -309,7 +309,7 @@ std::vector<Object> WorldCreator::takeObjectsInchunk(const std::vector<Object>& 
 
     for (const Object& obj : objects) 
     {
-        Rectangle r = obj.getBoundingBox(tileSize);
+        Rectangle r = obj.getHitbox(tileSize);
         if (r.x < endX && r.x + r.width > startX && r.y < endY && r.y + r.height > startY) { result.push_back(obj); }
     }
     return result;

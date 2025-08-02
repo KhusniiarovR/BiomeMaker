@@ -30,25 +30,18 @@ std::optional<ObjectType> World::removeObjectAt(int worldX, int worldY, const It
     Chunk& chunk = it->second;
 
     // finding object
-    auto found = std::find_if(chunk.getObjects().begin(), chunk.getObjects().end(), [&](const Object& obj) 
+    auto found = std::find_if(chunk.getObjects().begin(), chunk.getObjects().end(), [&](const Object& obj)
     {
-        auto propertiesIt = objectPropertiesMap.find(obj.type);
-        if (propertiesIt == objectPropertiesMap.end()) { return false; }
+        const ObjectProperties* properties = obj.getProperties();
+        if (!properties) { return false; }
 
-        const ObjectProperties& properties = propertiesIt->second;
+        Rectangle hitbox = obj.getHitboxVisual(worldTileSize);
 
-        // is player hitting object
-        int objStartX = static_cast<int>(obj.position.x / worldTileSize);
-        int objStartY = static_cast<int>(obj.position.y / worldTileSize);
-        int objEndX = objStartX + static_cast<int>(properties.size.x);
-        int objEndY = objStartY + static_cast<int>(properties.size.y);
+        bool inBounds = worldX * worldTileSize >= hitbox.x && worldX * worldTileSize < hitbox.x + hitbox.width &&
+                        worldY * worldTileSize >= hitbox.y && worldY * worldTileSize < hitbox.y + hitbox.height;
 
-        bool inBounds = worldX >= objStartX && worldX < objEndX && worldY >= objStartY && worldY < objEndY;
-
-        if (!inBounds) { return false; }
-        return tool->canBreak(properties);
+        return inBounds && tool->canBreak(*properties);
     });
-
     
     if (found == chunk.getObjects().end()) { return std::nullopt; }
 
@@ -62,7 +55,7 @@ std::optional<ObjectType> World::removeObjectAt(int worldX, int worldY, const It
 
 bool World::placeObjectAt(int worldX, int worldY, ObjectType type) 
 {
-    if (type == ObjectType::OBJECT_NONE) { return false; }
+    if (type == ObjectType::NONE) { return false; }
 
     auto propertiesIt = objectPropertiesMap.find(type);
     if (propertiesIt == objectPropertiesMap.end()) return false;
@@ -76,7 +69,9 @@ bool World::placeObjectAt(int worldX, int worldY, ObjectType type)
     int localY = worldY % chunkSize;
 
     // is object inside chunk
-    if (localX + static_cast<int>(properties.size.x) > chunkSize || localY + static_cast<int>(properties.size.y) > chunkSize) { return false; }
+    int objWidth = static_cast<int>(properties.visualSize.x);
+    int objHeight = static_cast<int>(properties.visualSize.y);
+    if (localX + objWidth > chunkSize || localY + objHeight > chunkSize) { return false; }
 
     // finding chunk
     auto it = chunks.find({chunkX, chunkY});
@@ -87,18 +82,16 @@ bool World::placeObjectAt(int worldX, int worldY, ObjectType type)
     // check if object already placed here
     for (const Object& obj : chunk.getObjects()) 
     {
-        auto otherPropIt = objectPropertiesMap.find(obj.type);
-        if (otherPropIt == objectPropertiesMap.end()) { continue; }
-
-        const ObjectProperties& otherProp = otherPropIt->second;
+        const ObjectProperties* otherProps = obj.getProperties();
+        if (!otherProps) { continue; }
 
         int otherX = static_cast<int>(obj.position.x / worldTileSize);
         int otherY = static_cast<int>(obj.position.y / worldTileSize);
 
-        bool overlap = !(worldX + static_cast<int>(properties.size.x) <= otherX ||
-                         worldX >= otherX + static_cast<int>(otherProp.size.x) ||
-                         worldY + static_cast<int>(properties.size.y) <= otherY ||
-                         worldY >= otherY + static_cast<int>(otherProp.size.y));
+        bool overlap = !(worldX + objWidth <= otherX ||
+                         worldX >= otherX + static_cast<int>(otherProps->visualSize.x) ||
+                         worldY + objHeight <= otherY ||
+                         worldY >= otherY + static_cast<int>(otherProps->visualSize.y));
 
         if (overlap) { return false; }
     }

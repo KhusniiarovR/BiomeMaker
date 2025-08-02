@@ -94,18 +94,28 @@ void Chunk::renderTiles(Texture2D& tilemap) const
     {
         for (int x = 0; x < chunkSize; x++) 
         {
-            int worldX = (chunkX + x) * worldTileSize;
-            int worldY = (chunkY + y) * worldTileSize;
+            int worldTileX = chunkX + x;
+            int worldTileY = chunkY + y;
+
+            int worldX = worldTileX * worldTileSize;
+            int worldY = worldTileY * worldTileSize;
 
             int tileIndex = tiles[y][x];
             int tileX = (tileIndex % worldTilesPerRow) * worldSourceTileSize;
             int tileY = (tileIndex / worldTilesPerRow) * worldSourceTileSize;
 
-            Rectangle sourceRec = { (float)tileX + worldPadding, (float)tileY + worldPadding,
-                                    (float)worldSourceTileSize - 2 * worldPadding, (float)worldSourceTileSize - 2 * worldPadding };
+            Rectangle sourceRec = { (float)tileX + worldPadding, (float)tileY + worldPadding, 
+                                    (float)worldSourceTileSize - 2 * worldPadding, (float)worldSourceTileSize - 2 * worldPadding};
 
             Rectangle destRec = { (float)worldX, (float)worldY, (float)worldTileSize, (float)worldTileSize };
-            DrawTexturePro(tilemap, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
+
+            float rotation = static_cast<float>(getTileRotation(worldTileX, worldTileY));
+            Vector2 origin = { worldTileSize / 2.0f, worldTileSize / 2.0f };
+
+            destRec.x += origin.x;
+            destRec.y += origin.y;
+
+            DrawTexturePro(tilemap, sourceRec, destRec, origin, rotation, WHITE);
         }
     }
 }
@@ -114,25 +124,28 @@ void Chunk::renderObjects(Texture2D& tilemap) const
 {
     for (const Object& obj : objects) 
     {
-        if (obj.type == ObjectType::OBJECT_NONE)  { continue; }
+         if (!obj.isValid()) { continue; }
+
+        const ObjectProperties* props = obj.getProperties();
+        if (!props) { continue; }
 
         int objectTileIndex = objectTypeToTile(obj.type);
         int objTileX = (objectTileIndex % worldTilesPerRow) * worldSourceTileSize;
         int objTileY = (objectTileIndex / worldTilesPerRow) * worldSourceTileSize;
 
-        Rectangle objSource = { (float)objTileX, (float)objTileY, (float)worldSourceTileSize, (float)worldSourceTileSize };
+        int tilesWide = (int) (props->visualSize.x);
+        int tilesHigh = (int) (props->visualSize.y);
 
-        auto it = objectPropertiesMap.find(obj.type);
-        float widthPx = worldTileSize;
-        float heightPx = worldTileSize;
-        if (it != objectPropertiesMap.end()) 
+        Rectangle source = { (float)objTileX, (float)objTileY,
+                             (float)tilesWide * worldSourceTileSize, (float)tilesHigh * worldSourceTileSize };
+
+        Rectangle dest = { obj.position.x, obj.position.y, props->visualSize.x * worldTileSize, props->visualSize.y * worldTileSize };
+        DrawTexturePro(tilemap, source, dest, {0, 0}, 0.0f, WHITE);
+        
+        if (props->hasCollision)
         {
-            widthPx = it->second.size.x * worldTileSize;
-            heightPx = it->second.size.y * worldTileSize;
+            DrawRectangleLinesEx(obj.getHitbox(worldTileSize), 1.0f, RED);
         }
-
-        Rectangle destRec = { obj.position.x, obj.position.y, widthPx, heightPx };
-        DrawTexturePro(tilemap, objSource, destRec, {0, 0}, 0.0f, WHITE);
     }
 }
 
@@ -154,4 +167,10 @@ int Chunk::objectTypeToTile(ObjectType objectType) const
 {
     auto it = objectTileMap.find(objectType);
     return (it != objectTileMap.end()) ? it->second : 0;
+}
+
+int Chunk::getTileRotation(int globalX, int globalY) const
+{
+    uint32_t hash = static_cast<uint32_t>(globalX * 73856093) ^ static_cast<uint32_t>(globalY * 19349663);
+    return (hash % 4) * 90; // 0, 90, 180, 270
 }

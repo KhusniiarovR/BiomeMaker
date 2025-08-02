@@ -12,9 +12,9 @@ struct LootDrop { // item id, chance of dropping, min-max amount
 
 const std::unordered_map<ObjectType, std::vector<LootDrop>> objectLootTable 
 {
-    { ObjectType::OBJECT_TREE, { { ItemID::WOOD, 1.0f, 1, 3 } } },
-    { ObjectType::OBJECT_BUSH, { { ItemID::BERRY, 0.7f, 1, 2 } } },
-    { ObjectType::OBJECT_ROCK, { { ItemID::STONE, 1.0f, 1, 2 } } }
+    { ObjectType::TREE, { { ItemID::WOOD, 1.0f, 1, 3 } } },
+    { ObjectType::BUSH, { { ItemID::BERRY, 0.7f, 1, 2 } } },
+    { ObjectType::ROCK, { { ItemID::STONE, 1.0f, 1, 2 } } }
 };
 
 inline std::vector<ItemID> generateLootForObject(ObjectType type)  // how much items should be dropped
