@@ -12,10 +12,15 @@
 GameScene::GameScene(Renderer& renderer, const std::string& worldName)
 : Scene(renderer), 
 world(worldName),
-collision(world),
 player ({worldSize * worldTileSize / 2.0f, worldSize * worldTileSize / 2.0f}, &collision, worldName),
 enemies(player, &collision)
 {
+    // set collisions
+    provider.setWorld(&world);
+    provider.setPlayer(&player);
+    provider.setEnemies(&enemies);
+    collision.setProvider(&provider);
+
     // camera centralized on a player
     renderer.GetCamera().offset = {virtualScreenSizeX / 2.0f, virtualScreenSizeY / 2.0f};
 

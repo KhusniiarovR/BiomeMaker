@@ -3,8 +3,9 @@
 #include "Constants/GraphicsConst.h"
 #include "Constants/TilemapConst.h"
 #include "Settings/InputManager.h"
+#include "Entities/Collisions/Collision.h"
 
-Player::Player(Vector2 initPos, const CollisionBase* collision, std::string fileName)
+Player::Player(Vector2 initPos, const Collision* collision, std::string fileName)
 : Entity(initPos), 
 collision(collision),
 hp{{0.01f, 0.05f}, {0.15f, 0.05f}, RED, GRAY, "HEALTH", 10},
@@ -20,6 +21,16 @@ animation(entityTileSize, entityTileSize)
 
 void Player::update(float dt) 
 {
+    if (knockback.isActive()) // if take damage
+    {
+        knockback.update(dt);
+        Vector2 offset = knockback.getCurrentOffset(dt);
+        tryMove(offset.x, offset.y);
+        animation.play("idle");
+        animation.update(dt);
+        return;
+    }
+
     /* movement */
     float moveSpeed = speed * dt * speedMultiplier;
     float dx = 0, dy = 0;
@@ -36,14 +47,13 @@ void Player::update(float dt)
     /* buffs */
     buffSystem.update(dt);
 
-    /* others */
-    if (IsKeyPressed(KEY_Q)) { hp.decrease(0.05f); } 
-    // TODO enemy damage
+    /* take damage */
+    if (immuneFrames > 0.0f) { immuneFrames -= dt; }
 }
 
 void Player::render(Renderer& renderer) const 
 {
-    animation.render(renderer.getTexture("playerTilemap"), position);
+    animation.render(renderer.getTexture("playerTilemap"), position); // TODO player anim took damage
 
     DrawCircleLinesV(position, handDistance * worldTileSize, YELLOW); // yellow area where items work
 }
@@ -84,7 +94,7 @@ void Player::tryMove(float dx, float dy)
     newBox.x += dx;
     newBox.y += dy;
 
-    if (!collision || !collision->checkCollision(newBox)) 
+    if (!collision || !collision->checkWithWorld(newBox)) 
     {
         position.x += dx;
         position.y += dy;
@@ -93,10 +103,17 @@ void Player::tryMove(float dx, float dy)
     {
         newBox.x = oldBox.x + dx;
         newBox.y = oldBox.y;
-        if (!collision || !collision->checkCollision(newBox)) { position.x += dx; }
+        if (!collision || !collision->checkWithWorld(newBox)) { position.x += dx; }
 
         newBox.x = oldBox.x;
         newBox.y = oldBox.y + dy;
-        if (!collision || !collision->checkCollision(newBox)) { position.y += dy; }
+        if (!collision || !collision->checkWithWorld(newBox)) { position.y += dy; }
     }
+}
+
+void Player::takeDamage(float amount, Vector2 source)
+{
+    if (immuneFrames >= 0.0f) return;
+    hp.decrease(amount);
+    knockback.apply(source, position); // todo how strong enemy attack (3rd parameter)
 }

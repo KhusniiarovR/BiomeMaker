@@ -1,7 +1,7 @@
 #include "EnemyManager.h"
 #include "Utilities/Logger/Logger.h"
 
-EnemyManager::EnemyManager(Player& player, const CollisionBase* collision) : player(player), collision(collision) {}
+EnemyManager::EnemyManager(Player& player, const Collision* collision) : player(player), collision(collision) {}
 
 void EnemyManager::update(float dt)
 {

@@ -3,7 +3,7 @@
 #include "Utilities/Logger/Logger.h"
 #include <cmath>
 
-Enemy::Enemy(Vector2 initPos, Player &player, const CollisionBase* collision) 
+Enemy::Enemy(Vector2 initPos, Player &player, const Collision* collision) 
 : Entity(initPos), 
 player(player), 
 collision(collision),
@@ -15,11 +15,24 @@ animation(entityTileSize, entityTileSize)
 
 void Enemy::update(float dt) 
 {
+    if (attackTimer > 0.0f) { attackTimer -= dt; } // attack timer
     // movement
     Vector2 toPlayer = { player.position.x - position.x, player.position.y - position.y};
     float dist = sqrt(toPlayer.x * toPlayer.x + toPlayer.y * toPlayer.y);
     
     if (dist < 1.0f) { animation.play("idle"); animation.update(dt); return; } // inside player
+
+    if (collision && collision->checkWithPlayer(getBoundingBox())) // if can attack
+    {
+        if (attackTimer <= 0.0f) 
+        {
+            player.takeDamage(0.1f, getPosition());
+            attackTimer = attackCooldown;
+        }
+        animation.play("idle");
+        animation.update(dt);
+        return;
+    }
 
     float moveSpeed = speed * dt * speedMultiplier;
     float dx = toPlayer.x / dist * moveSpeed; 
@@ -72,7 +85,7 @@ bool Enemy::tryMove(float dx, float dy)
     newBox.x += dx;
     newBox.y += dy;
 
-    if (!collision || !collision->checkCollision(newBox)) 
+    if (!collision || !collision->checkWithWorld(newBox)) 
     {
         position.x += dx;
         position.y += dy;
@@ -82,11 +95,11 @@ bool Enemy::tryMove(float dx, float dy)
     {
         newBox = oldBox;
         newBox.x += dx;
-        if (!collision->checkCollision(newBox)) { position.x += dx; moved = true; }
+        if (!collision->checkWithWorld(newBox)) { position.x += dx; moved = true; }
 
         newBox = oldBox;
         newBox.y += dy;
-        if (!collision->checkCollision(newBox)) { position.y += dy; moved = true; }
+        if (!collision->checkWithWorld(newBox)) { position.y += dy; moved = true; }
     }
     return moved;
 }

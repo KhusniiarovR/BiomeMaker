@@ -1,8 +1,10 @@
 #pragma once
 #include "Scene.h"
+#include "World/World.h"
 #include "Entities/Player/Player.h"
 #include "Entities/Enemy/EnemyManager.h"
-#include "World/World.h"
+#include "Entities/Collisions/Collision.h"
+#include "Entities/Collisions/GameCollisionProvider.h"
 #include "Ui/GameUi.h"
 #include "GameScenePause.h"
 
@@ -10,7 +12,10 @@ class GameScene : public Scene { // Game
 private:
     // world
     World world;             // (chunks(tiles, objects))
-    CollisionWorld collision;// easy access to world objects collisions
+
+    // collisions
+    Collision collision;
+    GameCollisionProvider provider;
 
     // player
     Player player;           // player and inventory

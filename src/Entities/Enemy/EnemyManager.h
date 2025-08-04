@@ -1,7 +1,7 @@
 #pragma once
 #include "Entities/Enemy/Enemy.h"
 #include "Core/Render/Renderer.h"
-#include "Entities/Collisions/CollisionWorld.h"
+#include "Entities/Collisions/Collision.h"
 #include "World/World.h"
 #include <vector>
 
@@ -19,10 +19,10 @@ private:
 
     /* others */
     Player& player;
-    const CollisionBase* collision; // collision for enemy
+    const Collision* collision; // collision for enemy
 
 public:
-    EnemyManager(Player& player, const CollisionBase* collision);
+    EnemyManager(Player& player, const Collision* collision);
     void update(float dt);
     void render(Renderer& renderer) const;
 
